@@ -1,0 +1,29 @@
+.logo {
+  background-image: linear-gradient(to right, #6c63ff, #d93f87);
+  -webkit-background-clip: text; /* Clip the text to the background gradient */
+  color: transparent; /* Make the text transparent */
+  display: inline-block; /* Ensure the gradient covers only the text */
+  text-decoration: none; /* Remove underline from the link */
+  font-size: 30px; /* Adjust the font size as needed */
+  font-weight: bold;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+small {
+  color: #6c63ff;
+}
+.btn-primary {
+  background: white;
+  color: #6c63ff;
+  border: 2px solid #6c63ff;
+}
+.btn-primary:hover {
+  background: #6c63ff;
+  color: white;
+  border: 2px solid #6c63ff;
+}

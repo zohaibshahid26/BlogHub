@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap");
+
+:root {
+    --primary-color: #6c63ff;
+    --secondary-color: #d93f87;
+    --tertiary-color: #2a1b3c;
+    --quaternary-color: #84ceeb;
+    --dark-color: #252424;
+    --light-color: #f4f4f4;
+    --info-color: #3498db;
+    --font-primary: "Roboto", sans-serif;
+    --font-secondary: "Open Sans", sans-serif;
+    --font-tertiary: "Roboto", sans-serif;
+    --font-color: #333;
+    --font-color-brand: linear-gradient(to right, #6c63ff, #d93f87);
+    --font-light: #fff;
+    --font-dark: #333;
+    --font-size: 1rem;
+    --border-radius: 0.25rem;
+    --transition: all 0.3s linear;
+    --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    font-family: var(--font-primary);
+    margin: 0;
+    padding: 0;
+}
+
+.logo {
+    background-image: linear-gradient( to right, var(--primary-color), var(--secondary-color) );
+    -webkit-background-clip: text; /* Clip the text to the background gradient */
+    background-clip: text; /* Clip the text to the background gradient for compatibility */
+    color: transparent; /* Make the text transparent */
+    display: inline-block; /* Ensure the gradient covers only the text */
+    text-decoration: none; /* Remove underline from the link */
+    font-size: 30px; /* Adjust the font size as needed */
+    font-weight: bold;
+}
+
+.gradient-text {
+    background-image: linear-gradient( to right, var(--primary-color), var(--quaternary-color) );
+    -webkit-background-clip: text; /* Clip the text to the background gradient */
+    background-clip: text; /* Clip the text to the background gradient for compatibility */
+    color: transparent; /* Make the text transparent */
+    display: inline-block; /* Ensure the gradient covers only the text */
+    text-decoration: none; /* Remove underline from the link */
+    font-size: 35px; /* Adjust the font size as needed */
+    font-weight: bold;
+}
+
+.btn {
+    display: inline-block;
+    padding: 5px 12px;
+    margin: 0.5rem;
+    font-size: var(--font-size);
+    font-weight: bold;
+    text-transform: capitalize;
+    border: 2px solid transparent;
+    background: var(--primary-color);
+    color: var(--font-light);
+    cursor: pointer;
+    transition: var(--transition);
+    border-radius: 5px;
+}
+
+li a {
+    text-decoration: none;
+    color: var(--font-color);
+}
+
+h5 h4 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.trending {
+    background: linear-gradient( to bottom, var(--primary-color), var(--secondary-color) );
+}
+
+.btn-primary:hover {
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}

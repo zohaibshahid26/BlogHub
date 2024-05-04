@@ -1,0 +1,66 @@
+body {
+    font-family: "Poppins", sans-serif;
+    background: #ececec;
+}
+
+.logo {
+    background-image: linear-gradient(to right, #6c63ff, #d93f87);
+    -webkit-background-clip: text; /* Clip the text to the background gradient */
+    background-clip: text; /* Clip the text to the background gradient for compatibility */
+    color: transparent; /* Make the text transparent */
+    display: inline-block; /* Ensure the gradient covers only the text */
+    text-decoration: none; /* Remove underline from the link */
+    font-size: 30px; /* Adjust the font size as needed */
+    font-weight: bold;
+}
+
+.box-area {
+    width: 930px;
+}
+
+.right-box {
+    padding: 40px 30px 40px 40px;
+}
+
+::placeholder {
+    font-size: 16px;
+}
+
+.rounded-4 {
+    border-radius: 20px;
+}
+
+.rounded-5 {
+    border-radius: 30px;
+}
+
+.button {
+    background: #6c63ff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .button:hover {
+        background: #9f9aff;
+    }
+
+@media only screen and (max-width: 768px) {
+    .box-area {
+        margin: 0 10px;
+    }
+
+    .left-box {
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .right-box {
+        padding: 20px;
+    }
+}

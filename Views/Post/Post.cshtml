@@ -1,0 +1,125 @@
+﻿@section Styles {
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/post.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+}
+@section Scripts {
+    <script src="~/js/Post.js"></script>
+}
+<div class="container-fluid my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="d-flex align-items-center">
+                <h1 class="fw-bolder fs-1">The Ever-Evolving World of Programming and Technology</h1>
+                <i class="fa-regular fa-thumbs-up fa-2xl" style="color: #805ce9;" onclick="toggleLike(this)"></i>
+                <span class="mx-2" id="like-count">20</span>
+            </div>
+            <div class="mb-2">
+                <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar" style="width:25px;">
+                <p class=" d-inline text-black overflow-hidden">Zohaib Shahid in Programming</p>
+                <p class="mx-5 text-muted">April 20,2024 </p>
+            </div>
+
+            <div class=" justify-content-center mx-2">
+                <img src="~/assests/prog.jpg" alt="Featured Image" class="img-thumbnail rounded-3 my-1">
+            </div>
+            <div class="d-flex mt-3 flex-wrap">
+                <h4 class="m-3 mx-2 ">Tags</h4>
+                <a href="#"
+                   class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Programming</a>
+                <a href="#"
+                   class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Technology</a>
+            </div>
+            <div class="text-body text-black fs-5 my-3">
+                The Future of Programming and Technology: Trends and Innovations
+                In the vast landscape of programming and technology, change is the only constant. From the early days of punch cards and mainframes to the modern era of cloud computing and artificial intelligence, the field has undergone remarkable transformations. In this blog post, we'll explore some of the key trends and innovations shaping the future of programming and technology.
+
+                Artificial Intelligence (AI) and Machine Learning (ML)
+                AI and ML have revolutionized the way we interact with technology. From voice assistants like Siri and Alexa to self-driving cars, these technologies are becoming increasingly integrated into our daily lives. Developers are now leveraging AI and ML to create more personalized user experiences and solve complex problems.
+
+                Internet of Things (IoT)
+                The IoT refers to the network of interconnected devices that can communicate and share data with each other. This technology has enabled the development of smart homes, wearable devices, and industrial automation systems. As IoT devices become more prevalent, developers are focused on ensuring security and interoperability.
+
+                Blockchain
+                Originally known for powering cryptocurrencies like Bitcoin, blockchain technology has evolved to offer secure and transparent solutions for various industries. Developers are exploring its potential in areas such as supply chain management, voting systems, and digital identity verification.
+
+                Low-Code/No-Code Development
+                With the rise of low-code and no-code development platforms, individuals with limited programming experience can create sophisticated applications. These platforms are empowering businesses to quickly build and deploy software solutions, reducing time-to-market and development costs.
+
+                Cybersecurity
+                As cyber threats continue to evolve, cybersecurity has become a top priority for organizations. Developers are working on innovative solutions to protect data and systems from malicious attacks, including advanced encryption methods and threat detection algorithms.
+
+                Cloud Computing
+                Cloud computing has transformed the way we store, manage, and access data. Developers are leveraging cloud services to build scalable and flexible applications, enabling businesses to adapt to changing market demands more efficiently.
+
+                In conclusion, the field of programming and technology is dynamic and ever-evolving. Developers and technologists must stay abreast of the latest trends and innovations to remain competitive in this rapidly changing landscape. Embracing new technologies and approaches will be key to unlocking new possibilities and driving future innovations.
+
+                Feel free to adjust the formatting or add more details as needed!
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow p-3">
+                <div class="p-3">
+                    <h6>Comments</h6>
+                </div>
+                <form>
+                    <div class="mt-2 d-flex flex-row align-items-center p-3 form-color">
+                        <img src="~/assests/avatar.jpg" width="40" class="rounded-circle mx-2">
+                        <input type="text" class="form-control" placeholder="Enter your comment...">
+                        <button class="btn btn-primary mx-2">Add</button>
+                    </div>
+                </form>
+                <div class="my-2">
+                    <div class="d-flex flex-row p-1">
+                        <img src="~/assests/avatar2.png" width="40" height="40" class="rounded-circle mx-3">
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex flex-row align-items-center">
+                                    <span class="mx-1">Brian selter</span>
+                                </div>
+                                <div class="d-flex gap-3  align-items-center">
+                                    <small>12h ago</small>
+                                    <a asp-action="Delete" asp-controller="Comment" class="link-danger">Delete</a>
+                                </div>
+                            </div>
+                            <p class="text-justify comment-text ">
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                                aliqua.
+                                Ut enim ad minim veniam
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-2">
+                    <div class="d-flex flex-row p-1">
+                        <img src="~/assests/avatar2.png" width="40" height="40" class="rounded-circle mx-3">
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex flex-row align-items-center">
+                                    <span class="mx-1">Brian selter</span>
+                                </div>
+                                <div class="d-flex gap-3  align-items-center">
+                                    <small>12h ago</small>
+                                    <a asp-action="Delete" asp-controller="Comment" class="link-danger">Delete</a>
+                                </div>
+                            </div>
+                            <p class="text-justify comment-text ">
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                                aliqua.
+                                Ut enim ad minim veniam
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,355 @@
+﻿@{
+    Layout = "_Landing";
+}
+<section class="bg-main bg-color bg-transparent p-2 p-md-3 p-lg-5 m-auto m-lg-5 ">
+        <div class="container mt-5">
+            <div class="row gap-4 gap-lg-0">
+                <div class="col-12 col-md-12 col-lg-6 d-flex">
+                    <h1 class="pt-auto pt-lg-5">
+                        Start your blogging journey at <span class="gradient-text">BlogHub</span>, a place where
+                        millions
+                        gather
+                        to share
+                        ideas, insights,
+                        and
+                        stories.
+                    </h1>
+                </div>
+                <div class="col-12 col-md-12 col-lg-6">
+                    <img src="~/assests/hero-section.svg" class=" rounded img-fluid img-thumbnail">
+                </div>
+            </div>
+            <div class="row">
+                <div
+                    class="col-12 col-md-12 col-lg-6 d-flex align-items-center justify-content-center justify-content-lg-start my-4 my-lg-0">
+                    <button class="btn btn-primary">Start Reading</button>
+                </div>
+            </div>
+        </div>
+</section>
+
+    <section class="p-4 my-2 trending" id="trending">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 my-4">
+                    <h2 class="text-center text-white">
+                        <img src="~/assests/trend.png" class=" rounded  ratio-16x9">
+                        Trending Posts
+                    </h2>
+                </div>
+            </div>
+            <div class="row mt-3 mb-5">
+                <div class="col-12 col-md-6 col-lg-4 p-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Exploring the Cosmos: A Journey Through Space</h5>
+                            <div class="card-text mt-2">
+                                <img src="~/assests/avatar.jpg" width="30px" class="rounded-5">
+                                <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">Jamie Lannister in
+                                    Science Weekly</h6>
+                                <p class="mt-2">Join us as we delve into the latest space missions and what they tell us
+                                    about our
+                                    vast and mysterious universe.</p>
+                            </div>
+                            <div class="text-muted d-flex gap-2">
+                                <p class="d-inline p-2">8 min read</p>
+                                <a asp-controller="Post" asp-action="Index" asp-route-id="1" class="card-link d-inline p-2">Read more</a>
+                                <div class="d-inline-block mx-2 p-2">
+                                <img src="~/assests/heart.png" class="img-fluid rounded ratio-21x9">
+                                    <p class="d-inline">457</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 p-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">The Art of Sourdough Bread Making</h5>
+                            <div class="card-text mt-2">
+                            <img src="~/assests/avatar2.png" width="30px" class="rounded-5">
+                                <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">Arya Stark in
+                                    Culinary Arts</h6>
+                                <p class="mt-2">Discover the secrets to creating the perfect crust and crumb of a
+                                    homemade sourdough
+                                    loaf and how to maintain a sourdough starter.The Art of Sourdough Bread Making.
+                                </p>
+                            </div>
+                            <div class="text-muted d-flex gap-2">
+                                <p class="d-inline p-2">12 min read</p>
+                                <a asp-controller="Post" asp-action="Index" asp-route-id="1" class="card-link d-inline p-2">Read more</a>
+                                <div class="d-inline-block mx-2 p-2">
+                                <img src="~/assests/heart.png" class="img-fluid rounded ratio-21x9">
+                                    <p class="d-inline">932</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-12 col-md-6 col-lg-4 p-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Advances in Renewable Energy for the Next Decade</h5>
+                            <div class="card-text mt-2">
+                            <img src="~/assests/avatar3.png" width="30px" class="rounded-5">
+                                <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">Bran Stark in Eco
+                                    Innovations</h6>
+                                <p class="mt-2">Explore the breakthroughs in solar and wind technology that are paving
+                                    the way for a
+                                    greener future.</p>
+                            </div>
+                            <div class="text-muted d-flex gap-2">
+                                <p class="d-inline p-2">15 min read</p>
+                                <a asp-controller="Post" asp-action="Index" asp-route-id="1" class="card-link d-inline p-2">Read more</a>
+                                <div class="d-inline-block mx-2 p-2">
+                                <img src="~/assests/heart.png" class="img-fluid rounded ratio-21x9">
+                                    <p class="d-inline">1.1k</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-12 col-md-6 col-lg-4 p-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">The Rise of Remote Work: Changing Office Cultures</h5>
+                            <div class="card-text mt-2">
+                            <img src="~/assests/avatar4.png" width="30px" class="rounded-5">
+                                <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">Sansa Stark in
+                                    Business Trends</h6>
+                                <p class="mt-2">An analysis of how remote working is reshaping our approach to
+                                    productivity and
+                                    work-life balance.</p>
+                            </div>
+                            <div class="text-muted d-flex gap-2">
+                                <p class="d-inline p-2">10 min read</p>
+                                <a asp-controller="Post" asp-action="Index" asp-route-id="1" class="card-link d-inline p-2">Read more</a>
+                                <div class="d-inline-block mx-2 p-2">
+                                <img src="~/assests/heart.png" class="img-fluid rounded ratio-21x9">
+                                    <p class="d-inline">684</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4 p-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Mastering Mindfulness: Techniques for Everyday Life</h5>
+                            <div class="card-text mt-2">
+                            <img src="~/assests/avatar5.png" width="30px" class="rounded-5">
+                                <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">Tyrion Lannister
+                                    in Wellness & Health</h6>
+                                <p class="mt-2">Learn practical mindfulness exercises to reduce stress and improve your
+                                    mental
+                                    clarity and focus.</p>
+                            </div>
+                            <div class="text-muted d-flex gap-2">
+                                <p class="d-inline p-2">7 min read</p>
+                                <a asp-controller="Post" asp-action="Index" asp-route-id="1" class="card-link d-inline p-2">Read more</a>
+                                <div class="d-inline-block mx-2 p-2">
+                                <img src="~/assests/heart.png" class="img-fluid rounded ratio-21x9">
+                                    <p class="d-inline">789</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-md-6 col-lg-4 p-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">The Renaissance of Classical Music in Modern Times</h5>
+                            <div class="card-text mt-2">
+                            <img src="~/assests/avatar6.png" width="30px" class="rounded-5">
+                                <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">Jon Snow in Music
+                                    and Culture</h6>
+                                <p class="mt-2">Examine how classical music has regained popularity and influenced
+                                    contemporary
+                                    genres and artists.</p>
+                            </div>
+                            <div class="text-muted d-flex gap-2">
+                                <p class="d-inline p-2">9 min read</p>
+                                <a asp-controller="Post" asp-action="Index" asp-route-id="1" class="card-link d-inline p-2">Read more</a>
+                                <div class="d-inline-block mx-2 p-2">
+                                <img src="~/assests/heart.png" class="img-fluid rounded ratio-21x9">
+                                    <p class="d-inline">958</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="p-4 my-2">
+        <div class="container my-4">
+            <div class="row">
+                <div class="col-12 col-lg-3 order-1 order-lg-2">
+                    <h4 class="my-3 gradient-text">Categories</h4>
+                    <div class="d-flex mb-3 flex-wrap">
+                        <a href="#"
+                            class="p-2 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Programming</a>
+                        <a href="#"
+                            class="p-2 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Technology</a>
+                        <a href="#"
+                            class="p-2 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Science</a>
+                        <a href="#"
+                            class="p-2 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Health</a>
+                        <a href="#"
+                            class="p-2 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Business</a>
+                        <a href="#"
+                            class="p-2 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Art &
+                            Design</a>
+                        <a href="#"
+                            class="p-2 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Travel</a>
+                        <a href="#"
+                            class="p-2 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">Food</a>
+                    </div>
+                    <p><a href="#" class="text-primary text-decoration-none mx-2">See more topics</a></p>
+                </div>
+
+                <!-- Article Column -->
+                <div class="col-12 col-lg-9 order-2 order-lg-1">
+                    <h4 class="my-4 gradient-text">Latest on BlogHub</h4>
+                    <!-- Article 1 -->
+                    <div class="mb-3 rounded-4 p-3 shadow border">
+                        <div class="mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name 1</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title 1</h5>
+                            <p class="mb-0 text-muted">Publication Date 1 · Read Time 1 · Category 1</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 2 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class="mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar2.png" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name 2</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title 2</h5>
+                            <p class="mb-0 text-muted">Publication Date 2 · Read Time 2 · Category 2</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 3 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class=" mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar3.png" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name 3</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title 3</h5>
+                            <p class="mb-0 text-muted">Publication Date 3 · Read Time 3 · Category 3</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 4 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class=" mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar4.png" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name 4</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title 4</h5>
+                            <p class="mb-0 text-muted">Publication Date 4 · Read Time 4 · Category 4</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 5 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class="mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title</h5>
+                            <p class="mb-0 text-muted">Publication Date · Read Time · Category</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 6 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class="mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title</h5>
+                            <p class="mb-0 text-muted">Publication Date · Read Time · Category</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 7 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class="mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title</h5>
+                            <p class="mb-0 text-muted">Publication Date · Read Time · Category</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 8 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class="mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title</h5>
+                            <p class="mb-0 text-muted">Publication Date · Read Time · Category</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 9 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class="mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title</h5>
+                            <p class="mb-0 text-muted">Publication Date · Read Time · Category</p>
+                        </div>
+                    </div>
+
+                    <!-- Article 10 -->
+                    <div class="mb-3 border rounded-4 p-3 shadow">
+                        <div class="mb-2">
+                        <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
+                                style="width:25px;">
+                            <p class=" d-inline">Author Name</p>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="mt-0">Article Title</h5>
+                            <p class="mb-0 text-muted">Publication Date · Read Time · Category</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

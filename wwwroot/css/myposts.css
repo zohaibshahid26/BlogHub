@@ -1,0 +1,55 @@
+.logo {
+  background-image: linear-gradient(to right, #6c63ff, #d93f87);
+  -webkit-background-clip: text; /* Clip the text to the background gradient */
+  background-clip: text; /* Clip the text to the background gradient for compatibility */
+  color: transparent; /* Make the text transparent */
+  display: inline-block; /* Ensure the gradient covers only the text */
+  text-decoration: none; /* Remove underline from the link */
+  font-size: 30px; /* Adjust the font size as needed */
+  font-weight: bold;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+.btn-edit {
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.btn-delete:hover {
+  border: #dc3545 1px solid;
+  color: #dc3545;
+  background-color: #ffffff;
+  transition: 0.25s all ease-in-out;
+}
+.btn-edit:hover {
+  border: #6c63ff 1px solid;
+  color: #6c63ff;
+  background-color: #ffffff;
+  transition: 0.25s all ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .btn-edit,
+  .btn-delete {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}

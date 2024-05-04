@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>BlogHub - A Platform where you can write.</title>
+         <meta charset="UTF-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    </head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand bg-white py-2">
+            <div class="container">
+                <a class="logo navbar-brand mx-3" asp-controller="Home" asp-action="Index">BlogHub.</a>
+                <div class="container-fluid" id="navbarSupportedContent">
+                    <ul class="navbar-nav justify-content-end ">
+                        <li class="nav-item mx-2">
+                            <button class="btn btn-outline-primary d-none d-sm-block text-nowrap">
+                                <a asp-controller="User" asp-action="Login" class="text-decoration-none text-white">Login</a>
+                            </button>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <button class="btn btn-outline-dark text-nowrap ">
+                                <a asp-controller="User" asp-action="SignUp" class="text-decoration-none text-white">Sign Up</a>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <hr style=" height: 2px; background-color: black;">
+    <div>
+        @RenderBody()
+    </div>
+    <hr>
+    <footer class="card-footer mt-4 py-3 mb-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <h5 class="gradient-text">BlogHub.</h5>
+                    <p class="text-muted">
+                        BlogHub is a platform where millions gather to share ideas,
+                        insights, and stories.
+                    </p>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a asp-action ="Index" asp-controller="Home" class="text-muted">Home</a>
+                        </li>
+                        <li>
+                            <a asp-action="Login" asp-controller="User" class="text-muted">Login</a>
+                        </li>
+                        <li>
+                            <a asp-action="SignUp" asp-controller="User" class="text-muted">SignUp</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <h5>Legal</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted">Terms of Use</a></li>
+                        <li><a href="#" class="text-muted">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <h5>Connect with Us</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted">Facebook</a></li>
+                        <li><a href="#" class="text-muted">Instagram</a></li>
+                        <li><a href="#" class="text-muted">Twitter</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 mt-4">
+                    <p class="text-center fs-5">© 2024 BlogHub. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,64 @@
+.logo {
+  background-image: linear-gradient(to right, #6c63ff, #d93f87);
+  -webkit-background-clip: text; /* Clip the text to the background gradient */
+  color: transparent; /* Make the text transparent */
+  display: inline-block; /* Ensure the gradient covers only the text */
+  text-decoration: none; /* Remove underline from the link */
+  font-size: 30px; /* Adjust the font size as needed */
+  font-weight: bold;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+.profile-card {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-card img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.profile-card h2 {
+  margin-bottom: 10px;
+  color: white;
+}
+
+.profile-card p {
+  margin-bottom: 20px;
+  color: white;
+}
+
+.profile-card .btn {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.edit-profile {
+  text-align: center;
+}
+
+.edit-profile a {
+  color: white;
+  background-color: #6c63ff;
+  text-decoration: none;
+}
+
+.edit-profile a:hover {
+  background-color: white;
+  color: #6c63ff;
+  border: 1px solid #6c63ff;
+}
