@@ -10,6 +10,8 @@ namespace BlogHub.Controllers
         {
             return View();
         }
+
+        [HttpPost]
         public IActionResult Add()
         {
             return View();

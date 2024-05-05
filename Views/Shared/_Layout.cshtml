@@ -7,6 +7,7 @@
     <link rel="stylesheet"  href="~/css/style.css" asp-append-version="true" />
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="icon" href="~/icon.ico" />
     @RenderSection("Styles", required: false)
     <script type="module">
         import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
@@ -26,7 +27,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container">
-                <a class="logo navbar-brand mx-3" asp-action="Index" asp-controller="Post">BlogHub.</a>
+                <a class="logo navbar-brand mx-3" asp-action="Index" asp-controller="Home">BlogHub.</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
