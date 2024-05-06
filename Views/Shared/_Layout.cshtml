@@ -48,7 +48,7 @@
                             <a class="nav-link" asp-controller="Post" asp-action="Add">Add Post</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <a class="nav-link" asp-controller="User" asp-action="Logout" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
                         </li>
                         
                     </ul>

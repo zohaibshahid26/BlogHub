@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Register";
     Layout = null;
+    if(User.Identity?.IsAuthenticated ?? false)
+    {
+        Response.Redirect("/");
+    }
 }
 <!DOCTYPE html>
 <html lang="en">

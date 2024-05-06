@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Log in";
     Layout = null;
+    if(User.Identity?.IsAuthenticated ?? false)
+    {
+        Response.Redirect("/");
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
