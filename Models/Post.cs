@@ -44,7 +44,6 @@ namespace BlogHub.Models
         public List<Comment> ?Comments { get; set; }
 
         public int TimeToRead { get; private set; }
-        public string Content1 { get => _content; set => _content = value; }
 
         private int CalculateReadTime(string content)
         {

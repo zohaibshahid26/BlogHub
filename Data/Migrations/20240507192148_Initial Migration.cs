@@ -60,7 +60,6 @@ namespace BlogHub.Data.Migrations
                     ImageId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TimeToRead = table.Column<int>(type: "int", nullable: false),
-                    Content1 = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -109,8 +108,9 @@ namespace BlogHub.Data.Migrations
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict); // Specify ON DELETE NO ACTION or other appropriate action here
                 });
+
 
             migrationBuilder.CreateTable(
                 name: "PostTag",
