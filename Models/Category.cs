@@ -7,8 +7,7 @@ namespace BlogHub.Models
         [Key]
         [Required(ErrorMessage = "Category name is required and cannot be empty")]
         public required string CategoryName { get; set; }
-
-        public List<Post> ?Posts { get; set; } 
+        public List<Post>? Posts { get; set; }
     }
 
 }

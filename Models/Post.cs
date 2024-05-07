@@ -13,7 +13,7 @@ namespace BlogHub.Models
         [Required(ErrorMessage = "Title is required and cannot be empty")]
         public required string Title { get; set; }
 
-        private  string _content;
+        private string _content;
         [Required(ErrorMessage = "Content is required and cannot be empty")]
         public string Content
         {
@@ -30,18 +30,18 @@ namespace BlogHub.Models
         public required string CategoryName { get; set; }
         public required Category Category { get; set; }
 
-        public List<Tag> ?Tags { get; set; }
+        public List<Tag>? Tags { get; set; }
 
         public int? ImageId { get; set; }
         [ForeignKey("ImageId")]
-        public Image ?Image { get; set; }
+        public Image? Image { get; set; }
 
         public required string UserId { get; set; }
         [ForeignKey("UserId")]
         [Required(ErrorMessage = "User is required")]
         public required IdentityUser User { get; set; }
 
-        public List<Comment> ?Comments { get; set; }
+        public List<Comment>? Comments { get; set; }
 
         public int TimeToRead { get; private set; }
 

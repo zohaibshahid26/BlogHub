@@ -11,7 +11,7 @@ namespace BlogHub.Models
         [Required(ErrorMessage = "Tag name is required and cannot be empty")]
         public required string TagName { get; set; }
 
-        public List<Post> ?Posts { get; set; }
+        public List<Post>? Posts { get; set; }
     }
 
 }
