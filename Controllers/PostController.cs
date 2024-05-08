@@ -1,4 +1,5 @@
 ﻿using BlogHub.Models;
+using BlogHub.ViewModels;
 using BlogHub.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,34 +12,88 @@ namespace BlogHub.Controllers
         {
             _postRepository = postRepository;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
+        { 
+            var posts = await _postRepository.GetPostsAsync();
+            return View(posts);
+        }
+
+        public async Task<IActionResult> Details(string id)
         {
-            return View();
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return View(post);
         }
 
         public IActionResult Add()
         {
-            return View();
+            if (!User.Identity?.IsAuthenticated ?? false)
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+            }
+            else
+            {
+                return View();
+            }
         }
+
         [HttpPost]
-        public IActionResult Add(Post post)
+        public async Task<IActionResult> Add(PostViewModel post)
+        {
+            if (!User.Identity?.IsAuthenticated ?? false)
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                { 
+                    await _postRepository.AddPostAsync(post);
+                    await _postRepository.SaveChangesAsync();
+                    return RedirectToAction("Index", "Post");
+                }
+                return View(post);
+            }
+           
+        }
+        public IActionResult Edit(string id)
+        {
+            var post = _postRepository.GetPostByIdAsync(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            return View(post);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Post post)
         {
             if (ModelState.IsValid)
             {
-                _postRepository.AddPostAsync(post);
-                return RedirectToAction("Index");
+                await _postRepository.UpdatePostAsync(post);
+                await _postRepository.SaveChangesAsync();
+                return RedirectToAction("Index", "Post");
             }
             return View(post);
+        }
 
-        }
-        public IActionResult Edit()
+        [HttpPost]
+        public async Task<IActionResult> Delete(string? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            await _postRepository.DeletePostAsync(id);
+            await _postRepository.SaveChangesAsync();
+            return RedirectToAction("Index", "Post");
         }
-        public IActionResult Delete()
-        {
-            return View();
-        }
+
 
     }
 }

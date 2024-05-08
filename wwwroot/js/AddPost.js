@@ -2,20 +2,28 @@ document.getElementById("addTagButton").addEventListener("click", function () {
     const tagInput = document.getElementById("tagInput");
     const tag = tagInput.value.trim();
     const tagContainer = document.getElementById("tagContainer");
-    const tagElements = tagContainer.getElementsByClassName(
-        "badge btn-primary fs-6 m-1"
-    );
+    const hiddenTags = document.getElementById("hiddenTags");
+
+    const tagElements = tagContainer.getElementsByClassName("badge btn-primary fs-6 m-1");
 
     if (tag && tagElements.length < 5) {
         const tagElement = document.createElement("span");
         tagElement.className = "badge btn-primary fs-6 m-1";
         tagElement.textContent = tag;
+        tagElement.onclick = function () { this.remove(); updateHiddenTags(); };  // Optional: remove tag on click
         tagContainer.appendChild(tagElement);
         tagInput.value = "";
+        updateHiddenTags();  // Update hidden input
     } else if (tagElements.length >= 5) {
         alert("You can only add up to 5 tags.");
     }
+
+    function updateHiddenTags() {
+        let tagsArray = Array.from(tagContainer.getElementsByClassName("badge btn-primary fs-6 m-1")).map(elem => elem.textContent);
+        hiddenTags.value = tagsArray.join(',');  // Convert array to comma-separated string
+    }
 });
+
 
 
 let currentStep = 0;

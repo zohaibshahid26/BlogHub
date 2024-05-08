@@ -26,7 +26,10 @@ namespace BlogHub.Data
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Posts)
                 .HasForeignKey(p => p.CategoryName)
-                .HasPrincipalKey(c => c.CategoryName);  // This line is critical if CategoryName is the primary key
+                .HasPrincipalKey(c => c.CategoryName);
+            modelBuilder.Entity<Post>().
+                Property(p => p.Id).
+                ValueGeneratedOnAdd();
         }
 
     }

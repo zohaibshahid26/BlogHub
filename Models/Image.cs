@@ -6,7 +6,7 @@ namespace BlogHub.Models
     {
         [Key]
         [Required(ErrorMessage = "Image ID is required")]
-        public required int ImageId { get; set; }
+        public  int ImageId { get; set; }
 
         [Required(ErrorMessage = "Image data is required")]
         public required byte[] ImageData { get; set; }

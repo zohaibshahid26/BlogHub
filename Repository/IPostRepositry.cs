@@ -1,4 +1,5 @@
-﻿using BlogHub.Models;
+﻿using BlogHub.ViewModels;
+using BlogHub.Models;
 
 namespace BlogHub.Repository
 {
@@ -6,7 +7,7 @@ namespace BlogHub.Repository
     {
         Task<IEnumerable<Post>> GetPostsAsync();
         Task<Post?> GetPostByIdAsync(string id);
-        Task AddPostAsync(Post post);
+        Task AddPostAsync(PostViewModel post);
         Task UpdatePostAsync(Post post);
         Task DeletePostAsync(string id);
         Task SaveChangesAsync();

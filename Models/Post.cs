@@ -1,5 +1,4 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace BlogHub.Models
@@ -8,27 +7,20 @@ namespace BlogHub.Models
     {
         [Key]
         [Required(ErrorMessage = "Post ID is required and cannot be empty")]
-        public required string Id { get; set; }
+        public string? Id { get; set; }
 
         [Required(ErrorMessage = "Title is required and cannot be empty")]
         public required string Title { get; set; }
 
-        private string _content;
+       
         [Required(ErrorMessage = "Content is required and cannot be empty")]
-        public string Content
-        {
-            get => _content;
-            set
-            {
-                _content = value;
-                TimeToRead = CalculateReadTime(_content);
-            }
-        }
+        public required string Content{ get; set;}
+
         public DateOnly DatePosted { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 
         [Required(ErrorMessage = "Category is required")]
-        public required string CategoryName { get; set; }
-        public required Category Category { get; set; }
+        public string CategoryName { get; set; }
+        public Category Category { get; set; }
 
         public List<Tag>? Tags { get; set; }
 
@@ -36,14 +28,14 @@ namespace BlogHub.Models
         [ForeignKey("ImageId")]
         public Image? Image { get; set; }
 
-        public required string UserId { get; set; }
+        public  string UserId { get; set; }
         [ForeignKey("UserId")]
         [Required(ErrorMessage = "User is required")]
-        public required IdentityUser User { get; set; }
+        public  IdentityUser User { get; set; }
 
         public List<Comment>? Comments { get; set; }
 
-        public int TimeToRead { get; private set; }
+        public int TimeToRead => CalculateReadTime(Content);
 
         private int CalculateReadTime(string content)
         {
