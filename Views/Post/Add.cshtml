@@ -1,4 +1,5 @@
-﻿@section Styles {
+﻿@model Post
+@section Styles {
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/addpost.css" asp-append-version="true" />
 }
@@ -6,13 +7,13 @@
     <script src="~/js/AddPost.js"></script>
 }
 <div class="container-fluid mx-3  mt-3 min-vh-100">
-    <form method="post" action="Add">
+    <form method="post" action="/Post/Add">
         <div class="step">
             <div class="row mt-3 mx-1">
                 <div class="col">
                     <div class="input-group mx-1 border-0">
                         <input id="title" type="text" class="fs-3 text-muted w-100 border-0 title-input"
-                               placeholder="Title..." required>
+                               placeholder="Title..." required asp-for="Title">
                     </div>
                 </div>
             </div>
@@ -22,7 +23,7 @@
                         <p class=" fs-5 custom-color">MARKDOWN</p>
                         <div class="input-group m-0 shadow">
                             <textarea id="markdownInput" class="form-control bg-light-subtle" rows="13"
-                                      placeholder="Content" required></textarea>
+                                      placeholder="Content" required asp-for="Content"></textarea>
                         </div>
                     </div>
                 </div>
@@ -48,7 +49,7 @@
                             </div>
                             <div class="input-group">
                                 <input id="tagInput" type="text" class="form-text text-center p-0  rounded-3"
-                                       placeholder="Add Tags">
+                                       placeholder="Add Tags" asp-for="Tags">
                                 <button id="addTagButton" type="button"
                                         class="btn btn-primary btn-sm mx-1 rounded-2">
                                     Add
@@ -73,7 +74,7 @@
                             </div>
                             <div class="input-group">
                                 <select id="categorySelect" class="form-select-md rounded-3 p-1"
-                                        aria-label="Default select example">
+                                        aria-label="Default select example" asp-for="Category">
                                     <option selected>Choose Category</option>
                                     <option value="1">Category 1</option>
                                     <option value="2">Category 2</option>
@@ -100,7 +101,7 @@
                                 </button>
                                 <div class="image-upload-wrap">
                                     <input class="file-upload-input" type='file' onchange="readURL(this);"
-                                           accept="image/*" />
+                                           accept="image/*" asp-for="Image" />
                                     <div class="drag-text">
                                         <h3>Drag and drop a file or select add Image</h3>
                                     </div>

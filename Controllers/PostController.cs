@@ -1,11 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
+﻿using BlogHub.Models;
+using BlogHub.Repository;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlogHub.Controllers
 {
     public class PostController : Controller
     {
-        [Route("/MyPosts")]
+        private readonly IPostRepository _postRepository;
+        public PostController(IPostRepository postRepository)
+        {
+            _postRepository = postRepository;
+        }
         public IActionResult Index()
         {
             return View();
@@ -15,9 +20,17 @@ namespace BlogHub.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Add(Post post)
+        {
+            if (ModelState.IsValid)
+            {
+                _postRepository.AddPostAsync(post);
+                return RedirectToAction("Index");
+            }
+            return View(post);
 
-    
-
+        }
         public IActionResult Edit()
         {
             return View();
@@ -25,11 +38,6 @@ namespace BlogHub.Controllers
         public IActionResult Delete()
         {
             return View();
-        }
-        [Route("/Posts/{id}")]
-        public IActionResult Index(int id)
-        {
-            return View("Post");
         }
 
     }
