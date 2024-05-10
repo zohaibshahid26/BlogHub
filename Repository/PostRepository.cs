@@ -114,7 +114,7 @@ namespace BlogHub.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdatePostAsync(PostViewModel post)
+        public async Task UpdatePostAsync(Post post)
         {
             if (post == null) throw new ArgumentNullException(nameof(post));
             

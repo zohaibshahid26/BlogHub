@@ -14,7 +14,7 @@
                     <div class="card border-1 shadow p-1 mb-4">
                         <img src="@(post.Image != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(post.Image.ImageData)}" : "~\\assests\\default_image.png")" class="card-img-top card-img" alt="Feature Image" height=300px width=300px />
                         <div class="card-body h-auto">
-                            <h5 class="card-title">@post.Title</h5>
+                            <h4 class="card-title fw-semibold">@post.Title</h4>
                             <p class="card-text">
                                 @{
                                     var plainText = Markdig.Markdown.ToPlainText(post.Content);
