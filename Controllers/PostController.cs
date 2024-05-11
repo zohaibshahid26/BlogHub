@@ -2,9 +2,11 @@
 using BlogHub.ViewModels;
 using BlogHub.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogHub.Controllers
 {
+    [Authorize]
     public class PostController : Controller
     {
         private readonly IPostRepository _postRepository;
@@ -18,7 +20,7 @@ namespace BlogHub.Controllers
             var posts = await _postRepository.GetPostsAsync();
             return View(posts);
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
             var post = await _postRepository.GetPostByIdAsync(id);
@@ -31,14 +33,7 @@ namespace BlogHub.Controllers
 
         public IActionResult Add()
         {
-            if (!User.Identity?.IsAuthenticated ?? false)
-            {
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
-            }
-            else
-            {
-                return View();
-            }
+            return View();
         }
 
         [HttpPost]
@@ -60,6 +55,7 @@ namespace BlogHub.Controllers
             }
            
         }
+
         public IActionResult Edit(string id)
         {
             var post = _postRepository.GetPostByIdAsync(id);
@@ -93,7 +89,5 @@ namespace BlogHub.Controllers
             await _postRepository.SaveChangesAsync();
             return RedirectToAction("Index", "Post");
         }
-
-
     }
 }
