@@ -19,6 +19,7 @@ namespace BlogHub.Repository
         }
         public async Task<IEnumerable<Post>> GetPostsAsync()
         {
+       
             return await _context.Posts.
                         Include(p => p.Category).
                         Include(p => p.Tags).
