@@ -4,15 +4,15 @@
     <link rel="stylesheet" href="~/css/myposts.css" />
 }
 <div class="container my-5">
-    <h2 class="mb-4 text-center">My Posts</h2>
     <div class="row">
         @if (Model.Any())
         {
+            <h2 class="mb-4 text-center">My Posts</h2>
             @foreach (var post in Model)
             {
                 <div class="col-md-6 col-lg-4">
                     <div class="card border-1 shadow p-1 mb-4">
-                        <img src="@(post.Image != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(post.Image.ImageData)}" : "~\\assests\\default_image.png")" class="card-img-top card-img" alt="Feature Image" height=300px width=300px />
+                        <img src="@(post.Image!.ImageURL)" class="card-img-top card-img" alt="Feature Image" height="300px" width="300px" />
                         <div class="card-body h-auto">
                             <h4 class="card-title fw-semibold">@post.Title</h4>
                             <p class="card-text">
@@ -27,11 +27,11 @@
                                     }
                                 }
                                 @previewText
-                                <a asp-controller="Post" asp-action="Details" asp-route-id="@post.Id" class="mx-2">Read More</a>
+                                <a asp-controller="Post" asp-action="Details" asp-route-id="@post.PostId" class="mx-2">Read More</a>
                             </p>
                             <div class="d-flex justify-content-end">
-                                <button asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id" class="btn btn-edit">Edit</button>
-                                <form method="post" asp-action="Delete" asp-route-id="@post.Id">
+                                <button asp-controller="Post" asp-action="Edit" asp-route-id="@post.PostId" class="btn btn-edit">Edit</button>
+                                <form method="post" asp-action="Delete" asp-route-id="@post.PostId">
                                     <input type="submit"  class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this post?')" value= "Delete" />
                                 </form>
                             </div>

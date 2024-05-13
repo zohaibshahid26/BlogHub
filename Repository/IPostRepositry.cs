@@ -8,7 +8,7 @@ namespace BlogHub.Repository
         Task<IEnumerable<Post>> GetPostsAsync();
         Task<Post?> GetPostByIdAsync(string id);
         Task AddPostAsync(PostViewModel post);
-        Task UpdatePostAsync(Post post);
+        void UpdatePost(Post post);
         Task DeletePostAsync(string id);
         Task SaveChangesAsync();
     }

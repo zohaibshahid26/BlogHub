@@ -22,6 +22,7 @@
 @section Scripts {
     <script src="~/js/Post.js"></script>
 }
+
 <div class="container-fluid my-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
@@ -32,12 +33,12 @@
             </div>
             <div class="mb-2">
                 <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar" style="width:25px;">
-                <p class=" d-inline text-black overflow-hidden">@Model.User.UserName in @Model.CategoryName</p>
+                <p class=" d-inline text-black overflow-hidden">@Model.User.UserName in @Model.Category.CategoryName</p>
                 <p class="mx-5 text-muted">@Model.DatePosted</p>
             </div>
 
             <div class=" justify-content-center mx-2">
-                <img src="@(Model.Image != null ? $"data:image/jpeg;base64,{Convert.ToBase64String(Model.Image.ImageData)}" : "~\\assests\\default_image.png")" alt="Featured Image" class="img-thumbnail rounded-3 my-1">
+                <img src="@(Model.Image != null ? $"{Model.Image.ImageURL}" : "~\\assests\\default_image.png")" alt="Featured Image" class="img-thumbnail rounded-3 my-1">
             </div>
             <div class="d-flex mt-3 flex-wrap">
                 <h4 class="m-3 mx-2 ">Tags</h4>
@@ -59,16 +60,16 @@
                 <div class="p-3">
                     <h6>Comments</h6>
                 </div>
-                <form>
+                <form mehod="post" action="/Comment/Add">
                     <div class="mt-2 d-flex flex-row align-items-center p-3 form-color">
                         <img src="~/assests/avatar.jpg" width="40" class="rounded-circle mx-2">
                         <input type="text" class="form-control" placeholder="Enter your comment...">
-                        <button class="btn btn-primary mx-2">Add</button>
+                        <input type="submit" class="btn btn-primary mx-2" value="Add" />
                     </div>
                 </form>
                 @if (Model?.Comments?.Any() ?? false)
                 {
-                    @foreach (var comments in Model.Comments)
+                    @foreach (var comment in Model!.Comments)
                     {
                         <div class="my-2">
                             <div class="d-flex flex-row p-1">
@@ -76,17 +77,17 @@
                                 <div class="w-100">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex flex-row align-items-center">
-                                            <span class="mx-1">@comments.User.UserName</span>
+                                            <span class="mx-1">@comment?.User?.UserName</span>
                                         </div>
                                         <div class="d-flex gap-3  align-items-center">
                                             <small>
-                                                @DateTime.UtcNow.Subtract(comments.DatePosted)
+                                                @DateTime.UtcNow.Subtract(comment!.DatePosted)
                                             </small>
                                             <a asp-action="Delete" asp-controller="Comment" class="link-danger">Delete</a>
                                         </div>
                                     </div>
                                     <p class="text-justify comment-text ">
-                                        @comments.Content
+                                        @comment.Content
                                     </p>
                                 </div>
                             </div>

@@ -1,5 +1,6 @@
 using BlogHub.Data;
 using BlogHub.Repository;
+using BlogHub.Helper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +15,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<MyUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Register the IPostRepository with PostRepository
 builder.Services.AddScoped<IPostRepository, PostRepository>();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton(builder.Environment);
 
 builder.Services.AddControllersWithViews();
 

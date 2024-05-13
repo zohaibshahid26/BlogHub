@@ -9,7 +9,7 @@ namespace BlogHub.Models
         public int TagId { get; set; }
 
         [Required(ErrorMessage = "Tag name is required and cannot be empty")]
-        public  string TagName { get; set; }
+        public required string TagName { get; set; }
 
         public List<Post>? Posts { get; set; }
     }

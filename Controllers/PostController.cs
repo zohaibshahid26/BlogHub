@@ -37,22 +37,17 @@ namespace BlogHub.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Add(PostViewModel post)
         {
-            if (!User.Identity?.IsAuthenticated ?? false)
-            {
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
-            }
-            else
-            {
+           
                 if (ModelState.IsValid)
                 { 
                     await _postRepository.AddPostAsync(post);
                     await _postRepository.SaveChangesAsync();
                     return RedirectToAction("Index", "Post");
                 }
-                return View(post);
-            }
+            return View(post);
            
         }
 
@@ -71,7 +66,7 @@ namespace BlogHub.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _postRepository.UpdatePostAsync(post);
+                _postRepository.UpdatePost(post);
                 await _postRepository.SaveChangesAsync();
                 return RedirectToAction("Index", "Post");
             }

@@ -58,10 +58,13 @@
                                 </button>
                             </div>
                             <div id="tagContainer" class="mt-2">
-                                @foreach (var tag in Model.Tags)
-								{
-                                    <span class="badge btn-primary fs-6 m-1">@tag</span>
-								}
+                                @if (Model?.Tags?.Any() ?? false)
+                                {
+                                    @foreach (var tag in Model.Tags)
+								    {
+                                        <span class="badge btn-primary fs-6 m-1">@tag</span>
+								    }
+                                }
                             </div>
                         </div>
                     </div>
@@ -81,7 +84,7 @@
                             <div class="input-group">
                                 <select id="categorySelect" class="form-select-md rounded-3 p-1"
                                         aria-label="Default select example">
-                                    <option selected>@Model.Category</option>
+                                    <option selected>@Model!.Category</option>
                                     <option value="1">Category 2</option>
                                     <option value="2">Category 3</option>
                                     <option value="3">Category 4</option>

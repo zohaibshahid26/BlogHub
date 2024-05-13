@@ -3,24 +3,20 @@
 @{
     ViewData["Title"] = "Register";
     Layout = null;
-    if(User.Identity?.IsAuthenticated ?? false)
-    {
-        Response.Redirect("/");
-    }
 }
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login</title>
+        <title>Register</title>
         <link rel="stylesheet" href="~/css/style.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/loginsignup.css" />
         <link rel="icon" href="~/icon.ico" />
     </head>
     <body>
-        <div class="container d-flex justify-content-center align-items-center min-vh-100 m-auto my-2">
+        <div class="container d-flex justify-content-center align-items-center min-vh-100 m-auto my-2 p-1">
             <div class="row border rounded-5 p-3 bg-white shadow box-area">
                 <div class="d-none col-md-6 rounded-4 d-md-flex justify-content-center align-items-center flex-column left-box"
                      style="background: #f8f9fa;">
@@ -44,6 +40,14 @@
                         </div>
                         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                            <div class="input-group mb-3">
+                                <input asp-for="Input.FirstName" type="text" class="form-control form-control-lg bg-light fs-6" autocomplete="firstname" aria-required="true" placeholder="First Name" />
+                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input asp-for="Input.LastName" type="text" class="form-control form-control-lg bg-light fs-6" autocomplete="lastname" aria-required="true" placeholder="Last Name" />
+                                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                            </div>
                             <div class="input-group mb-3">
                                 <input asp-for="Input.Email" type="email" class="form-control form-control-lg bg-light fs-6" autocomplete="username" aria-required="true" placeholder="Email Address" />
                                 <span asp-validation-for="Input.Email" class="text-danger"></span>
