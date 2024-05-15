@@ -35,6 +35,7 @@ namespace BlogHub.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Images", x => x.ImageId);
+
                 });
 
             migrationBuilder.CreateTable(

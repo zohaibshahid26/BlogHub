@@ -2,8 +2,6 @@
 using BlogHub.Models;
 using BlogHub.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
-using System.Diagnostics;
 using System.Security.Claims;
 
 namespace BlogHub.Repository
@@ -21,9 +19,32 @@ namespace BlogHub.Repository
             _env = env;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<IEnumerable<Post>> GetPostsAsync()
-        {
 
+        private async Task<string> SaveImageAsync(IFormFile? image)
+        {
+            string imageFolder = Path.Combine(_env.WebRootPath, "featureImages");
+            if (!Directory.Exists(imageFolder))
+            {
+                Directory.CreateDirectory(imageFolder);
+            }
+
+            if (image == null)
+            {
+                return Path.Combine("featureImages", "default_image.png");
+            }
+
+            string uniqueFileName = Guid.NewGuid().ToString() + "-" + image.FileName;
+            string filePath = Path.Combine(imageFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+            return Path.Combine("featureImages", uniqueFileName);
+        }
+
+        public async Task<IEnumerable<Post?>> GetPostsAsync()
+        {
             return await _context.Posts.
                         Include(p => p.Category).
                         Include(p => p.Tags).
@@ -36,6 +57,7 @@ namespace BlogHub.Repository
 
         public async Task<Post?> GetPostByIdAsync(string id)
         {
+            ArgumentNullException.ThrowIfNull(id);
             return await _context.Posts.
                             Include(p => p.Category).
                             Include(p => p.Tags).
@@ -46,84 +68,118 @@ namespace BlogHub.Repository
                             FirstOrDefaultAsync(p => p.PostId == id);
         }
 
+        public async Task<Post?> GetPostByUserIdAsync(string id)
+        {
+            ArgumentNullException.ThrowIfNull(id);
+            return await _context.Posts.
+                            Include(p => p.Category).
+                            Include(p => p.Tags).
+                            Include(p => p.Image).
+                            Include(p => p.Comments).
+                            Include(p => p.Tags).
+                            Include(p => p.User).
+                            FirstOrDefaultAsync(p => p.UserId == id);
+        }
+
         public async Task AddPostAsync(PostViewModel model)
         {
             ArgumentNullException.ThrowIfNull(model);
 
             model.ImageUrl = await SaveImageAsync(model.Image);
-            var Image = new Image
+            var image = new Image
             {
                 ImageURL = model.ImageUrl
             };
-            var Tags = model?.Tags?.Split(',').ToList() ?? null;
-            var UniqueTags = new HashSet<Tag>();
-            if (Tags!=null)
-            { 
-                foreach (var item in Tags)
-                {
-                    UniqueTags.Add(new Tag { TagName = item });
-                }
+
+            var tags = model?.Tags?.Split(',').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct() ?? Enumerable.Empty<string>();
+
+            // Retrieve existing tags or create new ones if they don't exist
+            var uniqueTags = new HashSet<Tag>();
+            foreach (var tagName in tags)
+            {
+                var tag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName)
+                         ?? new Tag { TagName = tagName };
+                uniqueTags.Add(tag);
             }
-            var Category = new Category { CategoryName = model!.CategoryName };
+
+            var categoryId = _context.Categories.FirstOrDefault(c => c.CategoryName == model!.Category.CategoryName)!.CategoryId;
+
             var post = new Post
             {
                 Title = model!.Title,
                 Content = model.Content,
-                Tags = [.. UniqueTags],
+                Tags = uniqueTags.ToList(),
                 UserId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous",
-                Category = Category,
-                Image = Image
+                CategoryId = categoryId,
+                Image = image
             };
             await _context.Posts.AddAsync(post);
         }
 
-        private async Task<string> SaveImageAsync(IFormFile ?image)
+        public async Task UpdatePost(PostViewModel postViewModel)
         {
-            string imageFolder = Path.Combine(_env.WebRootPath, "featureImages");
-            if (!Directory.Exists(imageFolder))
+            ArgumentNullException.ThrowIfNull(postViewModel);
+            var postToUpdate = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.PostId == postViewModel.PostId);
+            var categoryId = _context.Categories.FirstOrDefault(c => c.CategoryName == postViewModel!.Category.CategoryName)!.CategoryId;
+
+            if (postToUpdate != null)
             {
-                Directory.CreateDirectory(imageFolder);
+                postToUpdate.Title = postViewModel.Title;
+                postToUpdate.Content = postViewModel.Content;
+                postToUpdate.CategoryId = categoryId;
+
+                // Handling tags
+                var tagNames = postViewModel.Tags?.Split(',').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct() ?? Enumerable.Empty<string>();
+                postToUpdate.Tags!.Clear();
+                foreach (var tagName in tagNames)
+                {
+                    var tag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName)
+                             ?? new Tag { TagName = tagName };
+                    postToUpdate.Tags.Add(tag);
+                }
+                if (postViewModel.Image != null)
+                {
+                    if (postToUpdate.Image != null)
+                    {
+                        var filePath = Path.Combine(_env.WebRootPath, postToUpdate.Image.ImageURL);
+                        if (File.Exists(filePath))
+                        {
+                            File.Delete(filePath);
+                        }
+                        _context.Images.Remove(postToUpdate.Image);
+                    }
+                    postToUpdate.Image = new Image { ImageURL = await SaveImageAsync(postViewModel.Image) };
+                }
+
+                _context.Posts.Update(postToUpdate);
             }
-
-            if (image == null)
-            {
-                return Path.Combine(imageFolder, "default_image.png");
-            }
-
-            string uniqueFileName = Guid.NewGuid().ToString() + "-" + image.FileName;
-            string filePath = Path.Combine(imageFolder, uniqueFileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await image.CopyToAsync(fileStream);
-            }
-            return Path.Combine("featureImages", uniqueFileName);
-        }
-    
-
-        public void UpdatePost(Post post)
-        {
-            ArgumentNullException.ThrowIfNull(post);
-
-            _context.Posts.Update(post);
         }
 
         public async Task DeletePostAsync(string id)
         {
+            ArgumentNullException.ThrowIfNull(id);
             var post = await GetPostByIdAsync(id);
-            if (post?.Image != null)
+            if (post != null)
             {
-                // Delete image file from file system if needed
-                var filePath = Path.Combine(_env.WebRootPath, post.Image.ImageURL);
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-                _context.Images.Remove(post.Image);
                 _context.Posts.Remove(post);
-            }
-           
+
+                if (post?.Image != null)
+                {
+                    var filePath = Path.Combine(_env.WebRootPath, post.Image.ImageURL);
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                    _context.Images.Remove(post.Image);
+                }
+            }       
         }
+
+        public async Task<IEnumerable<Category>> GetCategories()
+        {
+            return await _context.Categories.ToListAsync();
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
@@ -131,14 +187,14 @@ namespace BlogHub.Repository
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     _context.Dispose();
                 }
             }
-            this._disposed = true;
+            _disposed = true;
         }
 
         public void Dispose()

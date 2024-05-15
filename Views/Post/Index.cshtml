@@ -5,7 +5,7 @@
 }
 <div class="container my-5">
     <div class="row">
-        @if (Model.Any())
+        @if (Model?.Any() ?? false)
         {
             <h2 class="mb-4 text-center">My Posts</h2>
             @foreach (var post in Model)
@@ -30,7 +30,7 @@
                                 <a asp-controller="Post" asp-action="Details" asp-route-id="@post.PostId" class="mx-2">Read More</a>
                             </p>
                             <div class="d-flex justify-content-end">
-                                <button asp-controller="Post" asp-action="Edit" asp-route-id="@post.PostId" class="btn btn-edit">Edit</button>
+                                <a asp-controller="Post" asp-action="Edit" asp-route-id="@post.PostId" class="btn btn-edit">Edit</a>
                                 <form method="post" asp-action="Delete" asp-route-id="@post.PostId">
                                     <input type="submit"  class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this post?')" value= "Delete" />
                                 </form>

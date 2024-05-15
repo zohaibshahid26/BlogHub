@@ -23,7 +23,6 @@ namespace BlogHub.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Ensuring the CategoryName is used properly as a foreign key
          
             modelBuilder.Entity<Post>().
                 Property(p => p.PostId).
@@ -35,6 +34,14 @@ namespace BlogHub.Data
                .HasForeignKey(c => c.PostId)
                .HasPrincipalKey(p => p.PostId)
                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Tag>()
+                .HasIndex(t => t.TagName) 
+                .IsUnique();
+
+            modelBuilder.Entity<Category>()
+                .HasIndex(c => c.CategoryName)
+                .IsUnique();
         }
 
     }

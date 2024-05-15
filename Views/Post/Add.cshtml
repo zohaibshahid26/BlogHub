@@ -77,11 +77,15 @@
                             </div>
                             <div class="input-group">
                                 <select id="categorySelect" class="form-select-md rounded-3 p-1"
-                                        asp-for="CategoryName" aria-label="Default select example">
-                                    <option value="">Choose Category</option>
-                                    <option value="Category 1">Category 1</option>
-                                    <option value="Category 2">Category 2</option>
-                                    <option value="Category 3">Category 3</option>
+                                        asp-for="Category.CategoryName" aria-label="Default select example">
+                                        <option selected>Choose...</option>
+                                        @if (Model.Categories != null)
+                                        {
+                                            @foreach (var category in Model.Categories)
+                                            {
+                                                <option value="@category.CategoryName">@category.CategoryName</option>
+                                            }
+                                        }
                                 </select>
                             </div>
                         </div>

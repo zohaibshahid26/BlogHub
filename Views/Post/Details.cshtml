@@ -38,7 +38,7 @@
             </div>
 
             <div class=" justify-content-center mx-2">
-                <img src="@(Model.Image != null ? $"{Model.Image.ImageURL}" : "~\\assests\\default_image.png")" alt="Featured Image" class="img-thumbnail rounded-3 my-1">
+                <img src="~/@(Model?.Image?.ImageURL)" alt="Featured Image" class="img-thumbnail rounded-3 my-1">
             </div>
             <div class="d-flex mt-3 flex-wrap">
                 <h4 class="m-3 mx-2 ">Tags</h4>

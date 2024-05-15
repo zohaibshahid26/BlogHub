@@ -10,21 +10,29 @@ document.getElementById("addTagButton").addEventListener("click", function () {
         const tagElement = document.createElement("span");
         tagElement.className = "badge btn-primary fs-6 m-1";
         tagElement.textContent = tag;
-        tagElement.onclick = function () { this.remove(); updateHiddenTags(); };  // Optional: remove tag on click
+        tagElement.onclick = function () { this.remove(); updateHiddenTags(); };
         tagContainer.appendChild(tagElement);
         tagInput.value = "";
-        updateHiddenTags();  // Update hidden input
+        updateHiddenTags();
     } else if (tagElements.length >= 5) {
         alert("You can only add up to 5 tags.");
     }
-
+    
     function updateHiddenTags() {
         let tagsArray = Array.from(tagContainer.getElementsByClassName("badge btn-primary fs-6 m-1")).map(elem => elem.textContent);
-        hiddenTags.value = tagsArray.join(',');  // Convert array to comma-separated string
+        hiddenTags.value = tagsArray.join(',');
     }
 });
-
-
+document.addEventListener("DOMContentLoaded", function () {
+    var tagContainer = document.getElementById("tagContainer");
+    tagContainer.addEventListener("click", function (event) {
+        if (event.target.classList.contains("special-tag")) {
+            event.target.remove();
+            event.target.style.color = "black";
+            updateHiddenTags();
+        }
+    });
+});
 
 let currentStep = 0;
 const steps = document.querySelectorAll(".step");

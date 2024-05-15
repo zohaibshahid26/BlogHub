@@ -5,11 +5,13 @@ namespace BlogHub.Repository
 {
     public interface IPostRepository : IDisposable
     {
-        Task<IEnumerable<Post>> GetPostsAsync();
+        Task<IEnumerable<Post?>> GetPostsAsync();
         Task<Post?> GetPostByIdAsync(string id);
+        Task<Post?> GetPostByUserIdAsync(string id);
         Task AddPostAsync(PostViewModel post);
-        void UpdatePost(Post post);
+        Task UpdatePost(PostViewModel post);
         Task DeletePostAsync(string id);
+        Task<IEnumerable<Category>> GetCategories();
         Task SaveChangesAsync();
     }
 }

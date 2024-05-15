@@ -3,6 +3,7 @@ using BlogHub.ViewModels;
 using BlogHub.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BlogHub.Controllers
 {
@@ -16,10 +17,12 @@ namespace BlogHub.Controllers
         }
 
         public async Task<IActionResult> Index()
-        { 
-            var posts = await _postRepository.GetPostsAsync();
-            return View(posts);
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous";
+            Post? post = await _postRepository.GetPostByUserIdAsync(userId);
+            return View(post);
         }
+
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
@@ -31,46 +34,56 @@ namespace BlogHub.Controllers
             return View(post);
         }
 
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
-            return View();
+            var categories = await _postRepository.GetCategories();
+            return View(new PostViewModel { Categories = categories });
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Add(PostViewModel post)
         {
-           
-                if (ModelState.IsValid)
-                { 
-                    await _postRepository.AddPostAsync(post);
-                    await _postRepository.SaveChangesAsync();
-                    return RedirectToAction("Index", "Post");
-                }
+           if (ModelState.IsValid)
+           { 
+                await _postRepository.AddPostAsync(post);
+                await _postRepository.SaveChangesAsync();
+                return RedirectToAction("Index", "Post");
+           }
+
             return View(post);
-           
+
         }
 
-        public IActionResult Edit(string id)
+        public async Task<IActionResult> Edit(string id)
         {
-            var post = _postRepository.GetPostByIdAsync(id);
+            var post = await _postRepository.GetPostByIdAsync(id);
+            var categories = await _postRepository.GetCategories();
             if (post == null)
             {
                 return NotFound();
             }
-            return View(post);
+            var postViewModel = new PostViewModel
+            {
+                PostId = post.PostId,
+                Title = post.Title,
+                Content = post.Content,
+                Category = post.Category,
+                Categories = categories
+            };
+            if (post.Tags != null)
+            {
+                postViewModel.Tags = string.Join(",", post.Tags.Select(t => t.TagName));
+            }
+            await _postRepository.SaveChangesAsync();
+            return View(postViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Post post)
+        public async Task<IActionResult> Edit(PostViewModel post)
         {
-            if (ModelState.IsValid)
-            {
-                _postRepository.UpdatePost(post);
-                await _postRepository.SaveChangesAsync();
-                return RedirectToAction("Index", "Post");
-            }
-            return View(post);
+            await _postRepository.UpdatePost(post);
+            await _postRepository.SaveChangesAsync();
+            return RedirectToAction("Index", "Post");
         }
 
         [HttpPost]
@@ -84,5 +97,6 @@ namespace BlogHub.Controllers
             await _postRepository.SaveChangesAsync();
             return RedirectToAction("Index", "Post");
         }
+
     }
 }
