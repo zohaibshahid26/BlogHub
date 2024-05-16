@@ -1,22 +1,46 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlogHub.Models;
+using BlogHub.Repository;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlogHub.Controllers
 {
+    [Authorize(Policy = "Admin")]
     public class AdminController : Controller
     {
-        public IActionResult Categories()
+        private readonly ICategoryRepository _categoryRepository;
+        public AdminController(ICategoryRepository categoryRepositry)
         {
-            var categories = new List<string> { "Tech", "Science", "Health", "Programming" };
-            return View(categories);
+            _categoryRepository = categoryRepositry;
         }
-        public IActionResult AddCategory()
+        public async Task<IActionResult> Categories()
         {
-            return RedirectToAction("Categories");
+            return View(await _categoryRepository.GetCategoriesAsync());
         }
-        public IActionResult DeleteCategory()
+
+        [HttpPost]
+        public async Task<IActionResult> AddCategory(Category category)
         {
-            return RedirectToAction("Categories");
+            await _categoryRepository.AddCategoryAsync(category);
+            await _categoryRepository.SaveChangesAsync();
+            return RedirectToAction("Categories", "Admin");
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            await _categoryRepository.DeleteCategoryAsync(id);
+            await _categoryRepository.SaveChangesAsync();
+            return RedirectToAction("Categories", "Admin");
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateCategory(int id)
+        {
+            var category = await _categoryRepository.GetCategoryByIdAsync(id);
+            _categoryRepository.UpdateCategoryAsync(category);
+            await _categoryRepository.SaveChangesAsync();
+            return RedirectToAction("Categories", "Admin");
+        }
+
 
     }
 }

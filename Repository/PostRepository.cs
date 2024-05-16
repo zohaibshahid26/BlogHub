@@ -68,7 +68,7 @@ namespace BlogHub.Repository
                             FirstOrDefaultAsync(p => p.PostId == id);
         }
 
-        public async Task<Post?> GetPostByUserIdAsync(string id)
+        public async Task<IEnumerable<Post?>> GetPostsByUserIdAsync(string id)
         {
             ArgumentNullException.ThrowIfNull(id);
             return await _context.Posts.
@@ -78,7 +78,9 @@ namespace BlogHub.Repository
                             Include(p => p.Comments).
                             Include(p => p.Tags).
                             Include(p => p.User).
-                            FirstOrDefaultAsync(p => p.UserId == id);
+                            Where(p => p.UserId == id).
+                            ToListAsync();
+
         }
 
         public async Task AddPostAsync(PostViewModel model)
@@ -173,6 +175,32 @@ namespace BlogHub.Repository
                     _context.Images.Remove(post.Image);
                 }
             }       
+        }
+        public async Task<IEnumerable<Post?>> GetLatestPostAsync()
+        {
+            return await _context.Posts.
+                        Include(p => p.Category).
+                        Include(p => p.Tags).
+                        Include(p => p.Image).
+                        Include(p => p.Comments).
+                        Include(p => p.Tags).
+                        Include(p => p.User).
+                        OrderByDescending(p => p.DatePosted).
+                        Take(5).
+                        ToListAsync();
+        }
+        public async Task<IEnumerable<Post?>> GetTrendingPostAsync()
+        {
+            return await _context.Posts.
+                        Include(p => p.Category).
+                        Include(p => p.Tags).
+                        Include(p => p.Image).
+                        Include(p => p.Comments).
+                        Include(p => p.Tags).
+                        Include(p => p.User).
+                        OrderByDescending(p => p.Likes).
+                        Take(6).
+                        ToListAsync();
         }
 
         public async Task<IEnumerable<Category>> GetCategories()

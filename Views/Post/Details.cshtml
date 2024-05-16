@@ -1,4 +1,5 @@
-﻿@model Post
+﻿@using System.Security.Claims
+@model Post
 @{
     if (User.Identity?.IsAuthenticated ?? false)
     {
@@ -11,6 +12,41 @@
     string markdownContent = Model.Content;
     string htmlContent = Markdig.Markdown.ToHtml(markdownContent);
 }
+@functions {
+    public static string TimeAgo(DateTime date)
+    {
+        TimeSpan timeSince = DateTime.UtcNow.Subtract(date);
+        if (timeSince.TotalMinutes < 1)
+        {
+            return "just now";
+        }
+        else if (timeSince.TotalMinutes < 60)
+        {
+            return string.Format("{0} minutes ago", (int)timeSince.TotalMinutes);
+        }
+        else if (timeSince.TotalHours < 24)
+        {
+            return string.Format("{0} hours ago", (int)timeSince.TotalHours);
+        }
+        else if (timeSince.TotalDays < 7)
+        {
+            return string.Format("{0} days ago", (int)timeSince.TotalDays);
+        }
+        else if (timeSince.TotalDays < 30)
+        {
+            return string.Format("{0} weeks ago", (int)(timeSince.TotalDays / 7));
+        }
+        else if (timeSince.TotalDays < 365)
+        {
+            return string.Format("{0} months ago", (int)(timeSince.TotalDays / 30));
+        }
+        else
+        {
+            return string.Format("{0} years ago", (int)(timeSince.TotalDays / 365));
+        }
+    }
+}
+
 
 @section Styles {
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
@@ -33,7 +69,7 @@
             </div>
             <div class="mb-2">
                 <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar" style="width:25px;">
-                <p class=" d-inline text-black overflow-hidden">@Model.User.UserName in @Model.Category.CategoryName</p>
+                <p class=" d-inline text-black overflow-hidden">@string.Concat(Model.User.FirstName," ",Model.User.LastName) in @Model.Category.CategoryName</p>
                 <p class="mx-5 text-muted">@Model.DatePosted</p>
             </div>
 
@@ -60,11 +96,15 @@
                 <div class="p-3">
                     <h6>Comments</h6>
                 </div>
-                <form mehod="post" action="/Comment/Add">
+                <form method="post" asp-action="Add" asp-controller="Comment">
                     <div class="mt-2 d-flex flex-row align-items-center p-3 form-color">
                         <img src="~/assests/avatar.jpg" width="40" class="rounded-circle mx-2">
-                        <input type="text" class="form-control" placeholder="Enter your comment...">
+                        <input name="Content"  type="text" class="form-control" placeholder="Enter your comment...">
+                        <input type="hidden" name="PostId" value="@Model?.PostId" />
+                        <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+
                         <input type="submit" class="btn btn-primary mx-2" value="Add" />
+
                     </div>
                 </form>
                 @if (Model?.Comments?.Any() ?? false)
@@ -77,13 +117,18 @@
                                 <div class="w-100">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex flex-row align-items-center">
-                                            <span class="mx-1">@comment?.User?.UserName</span>
+                                            <span class="mx-1">@string.Concat(@comment?.User?.FirstName," ",comment?.User?.LastName)</span>
                                         </div>
                                         <div class="d-flex gap-3  align-items-center">
                                             <small>
-                                                @DateTime.UtcNow.Subtract(comment!.DatePosted)
+                                                @TimeAgo(comment!.DatePosted)
                                             </small>
-                                            <a asp-action="Delete" asp-controller="Comment" class="link-danger">Delete</a>
+                                            <form asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post">
+
+                                                <input type="hidden" name="CommentId" value="@comment.CommentId" />
+                                                <input type="hidden" name="PostId" value="@Model?.PostId" />
+                                                <input type="submit" class="link-danger border-0 bg-transparent" value="Delete" />
+                                            </form>
                                         </div>
                                     </div>
                                     <p class="text-justify comment-text ">

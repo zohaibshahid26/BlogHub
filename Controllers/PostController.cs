@@ -19,7 +19,8 @@ namespace BlogHub.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous";
-            Post? post = await _postRepository.GetPostByUserIdAsync(userId);
+            var post = await _postRepository.GetPostsByUserIdAsync(userId);
+
             return View(post);
         }
 

@@ -12,7 +12,7 @@ namespace BlogHub.Models
 
         [Required(ErrorMessage = "Comment content is required and cannot be empty")]
         public required string Content { get; set; }
-        public DateTime DatePosted { get; set; }
+        public DateTime DatePosted { get; set; } = DateTime.UtcNow;
 
         [Required(ErrorMessage = "User is required for commenting")]
         public  string? UserId { get; set; }
