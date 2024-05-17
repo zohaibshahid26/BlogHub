@@ -172,7 +172,6 @@ namespace BlogHub.Repository
                     {
                         File.Delete(filePath);
                     }
-                    _context.Images.Remove(post.Image);
                 }
             }       
         }

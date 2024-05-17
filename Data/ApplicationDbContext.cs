@@ -35,6 +35,19 @@ namespace BlogHub.Data
                .HasPrincipalKey(p => p.PostId)
                .OnDelete(DeleteBehavior.ClientCascade);
 
+            modelBuilder.Entity<Like>()
+                .HasOne(l => l.Post)
+                .WithMany(p => p.Likes)
+                .HasForeignKey(l => l.PostId)
+                .HasPrincipalKey(p => p.PostId)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.Image)
+                .WithOne()
+                .HasForeignKey<Post>(p => p.ImageId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Tag>()
                 .HasIndex(t => t.TagName) 
                 .IsUnique();

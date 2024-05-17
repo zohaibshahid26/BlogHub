@@ -18,7 +18,7 @@ using BlogHub.Helper;
 
 namespace BlogHub.Areas.Identity.Pages.Account
 {
-   
+
     public class LoginModel : PageModel
     {
         private readonly SignInManager<MyUser> _signInManager;

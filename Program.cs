@@ -2,7 +2,6 @@ using BlogHub.Data;
 using BlogHub.Repository;
 using BlogHub.Helper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Builder;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
