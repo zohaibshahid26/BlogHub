@@ -64,12 +64,28 @@
         <div class="col-md-8 offset-md-2">
             <div class="d-flex align-items-center">
                 <h1 class="fw-bolder">@Model.Title</h1>
-                <i class="fa-regular fa-thumbs-up fa-2xl mx-2" style="color: #805ce9;" onclick="toggleLike(this)"></i>
-                <span class="mx-2" id="like-count">0</span>
+                <form id="likeForm" method="post" asp-action="ToggleLike" asp-controller="Post">
+                    <input type="hidden" name="PostId" value="@Model.PostId" />
+                    <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+                    <a id="likeButton" class="text-decoration-none">
+                        @if (Model.Likes!.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+                        {
+                            <i class="fa-solid fa-thumbs-up fa-2xl mx-2" style="color: #805ce9; cursor: pointer;"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-regular fa-thumbs-up fa-2xl mx-2" style="color: #805ce9; cursor: pointer;"></i>
+                        }
+                    </a>
+                </form>
+
+                <span class="mx-2" id="like-count">
+                    @(Model?.Likes?.Count ?? 0)
+                </span>
             </div>
             <div class="mb-2">
                 <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar" style="width:25px;">
-                <p class=" d-inline text-black overflow-hidden">@string.Concat(Model.User.FirstName," ",Model.User.LastName) in @Model.Category.CategoryName</p>
+                <p class=" d-inline text-black overflow-hidden">@string.Concat(Model!.User.FirstName," ",Model.User.LastName) in @Model.Category.CategoryName</p>
                 <p class="mx-5 text-muted">@Model.DatePosted</p>
             </div>
 
@@ -123,12 +139,15 @@
                                             <small>
                                                 @TimeAgo(comment!.DatePosted)
                                             </small>
-                                            <form asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post">
+                                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
+                                            {
+                                                <form asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post">
 
-                                                <input type="hidden" name="CommentId" value="@comment.CommentId" />
-                                                <input type="hidden" name="PostId" value="@Model?.PostId" />
-                                                <input type="submit" class="link-danger border-0 bg-transparent" value="Delete" />
-                                            </form>
+                                                    <input type="hidden" name="CommentId" value="@comment.CommentId" />
+                                                    <input type="hidden" name="PostId" value="@Model?.PostId" />
+                                                    <input type="submit" class="link-danger border-0 bg-transparent" value="Delete" />
+                                                </form>
+                                            }
                                         </div>
                                     </div>
                                     <p class="text-justify comment-text ">

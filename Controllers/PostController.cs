@@ -1,5 +1,4 @@
-﻿using BlogHub.Models;
-using BlogHub.ViewModels;
+﻿using BlogHub.ViewModels;
 using BlogHub.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +9,7 @@ namespace BlogHub.Controllers
     [Authorize]
     public class PostController : Controller
     {
+
         private readonly IPostRepository _postRepository;
         public PostController(IPostRepository postRepository)
         {
@@ -52,20 +52,21 @@ namespace BlogHub.Controllers
            }
 
             return View(post);
-
         }
 
-        public async Task<IActionResult> Edit(string id)
+
+        public async Task<IActionResult> Edit(string ?id)
         {
-            var post = await _postRepository.GetPostByIdAsync(id);
-            var categories = await _postRepository.GetCategories();
-            if (post == null)
+            if (id == null)
             {
                 return NotFound();
             }
+            var post = await _postRepository.GetPostByIdAsync(id);
+            var categories = await _postRepository.GetCategories();
+           
             var postViewModel = new PostViewModel
             {
-                PostId = post.PostId,
+                PostId = post!.PostId,
                 Title = post.Title,
                 Content = post.Content,
                 Category = post.Category,
@@ -97,6 +98,24 @@ namespace BlogHub.Controllers
             await _postRepository.DeletePostAsync(id);
             await _postRepository.SaveChangesAsync();
             return RedirectToAction("Index", "Post");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> ToggleLike(string postId, string userId)
+        {
+            if(User.Identity?.IsAuthenticated != true)
+            {
+                return Redirect("/Identity/Account/Login" + "?ReturnUrl=%2FPost%2FDetails%2F" + postId);
+            }
+
+            if (postId == null)
+            {
+                return NotFound();
+            }
+            await _postRepository.ToggleLikeAsync(postId, userId);
+            await _postRepository.SaveChangesAsync();
+            return RedirectToAction("Details", "Post", new { id = postId });
         }
 
     }

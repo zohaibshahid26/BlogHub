@@ -14,6 +14,7 @@ namespace BlogHub.Repository
         Task<IEnumerable<Post?>> GetTrendingPostAsync();
         Task DeletePostAsync(string id);
         Task<IEnumerable<Category>> GetCategories();
+        Task ToggleLikeAsync(string postId, string userId);
         Task SaveChangesAsync();
     }
 }

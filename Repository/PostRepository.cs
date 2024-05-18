@@ -63,7 +63,7 @@ namespace BlogHub.Repository
                             Include(p => p.Tags).
                             Include(p => p.Image).
                             Include(p => p.Comments).
-                            Include(p => p.Tags).
+                            Include(p => p.Likes).
                             Include(p => p.User).
                             FirstOrDefaultAsync(p => p.PostId == id);
         }
@@ -71,17 +71,18 @@ namespace BlogHub.Repository
         public async Task<IEnumerable<Post?>> GetPostsByUserIdAsync(string id)
         {
             ArgumentNullException.ThrowIfNull(id);
-            return await _context.Posts.
+            return await _context.Posts.AsNoTracking().
                             Include(p => p.Category).
                             Include(p => p.Tags).
                             Include(p => p.Image).
                             Include(p => p.Comments).
-                            Include(p => p.Tags).
+                            Include(p => p.Likes).
                             Include(p => p.User).
                             Where(p => p.UserId == id).
                             ToListAsync();
 
         }
+
 
         public async Task AddPostAsync(PostViewModel model)
         {
@@ -175,6 +176,7 @@ namespace BlogHub.Repository
                 }
             }       
         }
+
         public async Task<IEnumerable<Post?>> GetLatestPostAsync()
         {
             return await _context.Posts.
@@ -188,6 +190,7 @@ namespace BlogHub.Repository
                         Take(5).
                         ToListAsync();
         }
+
         public async Task<IEnumerable<Post?>> GetTrendingPostAsync()
         {
             return await _context.Posts.
@@ -205,6 +208,19 @@ namespace BlogHub.Repository
         public async Task<IEnumerable<Category>> GetCategories()
         {
             return await _context.Categories.ToListAsync();
+        }
+
+        public async Task ToggleLikeAsync(string postId, string userId)
+        {
+            var existingLike = await _context.Likes.FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == userId);
+            if (existingLike == null)
+            {
+                _context.Likes.Add(new Like { PostId = postId, UserId = userId });
+            }
+            else
+            {
+                _context.Likes.Remove(existingLike);
+            }
         }
 
         public async Task SaveChangesAsync()

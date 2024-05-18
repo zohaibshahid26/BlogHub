@@ -27,6 +27,7 @@ builder.Services.AddSingleton(builder.Environment);
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Email, "admin@bloghub.com"));
+    //i want the user can only delete his own post and edit his own post
 });
 
 builder.Services.AddControllersWithViews();

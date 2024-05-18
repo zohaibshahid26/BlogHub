@@ -15,22 +15,33 @@ namespace BlogHub.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Comment comment, string PostId)
+        [AllowAnonymous]
+        public async Task<IActionResult> Add(Comment comment)
         {
+            if (User.Identity?.IsAuthenticated != true)
+            {
+                return Redirect("/Identity/Account/Login" + "?ReturnUrl=%2FPost%2FDetails%2F" + comment.PostId);
+            }
             await _commentRepository.AddCommentAsync(comment);
             await _commentRepository.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = comment.PostId });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(int CommentId, string PostId)
+        public async Task<IActionResult> Delete(Comment comment)
         {
-            await _commentRepository.DeleteCommentAsync(CommentId);
+            await _commentRepository.DeleteCommentAsync(comment.CommentId);
             await _commentRepository.SaveChangesAsync();
-            
-            return RedirectToAction("Details", "Post", new { id = PostId });
-
+            return RedirectToAction("Details", "Post", new { id = comment.PostId });
         }
-        
+       
+        [HttpPost]
+        public async Task<IActionResult> Edit(Comment comment)
+        {
+            _commentRepository.UpdateComment(comment);
+            await _commentRepository.SaveChangesAsync();
+            return RedirectToAction("Details", "Post", new { id = comment.PostId });
+        }
+
     }
 }
