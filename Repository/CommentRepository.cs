@@ -1,4 +1,5 @@
 ﻿using BlogHub.Data;
+using BlogHub.Helper;
 using BlogHub.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +17,9 @@ namespace BlogHub.Repository
         public async Task AddCommentAsync(Comment comment)
         {
             ArgumentNullException.ThrowIfNull(comment);
+            comment.Post = await _context.Posts.FindAsync(comment.PostId);
+            comment.User = await _context.Users.FindAsync(comment.UserId);
             await _context.Comments.AddAsync(comment);
-
         }
         public async Task<IEnumerable<Comment>> GetCommentsByPostIdAsync(string postId)
         {
@@ -28,7 +30,10 @@ namespace BlogHub.Repository
         public async Task<Comment?> GetCommentByIdAsync(int commentId)
         {
             ArgumentNullException.ThrowIfNull(commentId);
-            return await _context.Comments.FindAsync(commentId);
+            return await _context.Comments.
+                Include(c => c.Post).
+                Include(c => c.User).
+                FirstOrDefaultAsync(c => c.CommentId == commentId);
         }
         public void UpdateComment(Comment comment)
         {
@@ -42,7 +47,7 @@ namespace BlogHub.Repository
             ArgumentNullException.ThrowIfNull(comment);
             _context.Comments.Remove(comment);
         }
-   
+
         public async Task SaveChangesAsync()
         {
              await _context.SaveChangesAsync();

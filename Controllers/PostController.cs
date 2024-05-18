@@ -3,16 +3,19 @@ using BlogHub.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using BlogHub.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BlogHub.Controllers
 {
     [Authorize]
     public class PostController : Controller
     {
-
+        private IAuthorizationService _authorizationService;
         private readonly IPostRepository _postRepository;
-        public PostController(IPostRepository postRepository)
+        public PostController(IPostRepository postRepository, IAuthorizationService authorizationService)
         {
+            _authorizationService = authorizationService;
             _postRepository = postRepository;
         }
 
@@ -63,7 +66,17 @@ namespace BlogHub.Controllers
             }
             var post = await _postRepository.GetPostByIdAsync(id);
             var categories = await _postRepository.GetCategories();
-           
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, post, "EditPostPolicy");
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             var postViewModel = new PostViewModel
             {
                 PostId = post!.PostId,
@@ -94,6 +107,16 @@ namespace BlogHub.Controllers
             if (id == null)
             {
                 return NotFound();
+            }
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, post, "DeletePostPolicy");
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
             }
             await _postRepository.DeletePostAsync(id);
             await _postRepository.SaveChangesAsync();

@@ -1,7 +1,9 @@
-﻿using BlogHub.Models;
+﻿using BlogHub.Authorization;
+using BlogHub.Models;
 using BlogHub.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogHub.Controllers
 {
@@ -9,9 +11,11 @@ namespace BlogHub.Controllers
     public class CommentController : Controller
     {
         private readonly ICommentRepository _commentRepository;
-        public CommentController(ICommentRepository commentRepository)
+        private readonly IAuthorizationService _authorizationService;
+        public CommentController(ICommentRepository commentRepository, IAuthorizationService authorizationService)
         {
             _commentRepository = commentRepository;
+            _authorizationService = authorizationService;
         }
 
         [HttpPost]
@@ -26,10 +30,20 @@ namespace BlogHub.Controllers
             await _commentRepository.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = comment.PostId });
         }
-
         [HttpPost]
-        public async Task<IActionResult> Delete(Comment comment)
+        public async Task<IActionResult> Delete(int id)
         {
+            var comment = await _commentRepository.GetCommentByIdAsync(id);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, comment, "DeleteCommentPolicy");
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
             await _commentRepository.DeleteCommentAsync(comment.CommentId);
             await _commentRepository.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = comment.PostId });

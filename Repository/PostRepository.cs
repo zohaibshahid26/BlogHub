@@ -22,12 +22,11 @@ namespace BlogHub.Repository
 
         private async Task<string> SaveImageAsync(IFormFile? image)
         {
-            string imageFolder = Path.Combine(_env.WebRootPath, "featureImages");
+            string imageFolder = Path.Combine(_env.WebRootPath,"featureImages");
             if (!Directory.Exists(imageFolder))
             {
                 Directory.CreateDirectory(imageFolder);
             }
-
             if (image == null)
             {
                 return Path.Combine("featureImages", "default_image.png");
@@ -35,7 +34,6 @@ namespace BlogHub.Repository
 
             string uniqueFileName = Guid.NewGuid().ToString() + "-" + image.FileName;
             string filePath = Path.Combine(imageFolder, uniqueFileName);
-
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await image.CopyToAsync(fileStream);
@@ -58,20 +56,21 @@ namespace BlogHub.Repository
         public async Task<Post?> GetPostByIdAsync(string id)
         {
             ArgumentNullException.ThrowIfNull(id);
-            return await _context.Posts.
-                            Include(p => p.Category).
-                            Include(p => p.Tags).
-                            Include(p => p.Image).
-                            Include(p => p.Comments).
-                            Include(p => p.Likes).
-                            Include(p => p.User).
-                            FirstOrDefaultAsync(p => p.PostId == id);
+            return await _context.Posts
+                       .Include(p => p.Comments)
+                       !.ThenInclude(c => c.User) 
+                       .Include(p => p.Category)
+                       .Include(p => p.Tags)
+                       .Include(p => p.Image)
+                       .Include(p => p.Likes)
+                       .Include(p => p.User)
+                       .FirstOrDefaultAsync(p => p.PostId == id);
         }
 
         public async Task<IEnumerable<Post?>> GetPostsByUserIdAsync(string id)
         {
             ArgumentNullException.ThrowIfNull(id);
-            return await _context.Posts.AsNoTracking().
+            return await _context.Posts.
                             Include(p => p.Category).
                             Include(p => p.Tags).
                             Include(p => p.Image).
@@ -82,7 +81,6 @@ namespace BlogHub.Repository
                             ToListAsync();
 
         }
-
 
         public async Task AddPostAsync(PostViewModel model)
         {
@@ -165,8 +163,7 @@ namespace BlogHub.Repository
             if (post != null)
             {
                 _context.Posts.Remove(post);
-
-                if (post?.Image != null)
+                if (!post.Image!.ImageURL.Contains("default_image.png"))
                 {
                     var filePath = Path.Combine(_env.WebRootPath, post.Image.ImageURL);
                     if (File.Exists(filePath))

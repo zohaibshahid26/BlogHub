@@ -1,4 +1,5 @@
-﻿using BlogHub.Models;
+﻿using BlogHub.Helper;
+using BlogHub.Models;
 
 namespace BlogHub.Repository
 {
@@ -10,6 +11,7 @@ namespace BlogHub.Repository
         void UpdateComment(Comment comment);
         Task DeleteCommentAsync(int commentId);
         Task SaveChangesAsync();
+
     }
 
 }

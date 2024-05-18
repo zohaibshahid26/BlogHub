@@ -3,6 +3,8 @@ using BlogHub.Repository;
 using BlogHub.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using BlogHub.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +23,18 @@ builder.Services.AddDefaultIdentity<MyUser>(options => options.SignIn.RequireCon
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddSingleton<IAuthorizationHandler, PostAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, CommentAuthorizationHandler>();
 builder.Services.AddSingleton(builder.Environment);
 
 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Email, "admin@bloghub.com"));
-    //i want the user can only delete his own post and edit his own post
+    options.AddPolicy("EditPostPolicy", policy => policy.Requirements.Add(new PostAuthorizationRequirement("Edit")));
+    options.AddPolicy("DeletePostPolicy", policy => policy.Requirements.Add(new PostAuthorizationRequirement("Delete")));
+    options.AddPolicy("EditCommentPolicy", policy => policy.Requirements.Add(new CommentAuthorizationRequirement("Edit")));
+    options.AddPolicy("DeleteCommentPolicy", policy => policy.Requirements.Add(new CommentAuthorizationRequirement("Delete")));
 });
 
 builder.Services.AddControllersWithViews();
