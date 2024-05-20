@@ -44,6 +44,7 @@ namespace BlogHub.Repository
             ArgumentNullException.ThrowIfNull(category);
             _context.Categories.Remove(category);
         }
+
         public async Task SaveChangesAsync()
         {
              await _context.SaveChangesAsync();
@@ -54,7 +55,6 @@ namespace BlogHub.Repository
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
 
         protected virtual void Dispose(bool disposing)
         {

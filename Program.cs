@@ -62,12 +62,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-//make policy for admin i am using asp.net core identity
 
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();

@@ -137,7 +137,7 @@
                                             <small>
                                                 @TimeAgo(comment!.DatePosted)
                                             </small>
-                                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
+                                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId || User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.UserId)
                                             {
                                                 <form asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post">
                                                     <input type="submit" class="link-danger border-0 bg-transparent" value="Delete" />
