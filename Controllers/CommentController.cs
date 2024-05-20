@@ -1,20 +1,18 @@
-﻿using BlogHub.Authorization;
-using BlogHub.Models;
-using BlogHub.Repository;
+﻿using BlogHub.Models;
+using BlogHub.UnitofWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlogHub.Controllers
 {
     [Authorize]
     public class CommentController : Controller
     {
-        private readonly ICommentRepository _commentRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthorizationService _authorizationService;
-        public CommentController(ICommentRepository commentRepository, IAuthorizationService authorizationService)
+        public CommentController(IAuthorizationService authorizationService, IUnitOfWork unitOfWork)
         {
-            _commentRepository = commentRepository;
+            _unitOfWork = unitOfWork;
             _authorizationService = authorizationService;
         }
 
@@ -26,14 +24,15 @@ namespace BlogHub.Controllers
             {
                 return Redirect("/Identity/Account/Login" + "?ReturnUrl=%2FPost%2FDetails%2F" + comment.PostId);
             }
-            await _commentRepository.AddCommentAsync(comment);
-            await _commentRepository.SaveChangesAsync();
+            await _unitOfWork.CommentRepository.AddAsync(comment);
+            await _unitOfWork.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = comment.PostId });
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var comment = await _commentRepository.GetCommentByIdAsync(id);
+            var comment = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == id, includeProperties: "Post,User").FirstOrDefault();
             if (comment == null)
             {
                 return NotFound();
@@ -44,18 +43,31 @@ namespace BlogHub.Controllers
             {
                 return Forbid();
             }
-            await _commentRepository.DeleteCommentAsync(comment.CommentId);
-            await _commentRepository.SaveChangesAsync();
+            await _unitOfWork.CommentRepository.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = comment.PostId });
         }
        
         [HttpPost]
-        public async Task<IActionResult> Edit(Comment comment)
+        public IActionResult Edit(Comment comment)
         {
-            _commentRepository.UpdateComment(comment);
-            await _commentRepository.SaveChangesAsync();
-            return RedirectToAction("Details", "Post", new { id = comment.PostId });
-        }
+            var commentToUpdate = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == comment.CommentId, includeProperties: "Post").FirstOrDefault();
+            if (commentToUpdate == null)
+            {
+                return NotFound();
+            }
 
+            var authorizationResult = _authorizationService.AuthorizeAsync(User, commentToUpdate, "EditCommentPolicy").Result;
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            commentToUpdate.Content = comment.Content;
+            _unitOfWork.CommentRepository.Update(commentToUpdate);
+            _unitOfWork.SaveChangesAsync();
+            return RedirectToAction("Details", "Post", new { id = commentToUpdate.PostId });
+        }
+       
     }
 }

@@ -3,8 +3,6 @@ using BlogHub.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using BlogHub.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BlogHub.Controllers
 {
@@ -140,6 +138,5 @@ namespace BlogHub.Controllers
             await _postRepository.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = postId });
         }
-
     }
 }

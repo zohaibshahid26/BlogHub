@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using BlogHub.Authorization;
+using BlogHub.Models;
+using BlogHub.UnitofWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +22,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<MyUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddSingleton<IAuthorizationHandler, PostAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, CommentAuthorizationHandler>();
 builder.Services.AddSingleton(builder.Environment);
