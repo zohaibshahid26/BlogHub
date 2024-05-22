@@ -40,10 +40,16 @@ namespace BlogHub.Repository
             }
         }
 
-        public virtual async Task AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
             await _context.Set<TEntity>().AddAsync(entity);
+        }
+
+        public void Update(TEntity entity)
+        {
+            ArgumentNullException.ThrowIfNull(entity);
+            _context.Set<TEntity>().Update(entity);
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
@@ -56,13 +62,7 @@ namespace BlogHub.Repository
             ArgumentNullException.ThrowIfNull(id);
             return await _context.Set<TEntity>().FindAsync(id);
 
-        }
-
-        public virtual void Update(TEntity entity)
-        {
-            ArgumentNullException.ThrowIfNull(entity);
-            _context.Set<TEntity>().Update(entity);
-        }
+        }   
 
         public async Task DeleteAsync(object id)
         {

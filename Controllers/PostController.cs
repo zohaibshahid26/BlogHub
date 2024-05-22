@@ -12,6 +12,7 @@ namespace BlogHub.Controllers
     {
         private IAuthorizationService _authorizationService;
         private readonly IUnitOfWork _unitOfWork;
+
         public PostController(IAuthorizationService authorizationService, IUnitOfWork unitOfWork)
         {
             _authorizationService = authorizationService;
@@ -47,13 +48,31 @@ namespace BlogHub.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                await _unitOfWork.PostRepository.AddPostAsync(post);
+                var tagNames = post.Tags?.Split(',').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct();
+                var tags = new HashSet<Tag>();
+                if (tagNames != null)
+                {
+                    foreach (var tagName in tagNames)
+                    {
+                        var tag = _unitOfWork.TagRepository.Get(filter: t => t.TagName == tagName).FirstOrDefault() ?? new Tag { TagName = tagName };
+                        tags.Add(tag);
+                    }
+                }
+                var Post = new Post
+                {
+                    Title = post.Title,
+                    Content = post.Content,
+                    Tags = tags.ToList(),
+                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous",
+                    CategoryId = _unitOfWork.CategoryRepository.Get(filter: c => c.CategoryName == post.Category.CategoryName).FirstOrDefault()!.CategoryId,
+                    Image = new Image { ImageURL = await _unitOfWork.PostRepository.SaveImageAsync(post.Image) }
+                };
+                await _unitOfWork.PostRepository.AddAsync(Post);
                 await _unitOfWork.SaveChangesAsync();
                 return RedirectToAction("Index", "Post");
             }
 
-            return View(post);
+            return View(post);        
         }
 
         public async Task<IActionResult> Edit(string? id)
@@ -63,7 +82,6 @@ namespace BlogHub.Controllers
                 return NotFound();
             }
             var post = _unitOfWork.PostRepository.Get(filter: p => p.PostId == id, includeProperties: "Category,Tags,Image,Comments,User,Likes").FirstOrDefault();
-            var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
             if (post == null)
             {
                 return NotFound();
@@ -81,7 +99,7 @@ namespace BlogHub.Controllers
                 Title = post.Title,
                 Content = post.Content,
                 Category = post.Category,
-                Categories = categories
+                Categories = await _unitOfWork.CategoryRepository.GetAllAsync()
             };
             if (post.Tags != null)
             {
@@ -93,9 +111,51 @@ namespace BlogHub.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(PostViewModel post)
         {
-            await _unitOfWork.PostRepository.UpdatePost(post);
-            await _unitOfWork.SaveChangesAsync();
-            return RedirectToAction("Index", "Post");
+            var postToUpdate = _unitOfWork.PostRepository.Get(filter: p => p.PostId == post.PostId, includeProperties: "Tags,User,Image").FirstOrDefault();
+            if (postToUpdate == null)
+            {
+                return NotFound();
+            }
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, postToUpdate, "EditPostPolicy");
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+            if (ModelState.IsValid)
+            {
+                postToUpdate.Title = post.Title;
+                postToUpdate.Content = post.Content;
+                postToUpdate.CategoryId = _unitOfWork.CategoryRepository.Get(filter: c => c.CategoryName == post.Category.CategoryName).FirstOrDefault()!.CategoryId;
+                var tagNames = post.Tags?.Split(',').Select(t => t.Trim()).Where(t => !string.IsNullOrWhiteSpace(t)).Distinct().ToList();
+                if (tagNames != null)
+                {
+                    var existingTags = postToUpdate.Tags ?? new List<Tag>();
+                    var newTags = new List<Tag>();
+
+                    foreach (var tagName in tagNames)
+                    {
+                        var tag = _unitOfWork.TagRepository.Get(filter: t => t.TagName == tagName).FirstOrDefault() ?? new Tag { TagName = tagName };
+                        newTags.Add(tag);
+                    }
+
+                    postToUpdate.Tags = existingTags.Union(newTags).ToList();
+                }
+                if (post.Image != null)
+                {
+                    if (postToUpdate.Image != null)
+                    {
+                        var imageId = postToUpdate.Image.ImageId;
+                        postToUpdate.ImageId = null;
+                        _unitOfWork.PostRepository.RemovePostImage(postToUpdate.Image.ImageURL);
+                        await _unitOfWork.ImageRepository.DeleteAsync(imageId);
+                    }
+                    postToUpdate.Image = new Image { ImageURL = await _unitOfWork.PostRepository.SaveImageAsync(post.Image) };
+                }
+                _unitOfWork.PostRepository.Update(postToUpdate);
+                await _unitOfWork.SaveChangesAsync();
+                return RedirectToAction("Index", "Post");
+            }
+            return View(post);
         }
 
         [HttpPost]
@@ -119,6 +179,7 @@ namespace BlogHub.Controllers
             if (post.Image != null)
             {
                 _unitOfWork.PostRepository.RemovePostImage(post.Image.ImageURL);
+                await _unitOfWork.ImageRepository.DeleteAsync(post.Image.ImageId);
             }
             await _unitOfWork.SaveChangesAsync();
             return RedirectToAction("Index", "Post");

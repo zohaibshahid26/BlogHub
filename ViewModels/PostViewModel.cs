@@ -1,7 +1,6 @@
 ﻿using BlogHub.Models;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace BlogHub.ViewModels
 {
     public class PostViewModel

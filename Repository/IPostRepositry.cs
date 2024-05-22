@@ -5,9 +5,8 @@ namespace BlogHub.Repository
 {
     public interface IPostRepository : IGenericRepository<Post>
     {
-        Task AddPostAsync(PostViewModel post);
-        Task UpdatePost(PostViewModel post);
         Task ToggleLikeAsync(string postId, string userId);
         void RemovePostImage(string imageUrl);
+        Task<string> SaveImageAsync(IFormFile? image);
     }
 }
