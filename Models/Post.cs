@@ -1,5 +1,4 @@
 ﻿using BlogHub.Helper;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace BlogHub.Models
@@ -8,21 +7,21 @@ namespace BlogHub.Models
     {
         [Key]
         [Required(ErrorMessage = "Post ID is required and cannot be empty")]
-        public  string PostId { get; set; }
+        public string PostId { get; set; }
 
         [Required(ErrorMessage = "Title is required and cannot be empty")]
         public required string Title { get; set; }
 
-       
+
         [Required(ErrorMessage = "Content is required and cannot be empty")]
-        public required string  Content{ get; set;}
+        public required string Content { get; set; }
 
         public DateOnly DatePosted { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 
         [Required(ErrorMessage = "Category is required")]
-        public  int CategoryId { get; set; }
+        public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
-        public  Category Category { get; set; }
+        public Category Category { get; set; }
 
         public List<Tag>? Tags { get; set; }
 
@@ -31,7 +30,7 @@ namespace BlogHub.Models
         public Image? Image { get; set; }
 
         [Required(ErrorMessage = "User is required")]
-        public  string UserId { get; set; }
+        public string UserId { get; set; }
         [ForeignKey("UserId")]
         public MyUser User { get; set; }
 

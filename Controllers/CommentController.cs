@@ -1,5 +1,5 @@
 ﻿using BlogHub.Models;
-using BlogHub.UnitofWork;
+using BlogHub.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +32,7 @@ namespace BlogHub.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var comment = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == id, includeProperties: "Post,User").FirstOrDefault();
+            var comment = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == id, includeProperties: "Post,Post.User,User").FirstOrDefault();
             if (comment == null)
             {
                 return NotFound();
@@ -47,11 +47,11 @@ namespace BlogHub.Controllers
             await _unitOfWork.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = comment.PostId });
         }
-       
+
         [HttpPost]
         public IActionResult Edit(Comment comment)
         {
-            var commentToUpdate = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == comment.CommentId, includeProperties: "Post").FirstOrDefault();
+            var commentToUpdate = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == comment.CommentId, includeProperties: "Post,Post.User,User").FirstOrDefault();
             if (commentToUpdate == null)
             {
                 return NotFound();
@@ -68,6 +68,6 @@ namespace BlogHub.Controllers
             _unitOfWork.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = commentToUpdate.PostId });
         }
-       
+
     }
 }

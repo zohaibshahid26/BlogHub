@@ -2,7 +2,7 @@
 using BlogHub.Models;
 using BlogHub.Repository;
 
-namespace BlogHub.UnitofWork
+namespace BlogHub.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -13,7 +13,6 @@ namespace BlogHub.UnitofWork
         public IGenericRepository<Comment> CommentRepository { get; private set; }
         public IGenericRepository<Category> CategoryRepository { get; private set; }
         private bool _disposed = false;
-
 
         public UnitOfWork(ApplicationDbContext context, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor)
         {

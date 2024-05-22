@@ -1,21 +1,13 @@
-﻿using BlogHub.ViewModels;
-using BlogHub.Models;
+﻿using BlogHub.Models;
+using BlogHub.ViewModels;
 
 namespace BlogHub.Repository
 {
-    public interface IPostRepository : IDisposable
+    public interface IPostRepository : IGenericRepository<Post>
     {
-        Task<IEnumerable<Post?>> GetPostsAsync();
-        Task<Post?> GetPostByIdAsync(string id);
-        Task<IEnumerable<Post?>> GetPostsByUserIdAsync(string id);
         Task AddPostAsync(PostViewModel post);
         Task UpdatePost(PostViewModel post);
-        Task<IEnumerable<Post?>> GetLatestPostAsync();
-        Task<IEnumerable<Post?>> GetTrendingPostAsync();
-        Task DeletePostAsync(string id);
-        Task<IEnumerable<Category>> GetCategories();
         Task ToggleLikeAsync(string postId, string userId);
-        Task SaveChangesAsync();
+        void RemovePostImage(string imageUrl);
     }
 }
-

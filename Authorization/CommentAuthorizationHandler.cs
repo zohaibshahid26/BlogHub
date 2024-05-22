@@ -14,7 +14,7 @@ namespace BlogHub.Authorization
                     context.Succeed(requirement);
                 }
             }
-            if(requirement.OperationName == "Delete")
+            if (requirement.OperationName == "Delete")
             {
                 if (context.User.Identity?.Name == resource.User?.UserName || context.User.Identity?.Name == resource.Post!.User?.UserName)
                 {

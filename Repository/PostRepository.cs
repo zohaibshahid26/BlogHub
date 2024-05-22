@@ -6,23 +6,23 @@ using System.Security.Claims;
 
 namespace BlogHub.Repository
 {
-    public class PostRepository : IPostRepository, IDisposable
+    public class PostRepository : GenericRepository<Post>, IPostRepository
     {
         private readonly IWebHostEnvironment _env;
         private readonly ApplicationDbContext _context;
-        private readonly IHttpContextAccessor  _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private bool _disposed = false;
 
-        public PostRepository(ApplicationDbContext context, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor)
+        public PostRepository(ApplicationDbContext context, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor) : base(context)
         {
             _context = context;
             _env = env;
             _httpContextAccessor = httpContextAccessor;
-        }
+        }   
 
         private async Task<string> SaveImageAsync(IFormFile? image)
         {
-            string imageFolder = Path.Combine(_env.WebRootPath,"featureImages");
+            string imageFolder = Path.Combine(_env.WebRootPath, "featureImages");
             if (!Directory.Exists(imageFolder))
             {
                 Directory.CreateDirectory(imageFolder);
@@ -39,47 +39,6 @@ namespace BlogHub.Repository
                 await image.CopyToAsync(fileStream);
             }
             return Path.Combine("featureImages", uniqueFileName);
-        }
-
-        public async Task<IEnumerable<Post?>> GetPostsAsync()
-        {
-            return await _context.Posts.
-                        Include(p => p.Category).
-                        Include(p => p.Tags).
-                        Include(p => p.Image).
-                        Include(p => p.Comments).
-                        Include(p => p.Tags).
-                        Include(p => p.User).
-                        ToListAsync();
-        }
-
-        public async Task<Post?> GetPostByIdAsync(string id)
-        {
-            ArgumentNullException.ThrowIfNull(id);
-            return await _context.Posts
-                       .Include(p => p.Comments)
-                       !.ThenInclude(c => c.User) 
-                       .Include(p => p.Category)
-                       .Include(p => p.Tags)
-                       .Include(p => p.Image)
-                       .Include(p => p.Likes)
-                       .Include(p => p.User)
-                       .FirstOrDefaultAsync(p => p.PostId == id);
-        }
-
-        public async Task<IEnumerable<Post?>> GetPostsByUserIdAsync(string id)
-        {
-            ArgumentNullException.ThrowIfNull(id);
-            return await _context.Posts.
-                            Include(p => p.Category).
-                            Include(p => p.Tags).
-                            Include(p => p.Image).
-                            Include(p => p.Comments).
-                            Include(p => p.Likes).
-                            Include(p => p.User).
-                            Where(p => p.UserId == id).
-                            ToListAsync();
-
         }
 
         public async Task AddPostAsync(PostViewModel model)
@@ -156,55 +115,17 @@ namespace BlogHub.Repository
             }
         }
 
-        public async Task DeletePostAsync(string id)
+        public void RemovePostImage(string imageUrl)
         {
-            ArgumentNullException.ThrowIfNull(id);
-            var post = await GetPostByIdAsync(id);
-            if (post != null)
+            ArgumentNullException.ThrowIfNull(imageUrl);
+            if(!imageUrl.Contains("default_image.png"))
             {
-                _context.Posts.Remove(post);
-                if (!post.Image!.ImageURL.Contains("default_image.png"))
+                var filePath = Path.Combine(_env.WebRootPath, imageUrl);
+                if (File.Exists(filePath))
                 {
-                    var filePath = Path.Combine(_env.WebRootPath, post.Image.ImageURL);
-                    if (File.Exists(filePath))
-                    {
-                        File.Delete(filePath);
-                    }
+                    File.Delete(filePath);
                 }
-            }       
-        }
-
-        public async Task<IEnumerable<Post?>> GetLatestPostAsync()
-        {
-            return await _context.Posts.
-                        Include(p => p.Category).
-                        Include(p => p.Tags).
-                        Include(p => p.Image).
-                        Include(p => p.Comments).
-                        Include(p => p.Tags).
-                        Include(p => p.User).
-                        OrderByDescending(p => p.DatePosted).
-                        Take(5).
-                        ToListAsync();
-        }
-
-        public async Task<IEnumerable<Post?>> GetTrendingPostAsync()
-        {
-            return await _context.Posts.
-                        Include(p => p.Category).
-                        Include(p => p.Tags).
-                        Include(p => p.Image).
-                        Include(p => p.Comments).
-                        Include(p => p.Tags).
-                        Include(p => p.User).
-                        OrderByDescending(p => p.Likes).
-                        Take(6).
-                        ToListAsync();
-        }
-
-        public async Task<IEnumerable<Category>> GetCategories()
-        {
-            return await _context.Categories.ToListAsync();
+            } 
         }
 
         public async Task ToggleLikeAsync(string postId, string userId)
@@ -218,29 +139,6 @@ namespace BlogHub.Repository
             {
                 _context.Likes.Remove(existingLike);
             }
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-            }
-            _disposed = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
     }

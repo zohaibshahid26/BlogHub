@@ -13,9 +13,9 @@ namespace BlogHub.Repository
         }
 
         public IEnumerable<TEntity> Get(
-           Expression<Func<TEntity, bool>>? filter = null,
-           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-           string includeProperties = "")
+        Expression<Func<TEntity, bool>>? filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        string includeProperties = "")
         {
             IQueryable<TEntity> query= _context.Set<TEntity>();
 
@@ -40,7 +40,7 @@ namespace BlogHub.Repository
             }
         }
 
-        public async Task AddAsync(TEntity entity)
+        public virtual async Task AddAsync(TEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
             await _context.Set<TEntity>().AddAsync(entity);
@@ -58,7 +58,7 @@ namespace BlogHub.Repository
 
         }
 
-        public void Update(TEntity entity)
+        public virtual void Update(TEntity entity)
         {
             ArgumentNullException.ThrowIfNull(entity);
             _context.Set<TEntity>().Update(entity);
@@ -73,6 +73,5 @@ namespace BlogHub.Repository
                 _context.Set<TEntity>().Remove(entityToDelete);
             }
         }
-
     }
 }

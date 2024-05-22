@@ -1,6 +1,5 @@
 ﻿using BlogHub.Models;
-using BlogHub.Repository;
-using BlogHub.UnitofWork;
+using BlogHub.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +31,6 @@ namespace BlogHub.Controllers
             return RedirectToAction("Categories", "Admin");
         }
 
-
         [HttpPost]
         public async Task<IActionResult> DeleteCategory(int id)
         {
@@ -40,7 +38,6 @@ namespace BlogHub.Controllers
             await _unitOfWork.SaveChangesAsync();
             return RedirectToAction("Categories", "Admin");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> UpdateCategory(int id)

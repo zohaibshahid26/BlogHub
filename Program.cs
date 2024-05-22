@@ -1,12 +1,11 @@
+using BlogHub.Authorization;
 using BlogHub.Data;
-using BlogHub.Repository;
 using BlogHub.Helper;
+using BlogHub.Repository;
+using BlogHub.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using BlogHub.Authorization;
-using BlogHub.Models;
-using BlogHub.UnitofWork;
 
 var builder = WebApplication.CreateBuilder(args);
 

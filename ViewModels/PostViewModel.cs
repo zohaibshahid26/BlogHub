@@ -9,9 +9,9 @@ namespace BlogHub.ViewModels
 
         public string? PostId { get; set; }
         [Required(ErrorMessage = "Title is required and cannot be empty")]
-        public string Title { get; set; } 
+        public string Title { get; set; }
         [Required(ErrorMessage = "Content is required and cannot be empty")]
-        public  string Content { get; set; } 
+        public string Content { get; set; }
         public IFormFile? Image { get; set; }
         public string? ImageUrl { get; set; }
         [Required(ErrorMessage = "Category is required")]

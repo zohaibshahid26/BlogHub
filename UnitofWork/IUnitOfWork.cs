@@ -1,7 +1,7 @@
 ﻿using BlogHub.Models;
 using BlogHub.Repository;
 
-namespace BlogHub.UnitofWork
+namespace BlogHub.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {

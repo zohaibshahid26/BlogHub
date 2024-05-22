@@ -4,7 +4,7 @@ namespace BlogHub.Authorization
 {
     public class CommentAuthorizationRequirement : IAuthorizationRequirement
     {
-       
+
         public CommentAuthorizationRequirement(string operationName)
         {
             OperationName = operationName;

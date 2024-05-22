@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using BlogHub.Helper;
 using BlogHub.Models;
-using BlogHub.Helper;  // Ensure you include your model namespaces
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogHub.Data
 {
@@ -11,7 +11,6 @@ namespace BlogHub.Data
         {
         }
 
-        // Custom DbSets
         public DbSet<Post> Posts { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -23,7 +22,7 @@ namespace BlogHub.Data
         {
             base.OnModelCreating(modelBuilder);
 
-         
+
             modelBuilder.Entity<Post>().
                 Property(p => p.PostId).
                 ValueGeneratedOnAdd();
@@ -49,13 +48,12 @@ namespace BlogHub.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Tag>()
-                .HasIndex(t => t.TagName) 
+                .HasIndex(t => t.TagName)
                 .IsUnique();
 
             modelBuilder.Entity<Category>()
                 .HasIndex(c => c.CategoryName)
                 .IsUnique();
         }
-
     }
 }

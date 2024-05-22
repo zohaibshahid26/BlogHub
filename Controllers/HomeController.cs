@@ -1,5 +1,5 @@
 using BlogHub.Models;
-using BlogHub.Repository;
+using BlogHub.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,19 +8,19 @@ namespace BlogHub.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IPostRepository _postRepositry;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger, IPostRepository postRepository)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
-            _postRepositry = postRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var latestPosts = await _postRepositry.GetLatestPostAsync();
-            //var categories = await _postRepositry.GetCategories();
-            //var trendingPosts = await _postRepositry.GetTrendingPostAsync();
+            var trendingPosts = _unitOfWork.PostRepository.Get(orderBy: q => q.OrderByDescending(p => p.Likes!.Count),includeProperties: "Category,Tags,Image,Comments,User,Likes").Take(6);
+            var latestPosts = _unitOfWork.PostRepository.Get(orderBy: q => q.OrderByDescending(p => p.DatePosted), includeProperties: "Category,Tags,Image,Comments,User,Likes").Take(5);
+            var categories = _unitOfWork.CategoryRepository.GetAllAsync();
             return View(latestPosts);
         }
 

@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlogHub.Helper;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BlogHub.Helper;
-using Microsoft.AspNetCore.Identity;
 
 namespace BlogHub.Models
 {
@@ -17,6 +16,6 @@ namespace BlogHub.Models
 
         public string? PostId { get; set; }
         [ForeignKey("PostId")]
-        public  Post? Post { get; set; }  // Navigation property to the Post
+        public Post? Post { get; set; }  // Navigation property to the Post
     }
 }

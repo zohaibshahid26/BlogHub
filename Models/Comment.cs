@@ -1,5 +1,4 @@
 ﻿using BlogHub.Helper;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,12 +14,12 @@ namespace BlogHub.Models
         public DateTime DatePosted { get; set; } = DateTime.UtcNow;
 
         [Required(ErrorMessage = "User is required for commenting")]
-        public  string? UserId { get; set; }
+        public string? UserId { get; set; }
         [ForeignKey("UserId")]
-        public  MyUser? User { get; set; }
+        public MyUser? User { get; set; }
 
 
-        public string ? PostId { get; set; }
+        public string? PostId { get; set; }
         [ForeignKey("PostId")]
         public Post? Post { get; set; }
     }
