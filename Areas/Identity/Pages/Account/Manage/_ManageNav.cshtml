@@ -1,4 +1,4 @@
-﻿@using BlogHub.Helper
+﻿@using BlogHub.Models;
 @inject SignInManager<MyUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

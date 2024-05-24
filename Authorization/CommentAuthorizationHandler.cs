@@ -7,22 +7,15 @@ namespace BlogHub.Authorization
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CommentAuthorizationRequirement requirement, Comment resource)
         {
-            if (requirement.OperationName == "Edit")
+           
+            if (requirement.OperationName == "Edit" && context.User.Identity?.Name == resource.User?.UserName)
             {
-                if (context.User.Identity?.Name == resource.User?.UserName)
-                {
-                    context.Succeed(requirement);
-                }
+                context.Succeed(requirement);
             }
-            if (requirement.OperationName == "Delete")
+            if (requirement.OperationName == "Delete" && (context.User.Identity?.Name == resource.User?.UserName || context.User.Identity?.Name == resource.Post!.User?.UserName))
             {
-                if (context.User.Identity?.Name == resource.User?.UserName || context.User.Identity?.Name == resource.Post!.User?.UserName)
-                {
-                    context.Succeed(requirement);
-
-                }
+                context.Succeed(requirement);
             }
-
             return Task.CompletedTask;
         }
     }

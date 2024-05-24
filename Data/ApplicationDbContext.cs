@@ -1,5 +1,4 @@
-﻿using BlogHub.Helper;
-using BlogHub.Models;
+﻿using BlogHub.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,6 +53,12 @@ namespace BlogHub.Data
             modelBuilder.Entity<Category>()
                 .HasIndex(c => c.CategoryName)
                 .IsUnique();
+
+            modelBuilder.Entity<MyUser>()
+                .HasOne(u => u.Image)
+                .WithOne()
+                .HasForeignKey<MyUser>(u => u.ImageId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

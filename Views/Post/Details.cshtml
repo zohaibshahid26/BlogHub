@@ -95,10 +95,12 @@
             <div class="d-flex mt-3 flex-wrap">
                 <h4 class="m-3 mx-2 ">Tags</h4>
                 @if(Model?.Tags?.Count > 0)
-                @foreach(var tag in Model.Tags)
                 {
-                    <a href="#"
-                       class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">@tag.TagName</a>
+                    @foreach(var tag in Model.Tags)
+                    {
+                        <a href="#"
+                           class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">@tag.TagName</a>
+                    }
                 }
             </div>
             <div class="text-body text-black fs-5 my-3">

@@ -9,7 +9,8 @@ namespace BlogHub.UnitOfWork
         IGenericRepository<Comment> CommentRepository { get; }
         IGenericRepository<Category> CategoryRepository { get; }
         IGenericRepository<Tag> TagRepository { get; }
-        IGenericRepository<Image> ImageRepository { get; }
+        IImageRepository ImageRepository { get; }
+        IGenericRepository<MyUser> UserRepository { get; }
         Task SaveChangesAsync();
     }
 }

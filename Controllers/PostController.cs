@@ -77,7 +77,7 @@ namespace BlogHub.Controllers
                     Tags = tags.ToList(),
                     UserId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous",
                     CategoryId = _unitOfWork.CategoryRepository.Get(filter: c => c.CategoryName == post.Category.CategoryName).FirstOrDefault()!.CategoryId,
-                    Image = new Image { ImageURL = await _unitOfWork.PostRepository.SaveImageAsync(post.Image) }
+                    Image = new Image { ImageURL = await _unitOfWork.ImageRepository.SaveImageAsync(post.Image,"featureImages") }
                 };
                 await _unitOfWork.PostRepository.AddAsync(Post);
                 await _unitOfWork.SaveChangesAsync();
@@ -157,10 +157,10 @@ namespace BlogHub.Controllers
                     {
                         var imageId = postToUpdate.Image.ImageId;
                         postToUpdate.ImageId = null;
-                        _unitOfWork.PostRepository.RemovePostImage(postToUpdate.Image.ImageURL);
+                        _unitOfWork.ImageRepository.RemoveImage(postToUpdate.Image.ImageURL);
                         await _unitOfWork.ImageRepository.DeleteAsync(imageId);
                     }
-                    postToUpdate.Image = new Image { ImageURL = await _unitOfWork.PostRepository.SaveImageAsync(post.Image) };
+                    postToUpdate.Image = new Image { ImageURL = await _unitOfWork.ImageRepository.SaveImageAsync(post.Image,"featureImages")};
                 }
                 _unitOfWork.PostRepository.Update(postToUpdate);
                 await _unitOfWork.SaveChangesAsync();
@@ -189,7 +189,7 @@ namespace BlogHub.Controllers
             await _unitOfWork.PostRepository.DeleteAsync(id);
             if (post.Image != null)
             {
-                _unitOfWork.PostRepository.RemovePostImage(post.Image.ImageURL);
+                _unitOfWork.ImageRepository.RemoveImage(post.Image.ImageURL);
                 await _unitOfWork.ImageRepository.DeleteAsync(post.Image.ImageId);
             }
             await _unitOfWork.SaveChangesAsync();

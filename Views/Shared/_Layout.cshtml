@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+<!DOCTYPE html>
 <html>
 <head>
     <title>BlogHub - A Platform where you can write.</title>
@@ -42,13 +43,15 @@
                             <a class="nav-link" href="/Home/Index#trending">Trending Posts</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <a class="nav-link" asp-action="Profile" asp-controller="User">Profile</a>
+                            <a class="nav-link" asp-action="Profile" asp-controller="User" asp-route-id="@if(User.Identity?.IsAuthenticated ?? false){@User.FindFirstValue(ClaimTypes.NameIdentifier)}">Profile</a>
                         </li>
                         <li class="nav-item mx-3">
                             <a class="nav-link" asp-controller="Post" asp-action="Add">Add Post</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout" onclick="return confirm('Are you sure you want to logout?')">Logout</a>
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                                <button type="submit" class="nav-link" onclick="return confirm('Are you sure you want to logout?')">Logout</button>
+                            </form>
                         </li>
                         
                     </ul>

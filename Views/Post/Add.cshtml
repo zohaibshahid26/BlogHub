@@ -8,13 +8,13 @@
     <script src="~/js/AddPost.js"></script>
 }
 <div class="container-fluid mx-3  mt-3 min-vh-100">
-    <form method="post" action="/Post/Add" enctype="multipart/form-data">
-        <div class="step">
+    <form method="post" action="/Post/Add" enctype="multipart/form-data" id="addForm">
+        <div class="step" id="step1">
             <div class="row mt-3 mx-1">
                 <div class="col">
                     <div class="input-group mx-1 border-0">
                         <input id="title" type="text" class="fs-3 text-muted w-100 border-0 title-input"
-                               placeholder="Title..." required asp-for="Title">
+                               placeholder="Title..."  asp-for="Title">
                     </div>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                         <p class=" fs-5 custom-color">MARKDOWN</p>
                         <div class="input-group m-0 shadow">
                             <textarea id="markdownInput" class="form-control bg-light-subtle" rows="13"
-                                      placeholder="Content" required asp-for="Content"></textarea>
+                                      placeholder="Content"  asp-for="Content"></textarea>
                         </div>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="step ">
+        <div class="step" id="step2">
             <div class="row mt-3 mx-1">
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-center">
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="step">
+        <div class="step" id="step3">
             <div class="row mt-3 mx-1 mb-5">
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-center">
@@ -78,7 +78,7 @@
                             <div class="input-group">
                                 <select id="categorySelect" class="form-select-md rounded-3 p-1"
                                         asp-for="Category.CategoryName" aria-label="Default select example">
-                                        <option selected>Choose...</option>
+                                    <option value="" selected disabled hidden>Choose...</option>
                                         @if (Model.Categories != null)
                                         {
                                             @foreach (var category in Model.Categories)
@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <div class="step">
+        <div class="step" id="step4">
             <div class="row mt-3 mx-1">
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-center mb-5 flex-wrap">
@@ -128,7 +128,7 @@
                 </div>
             </div>
         </div>
-        <div class="step">
+        <div class="step" id="step5">
             <div class="row mt-3 mx-1">
                 <div class="col">
                     <div class="d-flex align-items-center justify-content-center mb-5 flex-wrap">

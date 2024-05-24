@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<BlogHub.Models.Post>
-@section Styles {
+@section Styles 
+{
     <link rel="stylesheet" href="~/css/style.css" />
     <link rel="stylesheet" href="~/css/myposts.css" />
 }
@@ -19,9 +20,9 @@
                                @{
                                     var plainText = Markdig.Markdown.ToPlainText(post.Content);
                                     var words = plainText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                                    var first50Words = words.Take(50);
+                                    var first50Words = words.Take(30);
                                     var previewText = string.Join(" ", first50Words);
-                                    if (words.Length > 50)
+                                    if (words.Length > 30)
                                     {
                                         previewText += " ...";
                                     }

@@ -12,18 +12,20 @@ namespace BlogHub.UnitOfWork
         public IGenericRepository<Comment> CommentRepository { get; private set; }
         public IGenericRepository<Category> CategoryRepository { get; private set; }
         public IGenericRepository<Tag> TagRepository { get; private set; }
-        public IGenericRepository<Image> ImageRepository { get; private set; }
+        public IImageRepository ImageRepository { get; private set; }
+        public IGenericRepository<MyUser> UserRepository { get; private set; }
         private bool _disposed = false;
 
         public UnitOfWork(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
             _env = env;
-            PostRepository = new PostRepository(_context, _env);
+            PostRepository = new PostRepository(_context);
             CategoryRepository = new GenericRepository<Category>(_context);
             CommentRepository = new GenericRepository<Comment>(_context);
             TagRepository = new GenericRepository<Tag>(_context);
-            ImageRepository = new GenericRepository<Image>(_context);
+            ImageRepository = new ImageRepository(_context, _env);
+            UserRepository = new GenericRepository<MyUser>(_context);
         }
 
         public async Task SaveChangesAsync()

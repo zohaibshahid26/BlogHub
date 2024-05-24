@@ -1,11 +1,12 @@
 using BlogHub.Authorization;
 using BlogHub.Data;
-using BlogHub.Helper;
+using BlogHub.Models;
 using BlogHub.Repository;
 using BlogHub.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddDefaultIdentity<MyUser>(options => options.SignIn.RequireCon
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddSingleton<IAuthorizationHandler, PostAuthorizationHandler>();

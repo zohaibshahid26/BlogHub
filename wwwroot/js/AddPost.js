@@ -17,12 +17,13 @@ document.getElementById("addTagButton").addEventListener("click", function () {
     } else if (tagElements.length >= 5) {
         alert("You can only add up to 5 tags.");
     }
-    
+
     function updateHiddenTags() {
         let tagsArray = Array.from(tagContainer.getElementsByClassName("badge btn-primary fs-6 m-1")).map(elem => elem.textContent);
         hiddenTags.value = tagsArray.join(',');
     }
 });
+
 document.addEventListener("DOMContentLoaded", function () {
     var tagContainer = document.getElementById("tagContainer");
     tagContainer.addEventListener("click", function (event) {
@@ -71,8 +72,10 @@ function showStep(stepIndex) {
 }
 
 nextBtn.addEventListener("click", () => {
-    if (currentStep < steps.length - 1) {
-        showStep(currentStep + 1);
+    if (validateStep(currentStep)) {
+        if (currentStep < steps.length - 1) {
+            showStep(currentStep + 1);
+        }
     }
 });
 
@@ -83,6 +86,17 @@ prevBtn.addEventListener("click", () => {
 });
 
 showStep(0);
+
+function validateStep(step) {
+    let isValid = true;
+    steps[step].querySelectorAll('[required]').forEach(function (input) {
+        if (input.value.trim() === '') {
+            isValid = false;
+            return false; // exit loop early if any required field is empty
+        }
+    });
+    return isValid;
+}
 
 function readURL(input) {
     if (input.files && input.files[0]) {
@@ -108,9 +122,11 @@ function removeUpload() {
     $(".file-upload-content").hide();
     $(".image-upload-wrap").show();
 }
+
 $(".image-upload-wrap").bind("dragover", function () {
     $(".image-upload-wrap").addClass("image-dropping");
 });
+
 $(".image-upload-wrap").bind("dragleave", function () {
     $(".image-upload-wrap").removeClass("image-dropping");
 });
