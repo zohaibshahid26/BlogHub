@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Post>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var trendingPost in Model)
+    {
+        <div class="row mt-3 mb-5">
+            <div class="col-12 col-md-6 col-lg-4 p-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@trendingPost.Title</h5>
+                        <div class="card-text mt-2">
+                            <img src="~/assests/avatar.jpg" width="30px" class="rounded-5">
+                            <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">
+                                @string.Concat(trendingPost.User.FirstName, " ", trendingPost.User.LastName) in @trendingPost.Category.CategoryName
+                            </h6>
+                            <p class="mt-2">
+                                @{
+                                    var plainText = Markdig.Markdown.ToPlainText(trendingPost.Content);
+                                    var words = plainText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                    var first50Words = words.Take(50);
+                                    var previewText = string.Join(" ", first50Words);
+                                    if (words.Length > 50)
+                                    {
+                                        previewText += " ...";
+                                    }
+                                }
+                                @previewText
+                            </p>
+                        </div>
+                        <div class="text-muted d-flex gap-2">
+                            <p class="d-inline p-2">@trendingPost.TimeToRead min read</p>
+                            <a asp-controller="Post" asp-action="Details" asp-route-id="@trendingPost.PostId" class="card-link d-inline p-2">Read more</a>
+                            <div class="d-inline-block mx-2 p-2">
+                                <img src="~/assests/heart.png" class="img-fluid rounded ratio-21x9">
+                                <p class="d-inline">@(trendingPost.Likes?.Count ?? 0) </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="row">
+        <div class="col-12">
+            <h4 class="text-center text-white">No trending posts found.</h4>
+        </div>
+    </div>
+}

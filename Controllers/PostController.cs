@@ -22,8 +22,8 @@ namespace BlogHub.Controllers
         public IActionResult Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous";
-            var post =  _unitOfWork.PostRepository.Get(filter: p => p.UserId == userId, includeProperties: "Category,Tags,Image,Comments,User");
-            return View(post);
+            var posts = _unitOfWork.PostRepository.Get(filter: p => p.UserId == userId, includeProperties: "Category,Tags,Image,Comments,User");
+            return View(posts);
         }
 
         [AllowAnonymous]
@@ -34,6 +34,18 @@ namespace BlogHub.Controllers
             {
                 return NotFound();
             }
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(30),
+                HttpOnly = true
+            };
+            var existingPosts = Request.Cookies["RecentlyViewedPosts"];
+            var recentlyViewedPosts = existingPosts != null ? existingPosts.Split(',').ToList() : new List<string>();
+            if (!recentlyViewedPosts.Contains(id))
+            {
+                recentlyViewedPosts.Add(id);
+            }
+            Response.Cookies.Append("RecentlyViewedPosts", string.Join(",", recentlyViewedPosts), cookieOptions);
             return View(post);
         }
 
@@ -131,15 +143,14 @@ namespace BlogHub.Controllers
                 {
                     var existingTags = postToUpdate.Tags ?? new List<Tag>();
                     var newTags = new List<Tag>();
-
                     foreach (var tagName in tagNames)
                     {
                         var tag = _unitOfWork.TagRepository.Get(filter: t => t.TagName == tagName).FirstOrDefault() ?? new Tag { TagName = tagName };
                         newTags.Add(tag);
                     }
-
                     postToUpdate.Tags = existingTags.Union(newTags).ToList();
                 }
+
                 if (post.Image != null)
                 {
                     if (postToUpdate.Image != null)
