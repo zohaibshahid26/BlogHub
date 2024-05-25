@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@trendingPost.Title</h5>
                         <div class="card-text mt-2">
-                            <img src="~/assests/avatar.jpg" width="30px" class="rounded-5">
+                            <img src="~/@trendingPost.User.Image?.ImageURL" width="40px" class="rounded-5">
                             <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">
                                 @string.Concat(trendingPost.User.FirstName, " ", trendingPost.User.LastName) in @trendingPost.Category.CategoryName
                             </h6>

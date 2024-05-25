@@ -66,10 +66,9 @@
                     @foreach (var post in Model.RecentlyViewedPosts)
                     {
                         <a asp-action="Details" asp-controller="Post" asp-route-id="@post.PostId" style="text-decoration: none; color: inherit;">
-                            <div class="mb-3 rounded-4 p-3 shadow border">
+                            <div class="mb-3 rounded-4 p-3 shadow-lg border">
                                 <div class="mb-2">
-                                    <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
-                                    style="width:25px;">
+                                    <img class="mx-2 rounded-circle" src="~/@post.User.Image?.ImageURL" alt="Author's avatar" style="width:35px;">
                                     <p class=" d-inline">@string.Concat(post.User.FirstName, " ", post.User.LastName)</p>
                                 </div>
                                 <div class="card-body">
@@ -89,10 +88,9 @@
                     @foreach (var post in Model.LatestPosts)
                     {
                         <a asp-action="Details" asp-controller="Post" asp-route-id="@post.PostId" style="text-decoration: none; color: inherit;">
-                            <div class="mb-3 rounded-4 p-3 shadow border">
+                            <div class="mb-3 rounded-4 p-3 shadow-lg border">
                                 <div class="mb-2">
-                                    <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar"
-                                    style="width:25px;">
+                                    <img class="mx-2 rounded-circle" src="~/@post.User.Image?.ImageURL" alt="Author's avatar" style="width:35px;">
                                     <p class=" d-inline">@string.Concat(post.User.FirstName, " ", post.User.LastName)</p>
                                 </div>
                                 <div class="card-body">

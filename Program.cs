@@ -57,12 +57,13 @@ else
     app.UseHsts();
 }
 
+
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.MapControllerRoute(
     name: "default",

@@ -55,6 +55,12 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
         }
 
         private async Task LoadAsync(MyUser user)
@@ -66,7 +72,9 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = user.FirstName,
+                LastName = user.LastName
             };
         }
 
@@ -103,6 +111,17 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
                 if (!setPhoneResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
+                    return RedirectToPage();
+                }
+            }
+            if (Input.FirstName != user.FirstName || Input.LastName != user.LastName)
+            {
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to update user profile.";
                     return RedirectToPage();
                 }
             }

@@ -17,7 +17,7 @@ namespace BlogHub.Controllers
             {
                 id = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous";
             }
-            var user = _unitOfWork.UserRepository.Get(filter: u => u.Id == id).FirstOrDefault();
+            var user = _unitOfWork.UserRepository.Get(filter: u => u.Id == id,includeProperties:"Image").FirstOrDefault();
             if (user == null)
             {
                 return NotFound();

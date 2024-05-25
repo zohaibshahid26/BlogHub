@@ -29,10 +29,17 @@ namespace BlogHub.Controllers
         [AllowAnonymous]
         public IActionResult Details(string id)
         {
-            Post? post = _unitOfWork.PostRepository.Get(filter: p => p.PostId == id, includeProperties: "Category,Tags,Image,Comments.User,User,Likes").FirstOrDefault();
+            Post? post = _unitOfWork.PostRepository.Get(filter: p => p.PostId == id, includeProperties: "Category,Tags,Image,Comments.User,User,User.Image,Likes").FirstOrDefault();
             if (post == null)
             {
                 return NotFound();
+            }
+            string currentUserImageUrl=string.Empty;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                currentUserImageUrl = _unitOfWork.UserRepository.Get(filter: u => u.Id == userId, includeProperties: "Image").FirstOrDefault()?.Image?.ImageURL ?? string.Empty;
+                ViewData["CurrentUserImageUrl"] = currentUserImageUrl;
             }
             var cookieOptions = new CookieOptions
             {

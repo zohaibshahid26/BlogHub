@@ -126,10 +126,7 @@ namespace BlogHub.Areas.Identity.Pages.Account
                 var user = CreateUser();
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-                user.Image = new Image
-                {
-                    ImageURL = await _unitOfWork.ImageRepository.SaveImageAsync(null, "profileImages")
-                };
+                user.ImageId = 17025;
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -166,7 +163,6 @@ namespace BlogHub.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 

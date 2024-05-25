@@ -6,7 +6,25 @@
 }
 @section Scripts {
     <script src="~/js/AddPost.js"></script>
+    <script type="module">
+        import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+        document.addEventListener('DOMContentLoaded', function () {
+            const markdownInput = document.getElementById('markdownInput');
+            const preview = document.getElementById('preview');
+            if (markdownInput && preview) {
+                markdownInput.addEventListener('input', () => {
+                    preview.innerHTML = marked(markdownInput.value);
+                    if (preview.clientHeight > markdownInput.clientHeight && preview.clientHeight > 200) {
+                        markdownInput.style.height = preview.clientHeight + 'px';
+                    }
+                });
+            } else {
+                console.error('markdownInput or preview element not found');
+            }
+        });
+    </script>
 }
+
 <div class="container-fluid mx-3  mt-3 min-vh-100">
     <form method="post" action="/Post/Add" enctype="multipart/form-data" id="addForm">
         <div class="step" id="step1">

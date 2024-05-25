@@ -84,7 +84,7 @@
                 </div>
             </div>
             <div class="mb-2">
-                <img class="mx-2 rounded-circle" src="~/assests/avatar.jpg" alt="Author's avatar" style="width:25px;">
+                <img class="mx-2 rounded-circle" src="~/@Model?.User.Image?.ImageURL" alt="Author's avatar" style="width:35px;">
                 <p class=" d-inline text-black overflow-hidden">@string.Concat(Model!.User.FirstName," ",Model.User.LastName) in @Model.Category.CategoryName</p>
                 <p class="mx-5 text-muted">@Model.DatePosted</p>
             </div>
@@ -99,7 +99,7 @@
                     @foreach(var tag in Model.Tags)
                     {
                         <a href="#"
-                           class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3">@tag.TagName</a>
+                           class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3" style="background:#ebe6eb>">@tag.TagName</a>
                     }
                 }
             </div>
@@ -116,7 +116,7 @@
                 </div>
                 <form method="post" asp-action="Add" asp-controller="Comment">
                     <div class="mt-2 d-flex flex-row align-items-center p-3 form-color">
-                        <img src="~/assests/avatar.jpg" width="40" class="rounded-circle mx-2">
+                        <img src="~/@ViewData["CurrentUserImageUrl"]" width="40" class="rounded-circle mx-2">
                         <input name="Content"  type="text" class="form-control" placeholder="Enter your comment..." required>
                         <input type="hidden" name="PostId" value="@Model?.PostId" />
                         <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)"/>
@@ -129,7 +129,7 @@
                     {
                         <div class="my-2">
                             <div class="d-flex flex-row p-1">
-                                <img src="~/assests/avatar2.png" width="40" height="40" class="rounded-circle mx-3">
+                                <img src="~/@Model.User.Image?.ImageURL" width="40" height="40" class="rounded-circle mx-3">
                                 <div class="w-100">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex flex-row align-items-center">

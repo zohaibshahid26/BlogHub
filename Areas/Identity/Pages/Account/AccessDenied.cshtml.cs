@@ -18,6 +18,8 @@ namespace BlogHub.Areas.Identity.Pages.Account
         /// </summary>
         public void OnGet()
         {
+
+
         }
     }
 }

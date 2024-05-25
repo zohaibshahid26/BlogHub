@@ -8,7 +8,7 @@
     <div class="card p-4 shadow my-5" style="border-radius: 15px;">
         <div class="card-body text-center">
             <div class="mt-3 mb-4 bg-white">
-                <img src="~/assests/avatar5.png" class="rounded-circle img-fluid" style="width: 50px;" />
+                <img src="~/@Model.Image?.ImageURL" class="rounded-circle img-fluid" style="width: 100px;" />
             </div>
             <h4 class="my-2">
                 @string.Format("{0} {1}", Model.FirstName, Model.LastName)
@@ -31,8 +31,10 @@
                 </div>
             </div>
         </div>
-        <div class="edit-profile mb-4">
-            <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+        @if (User.Identity?.Name == Model.Email)
+        {
+            <div class="edit-profile mb-4">
+                <a href="/Identity/Account/Manage" class="btn">
                 Edit
                 Profile
             </a>
@@ -41,50 +43,7 @@
                 Avatar
             </a>
         </div>
-    </div>
-</div>
-
-<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form asp-action="Profile" method="post">
-                    <div class="mb-3">
-                        <label  for="FirstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="FirstName" placeholder="FirstName" required value="@Model.FirstName">
-                    </div>
-                    <div class="mb-3">
-                        <label for="LastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="userName" placeholder="FirstName" required value="@Model.LastName">
-                    </div>
-                    @* <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" placeholder="Email" value="zohaibshahid200@gmail.com" required>
-                    </div> *@
-                    <div class="mb-3">
-                        <label for="location" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="location" placeholder="Location" value="Lahore" required>
-                    </div>
-                    @* <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="newPassword" placeholder="New Password">
-                    </div> *@
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        }
     </div>
 </div>
 

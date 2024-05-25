@@ -1,0 +1,46 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Found</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link rel="icon" href="~/icon.ico" />
+    <style>
+        body {
+            background: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .center-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container center-container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="my-3">
+                    <h1 class="text-danger">Page Not Found</h1>
+                    <p>
+                        The page you are looking for might have been removed, had its name changed, or is temporarily
+                        unavailable.
+                    </p>
+                    <img src="~/assests/notfound.svg" class="img img-thumbnail border-0" alt="Not Found" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

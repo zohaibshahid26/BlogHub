@@ -2,6 +2,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+
 
 :root {
     --primary-color: #6c63ff;
@@ -14,6 +17,7 @@
     --font-primary: "Roboto", sans-serif;
     --font-secondary: "Open Sans", sans-serif;
     --font-tertiary: "Roboto", sans-serif;
+    --font-quaternary: "Montserrat", sans-serif;
     --font-color: #333;
     --font-color-brand: linear-gradient(to right, #6c63ff, #d93f87);
     --font-light: #fff;
@@ -25,7 +29,7 @@
 }
 
 * {
-    font-family: var(--font-primary);
+    font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -40,6 +44,16 @@
     font-size: 30px; /* Adjust the font size as needed */
     font-weight: bold;
 }
+    .logo:hover {
+        background-image: linear-gradient( to left, var(--primary-color), var(--secondary-color) );
+        -webkit-background-clip: text; /* Clip the text to the background gradient */
+        background-clip: text; /* Clip the text to the background gradient for compatibility */
+        color: transparent; /* Make the text transparent */
+        display: inline-block; /* Ensure the gradient covers only the text */
+        text-decoration: none; /* Remove underline from the link */
+        font-size: 30px; /* Adjust the font size as needed */
+        font-weight: bold;
+    }
 
 .gradient-text {
     background-image: linear-gradient( to right, var(--primary-color), var(--quaternary-color) );
