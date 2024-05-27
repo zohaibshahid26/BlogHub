@@ -35,7 +35,7 @@ namespace BlogHub.Repository
         public void RemoveImage(string imageUrl)
         {
             ArgumentNullException.ThrowIfNull(imageUrl);
-            if (!imageUrl.Contains("default_image.png"))
+            if (!imageUrl.Contains("default_image.png") && !imageUrl.Contains("default_profile.jpg"))
             {
                 var filePath = Path.Combine(_env.WebRootPath, imageUrl);
                 if (File.Exists(filePath))

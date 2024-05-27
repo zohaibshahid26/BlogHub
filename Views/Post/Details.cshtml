@@ -46,7 +46,6 @@
         }
     }
 }
-
 @section Styles {
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/post.css" asp-append-version="true" />
@@ -57,7 +56,6 @@
 @section Scripts {
     <script src="~/js/Post.js"></script>
 }
-
 <div class="container-fluid my-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
@@ -78,14 +76,14 @@
                             }
                         </a>
                     </form>
-                    <span class="mx-2" id="like-count">
+                    <span class="mx-0" id="like-count">
                         @(Model?.Likes?.Count ?? 0)
                     </span>
                 </div>
             </div>
             <div class="mb-2">
                 <img class="mx-2 rounded-circle" src="~/@Model?.User.Image?.ImageURL" alt="Author's avatar" style="width:35px;">
-                <p class=" d-inline text-black overflow-hidden">@string.Concat(Model!.User.FirstName," ",Model.User.LastName) in @Model.Category.CategoryName</p>
+                <p class=" d-inline text-black overflow-hidden">@string.Concat(Model!.User.FirstName," ",Model.User.LastName)  <strong>|</strong>  @Model.Category.CategoryName</p>
                 <p class="mx-5 text-muted">@Model.DatePosted</p>
             </div>
 

@@ -3,6 +3,7 @@
 #nullable disable
 using System.ComponentModel.DataAnnotations;
 using BlogHub.Models;
+using BlogHub.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,13 +14,18 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<MyUser> _userManager;
         private readonly SignInManager<MyUser> _signInManager;
+        private readonly IWebHostEnvironment _env;
+        private readonly IUnitOfWork _unitOfWork;
+
 
         public IndexModel(
             UserManager<MyUser> userManager,
-            SignInManager<MyUser> signInManager)
+            SignInManager<MyUser> signInManager,IWebHostEnvironment env,IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _env = env;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -61,21 +67,31 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
 
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
+
+            [Display(Name = "Profile Picture")]
+            public IFormFile ProfilePicture { get; set; }
+
+
+
         }
 
         private async Task LoadAsync(MyUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
-
-            Input = new InputModel
+            user.ImageId = _userManager.Users.FirstOrDefault(u => u.Id == user.Id).ImageId;
+            user.Image = _userManager.Users.Select(u => u.Image).FirstOrDefault(i => i.ImageId == user.ImageId);
+            using (var stream =System.IO.File.OpenRead(Path.Combine(_env.WebRootPath,user.Image.ImageURL)))
             {
-                PhoneNumber = phoneNumber,
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
+                Input = new InputModel
+                {
+                    PhoneNumber = phoneNumber,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ProfilePicture = new FormFile(stream, 0, stream.Length, stream.Name, stream.Name)
+                };
+            }
+            ViewData["ImageUrl"] = user.Image.ImageURL;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -114,20 +130,35 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+            if(Input.ProfilePicture != null)
+            {
+                user.Image = _userManager.Users.Select(u => u.Image).FirstOrDefault(i => i.ImageId == user.ImageId);
+                _unitOfWork.ImageRepository.RemoveImage(user.Image.ImageURL);
+                await _unitOfWork.ImageRepository.DeleteAsync(user.ImageId);
+                var Image = new Image
+                {
+                    ImageURL = await _unitOfWork.ImageRepository.SaveImageAsync(Input.ProfilePicture, "profileImages")
+                };
+                await _unitOfWork.ImageRepository.AddAsync(Image);
+                user.ImageId = Image.ImageId;
+                user.Image=Image;
+
+            } 
             if (Input.FirstName != user.FirstName || Input.LastName != user.LastName)
             {
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-                var updateResult = await _userManager.UpdateAsync(user);
-                if (!updateResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to update user profile.";
-                    return RedirectToPage();
-                }
             }
 
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                StatusMessage = "Unexpected error when trying to update your profile.";
+                return RedirectToPage();
+            }
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
+            await _unitOfWork.SaveChangesAsync();
             return RedirectToPage();
         }
     }

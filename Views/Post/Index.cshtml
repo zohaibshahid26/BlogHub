@@ -8,32 +8,34 @@
     <div class="row">
         @if (Model?.Any() ?? false)
         {
-            <h2 class="mb-4 text-center text-gradient">My Posts</h2>
+            <h2 class="mb-4 text-center" style="font-weight: bold; color:blueviolet;">
+                My Posts
+            </h2>
             @foreach (var post in Model)
             {
                 <div class="col-md-6 col-lg-4">
-                    <div class="card border-1 shadow p-1 mb-4">
-                        <img src="~/@(post.Image!.ImageURL)" class="card-img-top card-img" alt="Feature Image" height="300px" width="300px" />
-                        <div class="card-body h-auto">
-                            <h4 class="card-title fw-semibold">@post.Title</h4>
-                            <p class="card-text">
-                               @{
+                    <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+                        <img src="~/@(post.Image!.ImageURL)" class="card-img-top card-img" alt="Feature Image" style="height: 250px; object-fit: cover;" />
+                        <div class="card-body">
+                            <h4 class="card-title fw-semibold text-primary">@post.Title</h4>
+                            <p class="card-text text-muted">
+                                @{
                                     var plainText = Markdig.Markdown.ToPlainText(post.Content);
                                     var words = plainText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                                    var first50Words = words.Take(30);
+                                    var first50Words = words.Take(35);
                                     var previewText = string.Join(" ", first50Words);
-                                    if (words.Length > 30)
+                                    if (words.Length > 35)
                                     {
                                         previewText += " ...";
                                     }
                                 }
                                 @previewText
-                                <a asp-controller="Post" asp-action="Details" asp-route-id="@post.PostId" class="mx-2">Read More</a>
+                                <a asp-controller="Post" asp-action="Details" asp-route-id="@post.PostId" class="mx-2 text-decoration-none text-info">Read More</a>
                             </p>
-                            <div class="d-flex justify-content-end">
-                                <a asp-controller="Post" asp-action="Edit" asp-route-id="@post.PostId" class="btn btn-edit">Edit</a>
-                                <form method="post" asp-action="Delete" asp-route-id="@post.PostId">
-                                    <input type="submit"  class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this post?')" value= "Delete" />
+                            <div class="d-flex justify-content-end align-items-center mt-3">
+                                <a asp-controller="Post" asp-action="Edit" asp-route-id="@post.PostId" class="btn btn-edit" style="">Edit</a>
+                                <form method="post" asp-action="Delete" asp-route-id="@post.PostId" class="m-0">
+                                    <input type="submit" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this post?')" value="Delete" />
                                 </form>
                             </div>
                         </div>
