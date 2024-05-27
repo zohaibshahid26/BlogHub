@@ -38,7 +38,7 @@
                             <a class="nav-link" asp-controller="Post" asp-action="Add">Add Post</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })") method="post">
                                 <button type="submit" class="nav-link" onclick="return confirm('Are you sure you want to logout?')">Logout</button>
                             </form>
                         </li>

@@ -26,10 +26,5 @@ namespace BlogHub.Controllers
             ViewData["PostCount"] = posts.Count();
             return View(user);
         }
-        [HttpPost]
-        public IActionResult EditProfile()
-        {
-            return RedirectToAction("Profile");
-        }
     }
 }

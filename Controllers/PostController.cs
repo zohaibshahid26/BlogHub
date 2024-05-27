@@ -41,6 +41,10 @@ namespace BlogHub.Controllers
                 currentUserImageUrl = _unitOfWork.UserRepository.Get(filter: u => u.Id == userId, includeProperties: "Image").FirstOrDefault()?.Image?.ImageURL ?? string.Empty;
                 ViewData["CurrentUserImageUrl"] = currentUserImageUrl;
             }
+            else
+            {
+                ViewData["CurrentUserImageUrl"] = Path.Combine("profileImages", "default_profile.jpg");
+            }
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTime.Now.AddDays(30),

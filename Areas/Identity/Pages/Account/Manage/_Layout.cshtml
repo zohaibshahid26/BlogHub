@@ -2,15 +2,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
 <div class="my-3">
     <h1 class="text-center">Manage your account</h1>
     <h2 class="text-center">Change your account settings</h2>
     <hr />
     <div class="row">
-        <div class="col-md-3 offset-2">
+        <div class="col-md-3 offset-md-2">
             <div class="d-flex flex-column align-items-center">
+                <a href="/" class="btn-custom w-50 mb-3">Back to Home</a>
                 <partial name="_ManageNav" />
             </div>
         </div>
@@ -19,6 +18,25 @@
         </div>
     </div>
 </div>
+
+@section Styles {
+    <style>
+        .btn-custom {
+            color: #6c63ff;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            text-decoration: none;
+        }
+
+            .btn-custom:hover {
+                background-color: #your-hover-color;
+                border-color: #your-hover-color;
+            }
+
+            .btn-custom:focus {
+                box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
+            }
+    </style>
+}
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
