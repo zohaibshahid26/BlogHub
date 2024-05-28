@@ -78,6 +78,7 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
         private async Task LoadAsync(MyUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
+            Username = userName;
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             user.ImageId = _userManager.Users.FirstOrDefault(u => u.Id == user.Id).ImageId;
             user.Image = _userManager.Users.Select(u => u.Image).FirstOrDefault(i => i.ImageId == user.ImageId);
@@ -129,12 +130,17 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to update your profile.";
+                    return RedirectToPage();
+                }
             }
             if(Input.ProfilePicture != null)
             {
                 user.Image = _userManager.Users.Select(u => u.Image).FirstOrDefault(i => i.ImageId == user.ImageId);
-                _unitOfWork.ImageRepository.RemoveImage(user.Image.ImageURL);
-                await _unitOfWork.ImageRepository.DeleteAsync(user.ImageId);
+                var toDelete = user.Image;
                 var Image = new Image
                 {
                     ImageURL = await _unitOfWork.ImageRepository.SaveImageAsync(Input.ProfilePicture, "profileImages")
@@ -142,23 +148,32 @@ namespace BlogHub.Areas.Identity.Pages.Account.Manage
                 await _unitOfWork.ImageRepository.AddAsync(Image);
                 user.ImageId = Image.ImageId;
                 user.Image=Image;
-
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to update your profile.";
+                    return RedirectToPage();
+                }
+                _unitOfWork.ImageRepository.RemoveImage(toDelete.ImageURL);
+                if (toDelete.ImageId != 17025) //default image
+                {
+                    await _unitOfWork.ImageRepository.DeleteAsync(toDelete.ImageId);
+                }   
+                await _unitOfWork.SaveChangesAsync();
             } 
             if (Input.FirstName != user.FirstName || Input.LastName != user.LastName)
             {
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-            }
-
-            var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                StatusMessage = "Unexpected error when trying to update your profile.";
-                return RedirectToPage();
-            }
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to update your profile.";
+                    return RedirectToPage();
+                }
+            }  
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
-            await _unitOfWork.SaveChangesAsync();
             return RedirectToPage();
         }
     }

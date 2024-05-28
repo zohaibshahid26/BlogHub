@@ -1,4 +1,9 @@
 ﻿@using System.Security.Claims;
+@inject Microsoft.AspNetCore.Identity.UserManager<MyUser> userManager;
+@{
+    var ImageId = userManager.Users.FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))?.ImageId;
+    var Image = userManager.Users.Select(u => u.Image)?.FirstOrDefault(i => i.ImageId == ImageId);
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +16,18 @@
     <link rel="icon" href="~/icon.ico" />
     @RenderSection("Styles", required: false)
     <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <style>
+        .setting:active{
+            color: #000;
+            background-color: #fff;
+            text-decoration: none;
+        }
 
+        .navbar-toggler:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -24,7 +40,10 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item mx-3">
+                            <a class="nav-link" asp-action="Index" asp-controller="Home">Home</a>
+                        </li>
                         <li class="nav-item mx-3">
                             <a class="nav-link" asp-action="Index" asp-controller="Post">My Posts</a>
                         </li>
@@ -32,17 +51,38 @@
                             <a class="nav-link" href="/Home/Index#trending">Trending Posts</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <a class="nav-link" asp-action="Profile" asp-controller="User" asp-route-id="@if(User.Identity?.IsAuthenticated ?? false){@User.FindFirstValue(ClaimTypes.NameIdentifier)}">Profile</a>
-                        </li>
-                        <li class="nav-item mx-3">
                             <a class="nav-link" asp-controller="Post" asp-action="Add">Add Post</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })") method="post">
-                                <button type="submit" class="nav-link" onclick="return confirm('Are you sure you want to logout?')">Logout</button>
-                            </form>
+                            <a class="nav-link" asp-action="Profile" asp-controller="User" asp-route-id="@if(User.Identity?.IsAuthenticated ?? false){
+                            @User.FindFirstValue(ClaimTypes.NameIdentifier)}">Profile</a>
                         </li>
-                        
+                        @if (User.HasClaim(ClaimTypes.Email, "admin@bloghub.com"))
+                        {
+                            <li class="nav-item mx-3">
+                                <a class="nav-link" asp-action="Categories" asp-controller="Admin">Admin Panel</a>
+                            </li>
+                        }                      
+                        <li class="nav-item dropdown mx-3">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="~/@Image?.ImageURL" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border:2px #63f9 solid" alt="User Image" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-sm-end dropdown-menu-md-start justify-content-center" aria-labelledby="navbarDropdown">
+                               @*  <li>
+                                    <a class="dropdown-item" asp-action="Profile" asp-controller="User" asp-route-id="@User.FindFirstValue(ClaimTypes.NameIdentifier)">Profile</a>
+                                </li> *@
+                                <li class="d-flex align-items-center">
+                                    <img src="~/assests/gear.svg" class="img-fluid mx-2" alt="Settings" style="width: 20px; height: 20px;" />
+                                    <a class="dropdown-item p-0 setting" href="/Identity/Account/Manage">Settings</a>
+                                </li>
+                                <li>
+                                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="d-flex align-items-center">
+                                        <img src="~/assests/box-arrow-right.svg" class="img-fluid mx-2 border-1" alt="Logout" style="width: 20px; height: 20px;" />
+                                        <button type="submit" class="dropdown-item logo p-0 fs-6" onclick="return confirm('Are you sure you want to logout?')">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
