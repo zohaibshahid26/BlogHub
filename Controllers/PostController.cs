@@ -29,7 +29,7 @@ namespace BlogHub.Controllers
         [AllowAnonymous]
         public IActionResult Details(string id)
         {
-            Post? post = _unitOfWork.PostRepository.Get(filter: p => p.PostId == id, includeProperties: "Category,Tags,Image,Comments.User,User,User.Image,Likes").FirstOrDefault();
+            Post? post = _unitOfWork.PostRepository.Get(filter: p => p.PostId == id, includeProperties: "Category,Tags,Image,Comments.User,User,Comments.User.Image,User.Image,Likes").FirstOrDefault();
             if (post == null)
             {
                 return NotFound();

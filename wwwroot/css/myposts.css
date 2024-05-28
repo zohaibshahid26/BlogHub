@@ -46,6 +46,23 @@ body {
   transition: 0.25s all ease-in-out;
 }
 
+.add-post {
+    border: #dc3545 1px solid;
+    color: #dc3545;
+    background-color: #ffffff;
+    transition: 0.25s all ease-in-out;
+}
+.add-post:hover {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+
 @media (max-width: 768px) {
   .btn-edit,
   .btn-delete {

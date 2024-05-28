@@ -68,23 +68,34 @@
                                 <button id="registerSubmit" type="submit" class="btn btn-lg button w-100 fs-6">SignUp</button>
                             </div>
                         </form>
-                        <div class="row d-flex flex-column gap-3">
-                            <small class="text-center">Or Sign Up with:</small>
-                            <div class="d-flex justify-content-between gap-2 w-100">
-                                <button class="btn btn-lg btn-light w-31 fs-6">
-                                    <img src="~/assests/google.svg"
-                                         class="me-2"><small>Google</small>
-                                </button>
-                                <button class="btn btn-lg btn-light w-31 fs-6">
-                                    <img src="~/assests/facebook.svg"
-                                         class="me-2"><small>Facebook</small>
-                                </button>
-                                <button class="btn btn-lg btn-light w-31 fs-6">
-                                    <img src="~/assests/twitter-x.svg"
-                                         class="me-2"><small>Twitter</small>
-                                </button>
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                            <div class="row d-flex flex-column gap-3">
+                                <small class="text-center">Or Sign Up with:</small>
+                                <div class="d-flex justify-content-between gap-2 w-100">
+                                        @foreach (var provider in Model.ExternalLogins!)
+                                        {
+                                            if(provider.Name == "Google")
+                                            {
+                                                <button type="submit" class="btn btn-lg btn-light w-31 fs-6" name="provider" value="@provider.Name" title="Register in using your @provider.DisplayName account">
+                                                        <img src="~/assests/google.svg" class="me-2" style="width: 20px; height: 20px;"> <small>@provider.DisplayName</small>
+                                                </button>
+                                            }
+                                            else if(provider.Name == "Facebook")
+                                            {
+                                                <button type="submit" class="btn btn-lg btn-light w-31 fs-6" name="provider" value="@provider.Name" title="Register in using your @provider.DisplayName account">
+                                                    <img src="~/assests/facebook.svg" class="me-2" style="width: 20px; height: 20px;"> <small>@provider.DisplayName</small>
+                                                </button>
+                                            }
+                                            else if(provider.Name == "Twitter")
+                                            {
+                                                <button type="submit" class="btn btn-lg btn-light w-31 fs-6" name="provider" value="@provider.Name" title="Register in using your @provider.DisplayName account">
+                                                    <img src="~/assests/twitter-x.svg" class="me-2" style="width: 20px; height: 20px;"> <small>@provider.DisplayName</small>
+                                                </button>
+                                            }
+                                        }
+                                </div>
                             </div>
-                        </div>
+                        </form>
                         <div class="row mt-2">
                             <small>Already have an account? <a asp-page="./Login">Log In</a></small>
                         </div>
@@ -98,7 +109,7 @@
         }
     </body>
 </html>
-    @* <div class="col-md-6 col-md-offset-2">
+   @*  <div class="col-md-6 col-md-offset-2">
         <section>
             <h3>Use another service to register.</h3>
             <hr />
@@ -127,6 +138,6 @@
                 }
             }
         </section>
-    </div> *@
+    </div> *@ 
     
 
