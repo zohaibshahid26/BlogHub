@@ -17,7 +17,7 @@ namespace BlogHub.Repository
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         string includeProperties = "")
         {
-            IQueryable<TEntity> query= _context.Set<TEntity>();
+            IQueryable<TEntity> query = _context.Set<TEntity>();
 
             if (filter != null)
             {

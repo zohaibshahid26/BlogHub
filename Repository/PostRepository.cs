@@ -6,7 +6,6 @@ namespace BlogHub.Repository
     public class PostRepository : GenericRepository<Post>, IPostRepository
     {
         private readonly ApplicationDbContext _context;
-        private bool _disposed = false;
 
         public PostRepository(ApplicationDbContext context) : base(context)
         {

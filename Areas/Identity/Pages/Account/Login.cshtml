@@ -74,19 +74,23 @@
                                 <button id="login-submit" type="submit" class="btn btn-lg button w-100 fs-6">Log in</button>
                             </div>
                         </form>
-                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                            <div class="input-group mb-3 d-flex justify-content-center align-items-center">
-                                <p class="text-center">Or login with</p>
-                                <div class="d-flex justify-content-between w-100">
-                                    @foreach (var provider in Model.ExternalLogins!)
-                                    {
-                                    <button type="submit" class="btn btn-lg btn-light w-31 fs-6" name="provider" value="@provider.Name" title="Login in using your @provider.DisplayName account">
-                                                <img src="~/assests/@HashMap[provider.Name]" class="me-2" style="width: 20px; height: 20px;"> <small>@provider.DisplayName</small>
-                                         </button>   
-                                    }
+                        @if ((Model.ExternalLogins?.Count ?? 0) != 0)
+                        {
+                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                <div class="input-group mb-3 d-flex justify-content-center align-items-center">
+                                    <p class="text-center">Or login with</p>
+                                    <div class="d-flex justify-content-between w-100">
+                                        @foreach (var provider in Model.ExternalLogins!)
+                                        {
+                                             <button type="submit" class="btn btn-lg btn-light w-31 fs-6" name="provider" value="@provider.Name" title="Login in using your @provider.DisplayName account">
+                                                    <img src="~/assests/@HashMap[provider.Name]" class="me-2" style="width: 20px; height: 20px;"> <small>@provider.DisplayName</small>
+                                             </button>   
+                                        }
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        }
+
                         <div class="row">
                             <small>Don't have an account?<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="mx-2">Sign Up</a></small>
                         </div>
@@ -100,34 +104,3 @@
         }
     </body>
 </html>
-     <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div> 

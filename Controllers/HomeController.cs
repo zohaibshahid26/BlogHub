@@ -52,8 +52,6 @@ namespace BlogHub.Controllers
 
         [Route("/Error/{statusCode}")]
         public IActionResult Error(int statusCode)
-        
-        
         {
             if (statusCode == 404)
             { 
