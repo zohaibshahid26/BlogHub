@@ -45,5 +45,7 @@ namespace BlogHub.Models
             int numberOfWords = content.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries).Length;
             return (int)Math.Ceiling((double)numberOfWords / wordsPerMinute);
         }
+
+        public int ViewCount { get; set; } = 0;
     }
 }

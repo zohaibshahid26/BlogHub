@@ -49,18 +49,26 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/post.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
 }
 @section Scripts {
     <script src="~/js/Post.js"></script>
+    <script>
+        function editComment(commentId) {
+            document.getElementById(`comment-text-${commentId}`).classList.add('d-none');
+            document.getElementById(`edit-comment-${commentId}`).classList.remove('d-none');
+        }
+
+        function cancelEdit(commentId) {
+            document.getElementById(`comment-text-${commentId}`).classList.remove('d-none');
+            document.getElementById(`edit-comment-${commentId}`).classList.add('d-none');
+        }
+    </script>
 }
 <div class="container-fluid my-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <div class="d-flex align-items-center justify-content-between">
-                <h1 class="fw-">@Model.Title</h1>
+                <h1>@Model.Title</h1>
                 <div class="mx-2 d-flex">
                     <form id="likeForm" method="post" asp-action="ToggleLike" asp-controller="Post">
                         <input type="hidden" name="PostId" value="@Model.PostId" />
@@ -79,12 +87,16 @@
                     <span class="mx-0" id="like-count">
                         @(Model?.Likes?.Count ?? 0)
                     </span>
+                    <span class="mx-2 d-flex align-items-center">
+                        <i class="fa-regular fa-eye fa-2xl mx-2" style="color: #805ce9;"></i>
+                        @(Model?.ViewCount ?? 0)
+                    </span>
                 </div>
             </div>
             <div class="mb-2">
                 <img class="mx-2 rounded-circle" src="~/@Model?.User.Image?.ImageURL" alt="Author's avatar" style="width:35px;">
-                <p class=" d-inline text-black overflow-hidden">@string.Concat(Model!.User.FirstName," ",Model.User.LastName)  <strong>|</strong>  @Model.Category.CategoryName</p>
-                <p class="mx-5 text-muted">@Model.DatePosted</p>
+                <a class=" d-inline overflow-hidden text-decoration-none" asp-action="Profile" asp-controller="User" asp-route-id="@Model.UserId">@string.Concat(Model!.User.FirstName," ",Model.User.LastName)</a>  <strong>  |  </strong><a class="text-decoration-none" asp-action="Posts" asp-controller="Category" asp-route-id="@Model.Category.CategoryName">@Model.Category.CategoryName</a>
+                <p class="mx-5 text-muted">@Model.DatePosted.ToString("dd MMMM, yyyy")</p>
             </div>
 
             <div class=" justify-content-center mx-2">
@@ -97,14 +109,21 @@
                     @foreach(var tag in Model.Tags)
                     {
                         <a href="#"
-                           class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3" style="background:#ebe6eb>">@tag.TagName</a>
+                           class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3" style="background:#e1e1e1!important;">@tag.TagName</a>
                     }
                 }
             </div>
             <div class="text-body text-black fs-5 my-3">
                     @Html.Raw(htmlContent)
             </div>
+            <div class="d-flex justify-content-end">
+                <a id="shareButton" class="btn btn-secondary mx-2 align-self-end" onclick="copyPostUrl()">
+                    <i class="fa-solid fa-share"></i> Share Post
+                </a>
+            </div>
+            
         </div>
+               
     </div>
     <div class="row">
         <div class="col-md-8 offset-md-2">
@@ -121,6 +140,9 @@
                         <input type="submit" class="btn btn-primary mx-2" value="Add" />
                     </div>
                 </form>
+                
+
+                
                 @if (Model?.Comments?.Any() ?? false)
                 {
                     @foreach (var comment in Model!.Comments)
@@ -131,23 +153,43 @@
                                 <div class="w-100">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="d-flex flex-row align-items-center">
-                                            <span class="mx-1">@string.Concat(comment?.User?.FirstName," ",comment?.User?.LastName)</span>
-                                        </div>
-                                        <div class="d-flex gap-3  align-items-center">
-                                            <small>
+                                            <a class="mx-1 text-decoration-none" asp-action="Profile" asp-controller="User" asp-route-id="@comment?.UserId">@string.Concat(comment?.User?.FirstName, " ", comment?.User?.LastName)</a>
+                                            <small class="mx-2">
                                                 @TimeAgo(comment!.DatePosted)
-                                            </small>
-                                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId || User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.UserId)
+                                        </small>
+                                        </div>
+                                        <div class="d-flex gap-3 align-items-center">
+                                           
+                                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment!.UserId || User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.UserId)
                                             {
-                                                <form asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post">
+                                                @if(User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
+                                                {
+                                                    <button type="button" class="link-primary border-0 bg-transparent" onclick="editComment(@comment.CommentId)">Edit</button>
+                                                }
+                                                <form asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post" class="d-inline">
                                                     <input type="submit" class="link-danger border-0 bg-transparent" value="Delete" />
                                                 </form>
                                             }
                                         </div>
                                     </div>
-                                    <p class="text-justify comment-text ">
-                                        @comment.Content
-                                    </p>
+                                    <div id="comment-text-@comment.CommentId" class="comment-text">
+                                        <p class="text-justify">@comment.Content</p>
+                                        
+                                    </div>
+
+                                    @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
+                                    {
+                                        <div id="edit-comment-@comment.CommentId" class="d-none">
+                                            <form asp-action="Edit" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post">
+                                                <input type="hidden" name="CommentId" value="@comment.CommentId" />
+                                                <input type="text" name="Content" class="form-control" value="@comment.Content" />
+                                                <div class="d-flex justify-content-end mt-2">
+                                                    <button type="submit" class="btn btn-primary me-2">Update</button>
+                                                    <button type="button" class="btn btn-secondary" onclick="cancelEdit(@comment.CommentId)">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>

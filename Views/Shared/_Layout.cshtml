@@ -13,6 +13,9 @@
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" href="~/icon.ico" />
     @RenderSection("Styles", required: false)
     <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -45,7 +48,8 @@
                             <a class="nav-link" asp-action="Index" asp-controller="Home">Home</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <a class="nav-link" asp-action="Index" asp-controller="Post">My Posts</a>
+                            <a class="nav-link" asp-action="Index" asp-controller="Post" asp-route-UserId="@if(User?.Identity?.IsAuthenticated ?? false){
+                            @User.FindFirstValue(ClaimTypes.NameIdentifier)}">My Posts</a>
                         </li>
                         <li class="nav-item mx-3">
                             <a class="nav-link" href="/Home/Index#trending">Trending Posts</a>
@@ -54,13 +58,13 @@
                             <a class="nav-link" asp-controller="Post" asp-action="Add">Add Post</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <a class="nav-link" asp-action="Profile" asp-controller="User" asp-route-id="@if(User.Identity?.IsAuthenticated ?? false){
+                            <a class="nav-link" asp-action="Profile" asp-controller="User" asp-route-id="@if(User?.Identity?.IsAuthenticated ?? false){
                             @User.FindFirstValue(ClaimTypes.NameIdentifier)}">Profile</a>
                         </li>
-                        @if (User.HasClaim(ClaimTypes.Email, "admin@bloghub.com"))
+                        @if (User?.HasClaim(ClaimTypes.Email, "admin@bloghub.com") ?? false)
                         {
                             <li class="nav-item mx-3">
-                                <a class="nav-link" asp-action="Categories" asp-controller="Admin">Admin Panel</a>
+                                <a class="nav-link" asp-action="Manage" asp-controller="Category">Admin Panel</a>
                             </li>
                         }                      
                         <li class="nav-item dropdown mx-3">

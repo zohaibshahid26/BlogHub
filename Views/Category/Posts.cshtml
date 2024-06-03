@@ -1,0 +1,39 @@
+﻿@model IEnumerable<BlogHub.Models.Post>
+@{
+    ViewData["Title"] = "Categories";
+
+    if(User?.Identity?.IsAuthenticated ?? false)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Landing.cshtml";
+    }
+}
+<div class="container my-5">
+    <div class="row mt-3 mb-5">
+        @if (Model?.Any() ?? false)
+        {
+            <div class="my-3">
+                <h1 class="text-center">All Posts in <span class="gradient-text fs-1">@ViewBag.CategoryName !</span></h1>
+            </div>
+            <div class="col-12">
+                <partial name="_Post" model="Model"/>
+            </div>
+        }
+        else
+        {
+            <div class="col">
+                <div class="text-center my-5">
+                    <h4 class="mb-3" style="font-size: 4rem;">
+                        No Posts found in Category <span class="gradient-text" style="font-size: 4rem;"> @ViewBag.CategoryName !</span>
+                    </h4>
+                    <a asp-controller="Post" asp-action="Add" class="btn btn-primary btn-lg px-5 py-3" style="font-size: 1.3rem; border-radius: 50px;">
+                        Create a new post
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

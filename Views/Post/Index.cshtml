@@ -14,17 +14,16 @@
             @foreach (var post in Model)
             {
                 <div class="col-md-6 col-lg-4">
-                    <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+                    <div class="card shadow-lg px-3 pt-2 pb-0 mb-5 bg-white rounded">
                         <img src="~/@(post.Image!.ImageURL)" class="card-img-top card-img" alt="Feature Image" style="height: 250px; object-fit: cover;" />
                         <div class="card-body">
                             <h4 class="card-title fw-semibold text-primary">@post.Title</h4>
                             <p class="card-text text-muted">
                                 @{
                                     var plainText = Markdig.Markdown.ToPlainText(post.Content);
-                                    var words = plainText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                                    var first50Words = words.Take(35);
-                                    var previewText = string.Join(" ", first50Words);
-                                    if (words.Length > 35)
+                                    var previewText = new string(plainText.Take(170).ToArray());
+
+                                    if (plainText.Length > 170)
                                     {
                                         previewText += " ...";
                                     }

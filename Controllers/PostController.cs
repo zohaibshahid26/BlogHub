@@ -19,6 +19,7 @@ namespace BlogHub.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [Route("/Posts")]
         public IActionResult Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous";
@@ -27,14 +28,14 @@ namespace BlogHub.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult Details(string id)
+        public async Task<IActionResult> Details(string id)
         {
             Post? post = _unitOfWork.PostRepository.Get(filter: p => p.PostId == id, includeProperties: "Category,Tags,Image,Comments.User,User,Comments.User.Image,User.Image,Likes").FirstOrDefault();
             if (post == null)
             {
                 return NotFound();
             }
-            string currentUserImageUrl=string.Empty;
+            string currentUserImageUrl = string.Empty;
             if (User.Identity?.IsAuthenticated == true)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -57,6 +58,9 @@ namespace BlogHub.Controllers
                 recentlyViewedPosts.Add(id);
             }
             Response.Cookies.Append("RecentlyViewedPosts", string.Join(",", recentlyViewedPosts), cookieOptions);
+            post.ViewCount++;
+            _unitOfWork.PostRepository.Update(post);
+            await _unitOfWork.SaveChangesAsync();
             return View(post);
         }
 

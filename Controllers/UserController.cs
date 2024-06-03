@@ -1,6 +1,7 @@
 ﻿using BlogHub.UnitOfWork;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using BlogHub.ViewModels;
 namespace BlogHub.Controllers
 {
     public class UserController : Controller
@@ -22,9 +23,11 @@ namespace BlogHub.Controllers
             {
                 return NotFound();
             }
-            var posts = _unitOfWork.PostRepository.Get(filter: p => p.UserId == id, includeProperties: "Category,Tags,Image,Comments,User");
+            var posts = _unitOfWork.PostRepository.Get(filter: p => p.UserId == id, includeProperties: "Category,Tags,Image,Comments,Likes,User");
             ViewData["PostCount"] = posts.Count();
-            return View(user);
+            ViewData["Engagement"] = posts.Sum(p => (p.Comments?.Count ?? 0) +( p.Likes?.Count ?? 0) + p.ViewCount);
+
+            return View(new ProfileViewModel { User = user, Posts = posts });
         }
     }
 }

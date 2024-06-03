@@ -1,14 +1,13 @@
 ﻿@model IEnumerable<Category>
 
-<div class="col-12 col-lg-3 order-1 order-lg-2">
-    <h4 class="my-3 gradient-text">Categories</h4>
+
     <div class="d-flex mb-3 flex-wrap">
         @if (Model != null && Model.Any())
         {
             @foreach (var category in Model)
             {
-                <a href="#"
-                   class="p-2 m-1 text-decoration-none d-block text-black rounded-4 p-3" style="background:#fcf2fc;">@category.CategoryName</a>
+                <a asp-action="Posts" asp-controller="Category" asp-route-id="@category.CategoryName"
+                   class="p-2 m-1 text-decoration-none d-block text-black rounded-4 p-3" style="background:#e1e1e1;">@category.CategoryName</a>
             }
         }
         else
@@ -17,5 +16,3 @@
         }
 
     </div>
-    <p><a href="#" class="text-primary text-decoration-none mx-2">See more topics</a></p>
-</div>
