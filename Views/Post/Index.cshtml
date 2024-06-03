@@ -21,9 +21,9 @@
                             <p class="card-text text-muted">
                                 @{
                                     var plainText = Markdig.Markdown.ToPlainText(post.Content);
-                                    var previewText = new string(plainText.Take(170).ToArray());
+                                    var previewText = new string(plainText.Take(160).ToArray());
 
-                                    if (plainText.Length > 170)
+                                    if (plainText.Length > 160)
                                     {
                                         previewText += " ...";
                                     }

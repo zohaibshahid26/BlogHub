@@ -3,6 +3,7 @@ using BlogHub.UnitOfWork;
 using BlogHub.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 
 namespace BlogHub.Controllers
@@ -241,10 +242,15 @@ namespace BlogHub.Controllers
             {
                 return View(new List<Post>());
             }
-            var posts = _unitOfWork.PostRepository.Get(filter: p => p.Title.Contains(query) || p.Content.Contains(query), includeProperties: "Category,Tags,Image,Comments,User,User.Image,Likes");
+
+            var allPosts = _unitOfWork.PostRepository.Get(
+            includeProperties: "Category,Tags,Image,Comments,User,User.Image,Likes");
+
+            var filteredPosts = allPosts
+            .Where(p =>(p.Title.Contains(query) || p.Content.Contains(query)) || (p.Tags != null && p.Tags.Any(tag => tag.TagName == query)) || p.Category.CategoryName.Contains(query)).ToList();
+
             TempData["SearchQuery"] = query;
-          
-            return View(posts);
+            return View(filteredPosts);
         }
     }
 }

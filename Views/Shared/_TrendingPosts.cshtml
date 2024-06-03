@@ -12,12 +12,12 @@
                         <div class="card-text mt-2">
                             <img src="~/@trendingPost.User.Image?.ImageURL" width="40px" class="rounded-5">
                             <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">
-                                <a asp-action="Profile" asp-controller="User" asp-route-id="@trendingPost.UserId" class="text-dark text-decoration-none"> @string.Concat(trendingPost.User.FirstName, " ", trendingPost.User.LastName)</a> in <a class="text-decoration-none text-dark" asp-action="Posts" asp-controller="Category" asp-route-id="@trendingPost.Category.CategoryName">@trendingPost.Category.CategoryName</a>
+                                <a asp-action="Profile" asp-controller="User" asp-route-id="@trendingPost.UserId" class="text-decoration-none"> @string.Concat(trendingPost.User.FirstName, " ", trendingPost.User.LastName)</a> in <a class="text-decoration-none" asp-action="Posts" asp-controller="Category" asp-route-id="@trendingPost.Category.CategoryName">@trendingPost.Category.CategoryName</a>
                             </h6>
                             <p class="mt-2">
                                 @{
                                     var plainText = Markdig.Markdown.ToPlainText(trendingPost.Content);
-                                    var previewText = new string(plainText.Take(180).ToArray()); // Adjust the number 200 as needed
+                                    var previewText = new string(plainText.Take(180).ToArray());
 
                                     if (plainText.Length > 180)
                                     {
