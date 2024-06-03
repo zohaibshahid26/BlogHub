@@ -1,18 +1,16 @@
 ﻿@model IEnumerable<Category>
-
-
-    <div class="d-flex mb-3 flex-wrap">
-        @if (Model != null && Model.Any())
+<div class="d-flex mb-3 flex-wrap">
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var category in Model)
         {
-            @foreach (var category in Model)
-            {
-                <a asp-action="Posts" asp-controller="Category" asp-route-id="@category.CategoryName"
-                   class="p-2 m-1 text-decoration-none d-block text-black rounded-4 p-3" style="background:#e1e1e1;">@category.CategoryName</a>
-            }
+            <a asp-action="Posts" asp-controller="Category" asp-route-id="@category.CategoryName"
+               class="p-2 m-1 text-decoration-none d-block text-black rounded-4 p-3" style="background:#e1e1e1;">@category.CategoryName</a>
         }
-        else
-        {
-            <p>No categories found.</p>
-        }
+    }
+    else
+    {
+        <p>No categories found.</p>
+    }
 
-    </div>
+</div>

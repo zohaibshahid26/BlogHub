@@ -20,7 +20,8 @@
     @RenderSection("Styles", required: false)
     <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <style>
-        .setting:active{
+        <style >
+        .setting:active {
             color: #000;
             background-color: #fff;
             text-decoration: none;
@@ -30,6 +31,16 @@
             outline: none !important;
             box-shadow: none !important;
         }
+        .search-button:hover{
+            border: 1px solid #63f9;
+        }
+        .search-button:focus{
+            border: 1px solid #63f9;
+        }
+        
+            .search-button:hover .fas.fa-search {
+            color: #902ee7
+            }
     </style>
 </head>
 <body>
@@ -44,6 +55,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto align-items-lg-center">
+                       
                         <li class="nav-item mx-3">
                             <a class="nav-link" asp-action="Index" asp-controller="Home">Home</a>
                         </li>
@@ -52,15 +64,23 @@
                             @User.FindFirstValue(ClaimTypes.NameIdentifier)}">My Posts</a>
                         </li>
                         <li class="nav-item mx-3">
-                            <a class="nav-link" href="/Home/Index#trending">Trending Posts</a>
-                        </li>
-                        <li class="nav-item mx-3">
                             <a class="nav-link" asp-controller="Post" asp-action="Add">Add Post</a>
                         </li>
                         <li class="nav-item mx-3">
                             <a class="nav-link" asp-action="Profile" asp-controller="User" asp-route-id="@if(User?.Identity?.IsAuthenticated ?? false){
                             @User.FindFirstValue(ClaimTypes.NameIdentifier)}">Profile</a>
                         </li>
+                        <li class="nav-item mx-3">
+                            <form class="d-flex ms-auto me-2 search-form" asp-action="Search" asp-controller="Post" method="get">
+                                <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
+                                <button class="btn btn-outline search-button" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </form>
+                        </li>
+
+                        
+
                         @if (User?.HasClaim(ClaimTypes.Email, "admin@bloghub.com") ?? false)
                         {
                             <li class="nav-item mx-3">
@@ -133,8 +153,11 @@
                         <li><a href="#" class="text-muted">Twitter</a></li>
                     </ul>
                 </div>
-                <div class="col-12 mt-4">
-                    <p class="text-center fs-5">© 2024 BlogHub. All Rights Reserved.</p>
+                <div class="col-12 mt-4 ">
+                    <div class="d-flex justify-content-center">
+                        <span class="text-center fs-5">Email us at: info@@bloghub.com |</span>
+                        <span class="text-center fs-5 mx-2"> © 2024 BlogHub. All Rights Reserved.</span>
+                    </div>
                 </div>
             </div>
         </div>

@@ -18,11 +18,11 @@ namespace BlogHub.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var trendingPosts = _unitOfWork.PostRepository.Get(orderBy: q => q.OrderByDescending(p => p.Likes!.Count), includeProperties: "Category,Tags,Image,Comments,User,Likes,User.Image").Take(6);
+            var trendingPosts = _unitOfWork.PostRepository.Get(orderBy: q => q.OrderByDescending(p => p.Comments!.Count + p.Likes!.Count + p.ViewCount), includeProperties: "Category,Tags,Image,Comments,User,Likes,User.Image").Take(6);
             var latestPosts = _unitOfWork.PostRepository.Get(orderBy: q => q.OrderByDescending(p => p.DatePosted), includeProperties: "Category,Tags,Image,Comments,User,Likes,User.Image").Take(5);
             var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
 
-            // Get the recently viewed posts from the cookie
+
             var recentlyViewedPosts = Request.Cookies["RecentlyViewedPosts"];
             var recentlyViewedPostIds = recentlyViewedPosts != null ? recentlyViewedPosts.Split(',').ToList() : new List<string>();
 

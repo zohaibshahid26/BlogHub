@@ -53,9 +53,14 @@ namespace BlogHub.Controllers
             };
             var existingPosts = Request.Cookies["RecentlyViewedPosts"];
             var recentlyViewedPosts = existingPosts != null ? existingPosts.Split(',').ToList() : new List<string>();
+
             if (!recentlyViewedPosts.Contains(id))
             {
                 recentlyViewedPosts.Add(id);
+                if (recentlyViewedPosts.Count > 5)
+                {
+                    recentlyViewedPosts.RemoveAt(0);
+                }
             }
             Response.Cookies.Append("RecentlyViewedPosts", string.Join(",", recentlyViewedPosts), cookieOptions);
             post.ViewCount++;
@@ -227,6 +232,19 @@ namespace BlogHub.Controllers
             await _unitOfWork.PostRepository.ToggleLikeAsync(postId, userId);
             await _unitOfWork.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = postId });
+        }
+
+        [AllowAnonymous]
+        public IActionResult Search(string ?query)
+        {
+            if (query == null)
+            {
+                return View(new List<Post>());
+            }
+            var posts = _unitOfWork.PostRepository.Get(filter: p => p.Title.Contains(query) || p.Content.Contains(query), includeProperties: "Category,Tags,Image,Comments,User,User.Image,Likes");
+            TempData["SearchQuery"] = query;
+          
+            return View(posts);
         }
     }
 }

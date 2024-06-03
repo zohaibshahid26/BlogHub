@@ -49,7 +49,7 @@ namespace BlogHub.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Comment comment)
+        public async Task<IActionResult> Edit(Comment comment)
         {
             var commentToUpdate = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == comment.CommentId, includeProperties: "Post,Post.User,User").FirstOrDefault();
             if (commentToUpdate == null)
@@ -65,7 +65,7 @@ namespace BlogHub.Controllers
 
             commentToUpdate.Content = comment.Content;
             _unitOfWork.CommentRepository.Update(commentToUpdate);
-            _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
             return RedirectToAction("Details", "Post", new { id = commentToUpdate.PostId });
         }
 
