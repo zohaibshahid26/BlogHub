@@ -51,21 +51,24 @@ namespace BlogHub.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Comment comment)
         {
-            var commentToUpdate = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == comment.CommentId, includeProperties: "Post,Post.User,User").FirstOrDefault();
+            Comment? commentToUpdate = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == comment.CommentId, includeProperties: "Post,Post.User,User").FirstOrDefault();
             if (commentToUpdate == null)
             {
                 return NotFound();
             }
-
-            var authorizationResult = _authorizationService.AuthorizeAsync(User, commentToUpdate, "EditCommentPolicy").Result;
-            if (!authorizationResult.Succeeded)
+            if (ModelState.IsValid)
             {
-                return Forbid();
-            }
+                
+                var authorizationResult = await _authorizationService.AuthorizeAsync(User, commentToUpdate, "EditCommentPolicy");
+                if (!authorizationResult.Succeeded)
+                {
+                    return Forbid();
+                }
 
-            commentToUpdate.Content = comment.Content;
-            _unitOfWork.CommentRepository.Update(commentToUpdate);
-            await _unitOfWork.SaveChangesAsync();
+                commentToUpdate.Content = comment.Content;
+                _unitOfWork.CommentRepository.Update(commentToUpdate);
+                await _unitOfWork.SaveChangesAsync();
+            }
             return RedirectToAction("Details", "Post", new { id = commentToUpdate.PostId });
         }
 

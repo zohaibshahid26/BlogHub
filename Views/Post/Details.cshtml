@@ -182,7 +182,7 @@
                                         <div id="edit-comment-@comment.CommentId" class="d-none">
                                             <form asp-action="Edit" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post">
                                                 <input type="hidden" name="CommentId" value="@comment.CommentId" />
-                                                <input type="text" name="Content" class="form-control" value="@comment.Content" />
+                                                <input type="text" name="Content" class="form-control" value="@comment.Content" required/>
                                                 <div class="d-flex justify-content-end mt-2">
                                                     <button type="submit" class="btn btn-primary me-2">Update</button>
                                                     <button type="button" class="btn btn-secondary" onclick="cancelEdit(@comment.CommentId)">Cancel</button>

@@ -39,7 +39,7 @@ namespace BlogHub.Data.Migrations
                     b.HasIndex("CategoryName")
                         .IsUnique();
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("BlogHub.Models.Comment", b =>
@@ -70,7 +70,7 @@ namespace BlogHub.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("BlogHub.Models.Image", b =>
@@ -87,7 +87,7 @@ namespace BlogHub.Data.Migrations
 
                     b.HasKey("ImageId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("BlogHub.Models.Like", b =>
@@ -111,7 +111,7 @@ namespace BlogHub.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("BlogHub.Models.MyUser", b =>
@@ -232,7 +232,7 @@ namespace BlogHub.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("BlogHub.Models.Tag", b =>
@@ -252,7 +252,7 @@ namespace BlogHub.Data.Migrations
                     b.HasIndex("TagName")
                         .IsUnique();
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -404,7 +404,7 @@ namespace BlogHub.Data.Migrations
 
                     b.HasIndex("TagsTagId");
 
-                    b.ToTable("PostTag");
+                    b.ToTable("PostTag", (string)null);
                 });
 
             modelBuilder.Entity("BlogHub.Models.Comment", b =>
