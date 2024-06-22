@@ -12,7 +12,6 @@ namespace BlogHub.Models
         public required string Content { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.UtcNow;
 
-        [Required(ErrorMessage = "User is required for commenting")]
         public string? UserId { get; set; }
         [ForeignKey("UserId")]
         public MyUser? User { get; set; }

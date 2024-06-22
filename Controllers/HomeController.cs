@@ -26,7 +26,6 @@ namespace BlogHub.Controllers
             var recentlyViewedPosts = Request.Cookies["RecentlyViewedPosts"];
             var recentlyViewedPostIds = recentlyViewedPosts != null ? recentlyViewedPosts.Split(',').ToList() : new List<string>();
 
-            // Retrieve the complete details of the recently viewed posts
             var recentlyViewedPostDetails = _unitOfWork.PostRepository.Get(filter: p => recentlyViewedPostIds.Contains(p.PostId), includeProperties: "Category,Tags,Image,Comments.User,User,Likes,User.Image").ToList();
 
             var homeViewModel = new HomeViewModel

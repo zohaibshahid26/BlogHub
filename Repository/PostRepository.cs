@@ -11,16 +11,18 @@ namespace BlogHub.Repository
         {
             _context = context;
         }   
-        public async Task ToggleLikeAsync(string postId, string userId)
+        public async Task<bool> ToggleLikeAsync(string postId, string userId)
         {
             var existingLike = await _context.Likes.FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == userId);
             if (existingLike == null)
             {
                 _context.Likes.Add(new Like { PostId = postId, UserId = userId });
+                return true;
             }
             else
             {
                 _context.Likes.Remove(existingLike);
+                return false;
             }
         }
 

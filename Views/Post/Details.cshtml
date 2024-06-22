@@ -52,6 +52,7 @@
 }
 @section Scripts {
     <script src="~/js/Post.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
         function editComment(commentId) {
             document.getElementById(`comment-text-${commentId}`).classList.add('d-none');
@@ -70,18 +71,11 @@
             <div class="d-flex align-items-center justify-content-between">
                 <h1>@Model.Title</h1>
                 <div class="mx-2 d-flex">
-                    <form id="likeForm" method="post" asp-action="ToggleLike" asp-controller="Post">
+                    <form id="likeForm" method="post" action="@Url.Action("ToggleLike", "Post")">
                         <input type="hidden" name="PostId" value="@Model.PostId" />
                         <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
                         <a id="likeButton" class="text-decoration-none">
-                            @if (Model.Likes!.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)))
-                            {
-                                <i class="fa-solid fa-thumbs-up fa-2xl mx-2" style="color: #805ce9; cursor: pointer;"></i>
-                            }
-                            else
-                            {
-                                <i class="fa-regular fa-thumbs-up fa-2xl mx-2" style="color: #805ce9; cursor: pointer;"></i>
-                            }
+                            <i class="@((Model.Likes!.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) ? "fa-solid" : "fa-regular")) fa-thumbs-up fa-2xl mx-2" id="likeIcon" style="color: #805ce9; cursor: pointer;"></i>
                         </a>
                     </form>
                     <span class="mx-0" id="like-count">
