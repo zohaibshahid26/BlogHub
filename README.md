@@ -11,7 +11,7 @@ BlogHub is a full-stack blogging application developed using ASP.NET Core MVC, d
 5. **Comments**: Enables users to comment on posts and interact with other users.
 6. **Likes**: Allows users to like posts to show appreciation for content.
 7. **User Profile**: Users have personalized profiles where they can manage their posts and account settings.
-8. **Admin Panel**: Includes an admin panel for managing categories, tags, and user roles.
+8. **Admin Panel**: Includes an admin panel for managing categories.
 
 ## Technologies Used:
 
