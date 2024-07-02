@@ -9,65 +9,122 @@ namespace BlogHub.Controllers
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryController(IUnitOfWork unitOfWork)
+        private readonly ILogger<CategoryController> _logger;
+
+        public CategoryController(IUnitOfWork unitOfWork, ILogger<CategoryController> logger)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         [AllowAnonymous]
-        public  IActionResult Posts(string id)
+        public IActionResult Posts(string id)
         {
-            var category = _unitOfWork.CategoryRepository.Get(filter: c => c.CategoryName == id).FirstOrDefault();
-            if (category == null)
+            try
             {
-                return NotFound();
-            }
-            var posts = _unitOfWork.PostRepository.Get(filter: p => p.Category.CategoryName == id, includeProperties: "Category,User,Likes,User.Image,Image,Comments");
-            ViewBag.CategoryName = id;
-            return View(posts);
+                var category = _unitOfWork.CategoryRepository.Get(filter: c => c.CategoryName == id).FirstOrDefault();
+                if (category == null)
+                {
+                    _logger.LogWarning("Category with name {CategoryName} not found.", id);
+                    return NotFound();
+                }
 
+                var posts = _unitOfWork.PostRepository.Get(filter: p => p.Category.CategoryName == id, includeProperties: "Category,User,Likes,User.Image,Image,Comments");
+                ViewBag.CategoryName = id;
+                return View(posts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching posts for category {CategoryName}.", id);
+                return StatusCode(500, "Internal server error");
+            }
         }
-        
+
         public async Task<IActionResult> Manage()
         {
-            return View(await _unitOfWork.CategoryRepository.GetAllAsync());
+            try
+            {
+                var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
+                return View(categories);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching categories.");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(Category category)
         {
-            if (category == null)
+            try
             {
-                return NotFound();
+                if (category == null)
+                {
+                    _logger.LogWarning("Attempted to add a null category.");
+                    return BadRequest();
+                }
+
+                var existingCategory = _unitOfWork.CategoryRepository.Get(filter: c => c.CategoryName == category.CategoryName).FirstOrDefault();
+                if (existingCategory == null)
+                {
+                    await _unitOfWork.CategoryRepository.AddAsync(category);
+                    await _unitOfWork.SaveChangesAsync();
+                    _logger.LogInformation("Category {CategoryName} added successfully.", category.CategoryName);
+                }
+                else
+                {
+                    _logger.LogInformation("Category {CategoryName} already exists.", category.CategoryName);
+                }
+
+                return RedirectToAction("Manage", "Category");
             }
-            var existingCategory = _unitOfWork.CategoryRepository.Get(filter: c => c.CategoryName == category.CategoryName).FirstOrDefault();
-            if (existingCategory == null)
+            catch (Exception ex)
             {
-                await _unitOfWork.CategoryRepository.AddAsync(category);
-                await _unitOfWork.SaveChangesAsync();
+                _logger.LogError(ex, "An error occurred while adding category {CategoryName}.", category.CategoryName);
+                return StatusCode(500, "Internal server error");
             }
-            return RedirectToAction("Manage", "Category");
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _unitOfWork.CategoryRepository.DeleteAsync(id);
-            await _unitOfWork.SaveChangesAsync();
-            return RedirectToAction("Manage", "Category");
+            try
+            {
+                await _unitOfWork.CategoryRepository.DeleteAsync(id);
+                await _unitOfWork.SaveChangesAsync();
+                _logger.LogInformation("Category with ID {CategoryId} deleted successfully.", id);
+                return RedirectToAction("Manage", "Category");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting category with ID {CategoryId}.", id);
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Update(int id)
         {
-            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
-            if (category == null)
+            try
             {
-                return NotFound();
+                var category = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
+                if (category == null)
+                {
+                    _logger.LogWarning("Category with ID {CategoryId} not found.", id);
+                    return NotFound();
+                }
+
+                _unitOfWork.CategoryRepository.Update(category);
+                await _unitOfWork.SaveChangesAsync();
+                _logger.LogInformation("Category with ID {CategoryId} updated successfully.", id);
+                return RedirectToAction("Manage", "Category");
             }
-            _unitOfWork.CategoryRepository.Update(category);
-            await _unitOfWork.SaveChangesAsync();
-            return RedirectToAction("Manage", "Category");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating category with ID {CategoryId}.", id);
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }
