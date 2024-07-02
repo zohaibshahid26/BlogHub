@@ -35,12 +35,8 @@ namespace BlogHub.Controllers
                 Categories = categories,
                 RecentlyViewedPosts = recentlyViewedPostDetails
             };
+            _logger.LogInformation("Home page visited");
             return View(homeViewModel);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -35,7 +35,6 @@ builder.Services.AddSingleton<IAuthorizationHandler, PostAuthorizationHandler>()
 builder.Services.AddSingleton<IAuthorizationHandler, CommentAuthorizationHandler>();
 builder.Services.AddSingleton(builder.Environment);
 
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Email, "admin@bloghub.com"));
@@ -72,7 +71,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
 app.MapRazorPages();
 app.Run();
