@@ -77,14 +77,10 @@
                             </li>
                         }
                         <li class="nav-item mx-3">
-                            <form class="d-flex ms-auto me-2 search-form" asp-action="Search" asp-controller="Post" method="get">
-                                <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
-                                <button class="btn btn-outline search-button" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </form>
+                           <a class="btn btn-outline search-button" href="/Post/Search">
+                               <i class="fas fa-search"> Search</i>
+                           </a>
                         </li>
-                   
                         <li class="nav-item dropdown mx-3">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="~/@Image?.ImageURL" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; border:2px #63f9 solid" alt="User Image" />
@@ -162,6 +158,7 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

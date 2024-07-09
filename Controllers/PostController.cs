@@ -327,24 +327,33 @@ namespace BlogHub.Controllers
             }
         }
 
+
         [AllowAnonymous]
-        public IActionResult Search(string? query)
+        public IActionResult Search()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public IActionResult SearchAjax(string? query)
         {
             try
             {
+                TempData["SearchQuery"] = query;
                 if (query == null)
                 {
-                    return View(new List<Post>());
+                    return PartialView("_NoPostFound");
                 }
 
                 var allPosts = _unitOfWork.PostRepository.Get(
-                includeProperties: "Category,Tags,Image,Comments,User,User.Image,Likes");
+                    includeProperties: "Category,Tags,Image,Comments,User,User.Image,Likes");
 
-                var filteredPosts = allPosts
-                .Where(p => (p.Title.Contains(query) || p.Content.Contains(query)) || (p.Tags != null && p.Tags.Any(tag => tag.TagName == query)) || p.Category.CategoryName.Contains(query)).ToList();
+                var filteredPosts = allPosts.Where(p => (p.Title.Contains(query)
+                || p.Content.Contains(query)) ||
+                (p.Tags != null && p.Tags.Any(tag => tag.TagName == query)) ||
+                p.Category.CategoryName.Contains(query)).ToList();
 
-                TempData["SearchQuery"] = query;
-                return View(filteredPosts);
+                return filteredPosts.Any() ? PartialView("_Post", filteredPosts) : PartialView("_NoPostFound");
             }
             catch (Exception ex)
             {

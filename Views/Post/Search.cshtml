@@ -1,38 +1,50 @@
-﻿@model IEnumerable<BlogHub.Models.Post>
-@{
-
-    if (User?.Identity?.IsAuthenticated ?? false)
-    {
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
-    else
-    {
-        Layout = "~/Views/Shared/_Landing.cshtml";
-    }
+﻿@{
+    Layout = User?.Identity?.IsAuthenticated ?? false ? "~/Views/Shared/_Layout.cshtml" : "~/Views/Shared/_Landing.cshtml";
 }
+
 <div class="container my-5">
     <div class="row mt-3 mb-5">
-        @if (Model?.Any() ?? false)
-        {
-            <div class="my-3">
-                <h1 class="text-center">All Posts for Search Term:  <span class="gradient-text fs-1">@TempData["SearchQuery"] !</span></h1>
+        <div class="col">
+            <div class="mb-3">
+                <h1 class="text-center">Search Posts</h1>
             </div>
-            <div class="col-12">
-                <partial name="_Post" model="Model" />
+            
+        </div>
+        <div class="col-12">
+            <div class="d-flex justify-content-center">
+                <input type="search" id="searchQuery" class="form-control border-1 w-50" placeholder="Search posts..." />
+                <button id="searchButton" class="btn btn-outline search-button">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
-        }
-        else
-        {
-            <div class="col">
-                <div class="text-center my-5">
-                    <h4 class="mb-3" style="font-size: 4rem;">
-                        No result found for:  <span class="gradient-text" style="font-size: 4rem;"> @TempData["SearchQuery"] !</span>
-                    </h4>
-                    <a asp-controller="Post" asp-action="Add" class="btn btn-primary btn-lg px-5 py-3" style="font-size: 1.3rem; border-radius: 50px;">
-                        Create a new post
-                    </a>
-                </div>
-            </div>
-        }
+            
+        </div>
+    </div>
+    <div class="row mt-3 mb-5" id="searchResults">
+       
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(()=>{
+            function performSearch(query) {
+                $.ajax({
+                    url: '@Url.Action("SearchAjax", "Post")',
+                    type: 'GET',
+                    data: { query: query },
+                    success: function (result) {
+                        $('#searchResults').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error occurred while searching:', error);
+                    }
+                });
+            }
+            $('#searchButton').click(()=> {
+                var query = $('#searchQuery').val();
+                performSearch(query);
+            });
+        });
+    </script>
+}

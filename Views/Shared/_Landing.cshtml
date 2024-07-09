@@ -43,12 +43,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto justify-content-end">
                         <li class="nav-item mx-3">
-                            <form class="d-flex ms-auto me-2 search-form" asp-action="Search" asp-controller="Post" method="get">
-                                <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
-                                <button class="btn btn-outline search-button" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </form>
+                            <a class="btn btn-outline search-button" href="/Post/Search">
+                                <i class="fas fa-search"></i>
+                            </a>
                         </li>
                         <li class="nav-item mx-2">
                             <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary text-nowrap">Login</a>
@@ -113,6 +110,7 @@
             </div>
         </footer>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         @RenderSection("Scripts", required: false)
     </body>
