@@ -318,7 +318,7 @@ namespace BlogHub.Controllers
             {
                 await _unitOfWork.PostRepository.ToggleLikeAsync(postId, userId);
                 await _unitOfWork.SaveChangesAsync();
-                return RedirectToAction("Details", "Post", new { id = postId });
+                return RedirectToAction("Details","Post", new { id = postId });
             }
             catch (Exception ex)
             {
