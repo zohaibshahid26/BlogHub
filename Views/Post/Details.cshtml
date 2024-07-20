@@ -12,40 +12,7 @@
     string markdownContent = Model.Content;
     string htmlContent = Markdig.Markdown.ToHtml(markdownContent);
 }
-@functions {
-    public static string TimeAgo(DateTime date)
-    {
-        TimeSpan timeSince = DateTime.UtcNow.Subtract(date);
-        if (timeSince.TotalMinutes < 1)
-        {
-            return "just now";
-        }
-        else if (timeSince.TotalMinutes < 60)
-        {
-            return string.Format("{0} minutes ago", (int)timeSince.TotalMinutes);
-        }
-        else if (timeSince.TotalHours < 24)
-        {
-            return string.Format("{0} hours ago", (int)timeSince.TotalHours);
-        }
-        else if (timeSince.TotalDays < 7)
-        {
-            return string.Format("{0} days ago", (int)timeSince.TotalDays);
-        }
-        else if (timeSince.TotalDays < 30)
-        {
-            return string.Format("{0} weeks ago", (int)(timeSince.TotalDays / 7));
-        }
-        else if (timeSince.TotalDays < 365)
-        {
-            return string.Format("{0} months ago", (int)(timeSince.TotalDays / 30));
-        }
-        else
-        {
-            return string.Format("{0} years ago", (int)(timeSince.TotalDays / 365));
-        }
-    }
-}
+
 @section Styles {
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/post.css" asp-append-version="true" />
@@ -53,17 +20,9 @@
 @section Scripts {
     <script src="~/js/Post.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}
     <script>
-        function editComment(commentId) {
-            document.getElementById(`comment-text-${commentId}`).classList.add('d-none');
-            document.getElementById(`edit-comment-${commentId}`).classList.remove('d-none');
-        }
-
-        function cancelEdit(commentId) {
-            document.getElementById(`comment-text-${commentId}`).classList.remove('d-none');
-            document.getElementById(`edit-comment-${commentId}`).classList.add('d-none');
-        }
-   
         $(document).ready(() => {
             $('#likeButton').click((e) => {
                 e.preventDefault();
@@ -74,14 +33,13 @@
                     url: '@Url.Action("ToggleLike", "Post")',
                     type: 'POST',
                     data: { postId: postId, userId: userId },
-                    success: (response)=> {
+                    success: (response) => {
                         if (response.success) {
                             if (response.isLiked) {
                                 $('#likeIcon').removeClass('fa-regular');
                                 $('#likeIcon').addClass('fa-solid');
                             }
-                            else
-                            {
+                            else {
                                 $('#likeIcon').removeClass('fa-solid');
                                 $('#likeIcon').addClass('fa-regular');
 
@@ -91,20 +49,76 @@
                         else if (response.redirectUrl) {
                             window.location.href = response.redirectUrl;
                         }
-                        else 
-                        {
+                        else {
                             alert("An error occurred while processing your request.");
                         }
-                       
+
                     },
-                    error:  () => {
+                    error: () => {
                         alert("An error occurred while processing your request.");
                     }
                 });
             });
         });
-    </script>
 
+        function deleteComment(commentId) {
+            if (!confirm("Are you sure you want to delete this comment?")) {
+                return;
+            }
+            $.ajax({
+                url: '/Comment/Delete',
+                type: 'POST',
+                data: { id: commentId },
+                success: function (response) {
+                    if (response.success) {
+                        $(`#comment-${commentId}`).remove();
+                    }
+                    else {
+                        window.location.href = response.redirectUrl;
+
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while attempting to delete the comment.");
+                }
+            });
+        }
+
+
+        function submitComment() {
+            var content = $('#commentContent').val();
+            if( content.trim() === ''){
+                alert("Comment cannot be empty");
+                return;
+            }
+
+            var postId = $('#postId').val();
+            var userId = $('#userId').val();
+
+            $.ajax({
+                url: '@Url.Action("Add", "Comment")',
+                type: 'POST',
+                data: {
+                    Content: content,
+                    PostId: postId,
+                    UserId: userId
+                },
+                success: function (response) {
+                    if (response.redirectUrl) {
+                        window.location.href = response.redirectUrl;
+                    }
+                    else {
+                        $('#noCommentsMessage').remove();
+                        $('#commentSection').append(response);
+                        $('#commentContent').val('');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: in adding comment");
+                }
+            });
+        }
+    </script>
 }
 <div class="container-fluid my-5">
     <div class="row">
@@ -163,76 +177,31 @@
                 <div class="p-3">
                     <h6>Comments</h6>
                 </div>
-                <form method="post" asp-action="Add" asp-controller="Comment">
+                <form id="addCommentForm">
                     <div class="mt-2 d-flex flex-row align-items-center p-3 form-color">
                         <img src="~/@ViewData["CurrentUserImageUrl"]" width="40" class="rounded-circle mx-2">
-                        <input name="Content"  type="text" class="form-control" placeholder="Enter your comment..." required>
-                        <input type="hidden" name="PostId" value="@Model?.PostId" />
-                        <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)"/>
-                        <input type="submit" class="btn btn-primary mx-2" value="Add" />
+                        <input asp-for="Comments" id="commentContent" type="text" class="form-control" placeholder="Enter your comment..." id="commentContent" required />"
+                        
+                        <input type="hidden" id="postId" value="@Model?.PostId" />
+                        <input type="hidden" id="userId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+                        <button type="button" class="btn btn-primary mx-2" onclick="submitComment()">Add</button>
                     </div>
                 </form>
-                
-
-                
-                @if (Model?.Comments?.Any() ?? false)
-                {
-                    @foreach (var comment in Model!.Comments)
+                <div id="commentSection">
+                    @if (Model?.Comments?.Any() ?? false)
                     {
-                        <div class="my-2">
-                            <div class="d-flex flex-row p-1">
-                                <img src="~/@comment.User?.Image?.ImageURL" width="40" height="40" class="rounded-circle mx-3">
-                                <div class="w-100">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex flex-row align-items-center">
-                                            <a class="mx-1 text-decoration-none" asp-action="Profile" asp-controller="User" asp-route-id="@comment?.UserId">@string.Concat(comment?.User?.FirstName, " ", comment?.User?.LastName)</a>
-                                            <small class="mx-2">
-                                                @TimeAgo(comment!.DatePosted)
-                                        </small>
-                                        </div>
-                                        <div class="d-flex gap-3 align-items-center">
-                                           
-                                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment!.UserId || User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.UserId)
-                                            {
-                                                @if(User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
-                                                {
-                                                    <button type="button" class="link-primary border-0 bg-transparent" onclick="editComment(@comment.CommentId)">Edit</button>
-                                                }
-                                                <form asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post" class="d-inline">
-                                                    <input type="submit" class="link-danger border-0 bg-transparent" value="Delete" />
-                                                </form>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div id="comment-text-@comment.CommentId" class="comment-text">
-                                        <p class="text-justify">@comment.Content</p>
-                                        
-                                    </div>
-
-                                    @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
-                                    {
-                                        <div id="edit-comment-@comment.CommentId" class="d-none">
-                                            <form asp-action="Edit" asp-controller="Comment" asp-route-id="@comment.CommentId" method="post">
-                                                <input type="hidden" name="CommentId" value="@comment.CommentId" />
-                                                <input type="text" name="Content" class="form-control" value="@comment.Content" required/>
-                                                <div class="d-flex justify-content-end mt-2">
-                                                    <button type="submit" class="btn btn-primary me-2">Update</button>
-                                                    <button type="button" class="btn btn-secondary" onclick="cancelEdit(@comment.CommentId)">Cancel</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
+                        foreach (var comment in Model!.Comments)
+                        {
+                            <partial name="_CommentsPartial" model="comment" />
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center" id="noCommentsMessage">
+                            <p>No comments yet!</p>
                         </div>
                     }
-                }
-                else
-                {
-                    <div class="text-center">
-                        <p>No comments yet!</p>
-                    </div>
-                }
+                </div>
             </div>
         </div>
     </div>

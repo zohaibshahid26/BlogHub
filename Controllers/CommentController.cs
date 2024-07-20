@@ -23,50 +23,56 @@ namespace BlogHub.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Add(Comment comment)
         {
-            if (User.Identity?.IsAuthenticated != true)
+            if(!ModelState.IsValid)
             {
-                return Redirect("/Identity/Account/Login" + "?ReturnUrl=%2FPost%2FDetails%2F" + comment.PostId);
+                return Json(new { redirectUrl = "/Error/400" });
             }
 
+            if (User.Identity?.IsAuthenticated != true)
+            {
+                return Json( new { redirectUrl = "/Identity/Account/Login" + "?ReturnUrl=%2FPost%2FDetails%2F" + comment.PostId});
+            }
             try
             {
                 await _unitOfWork.CommentRepository.AddAsync(comment);
                 await _unitOfWork.SaveChangesAsync();
-                return RedirectToAction("Details", "Post", new { id = comment.PostId });
+                var savedComment = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == comment.CommentId, includeProperties: "User,User.Image").FirstOrDefault();
+                return PartialView("_CommentsPartial", savedComment);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while adding a new comment.");
-                return StatusCode(500, "Internal server error");
+                return Json(new { redirectUrl = "/Error/500" });
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
+
             try
             {
                 var comment = _unitOfWork.CommentRepository.Get(filter: c => c.CommentId == id, includeProperties: "Post,Post.User,User").FirstOrDefault();
                 if (comment == null)
                 {
                     _logger.LogWarning("Comment with ID {CommentId} not found.", id);
-                    return NotFound();
+                    return Json(new { redirectUrl = "/Error/404" });
                 }
 
                 var authorizationResult = await _authorizationService.AuthorizeAsync(User, comment, "DeleteCommentPolicy");
                 if (!authorizationResult.Succeeded)
                 {
-                    return Forbid();
+                    return  Json(new { redirectUrl = "/Identity/Account/AccessDenied" });
                 }
 
                 await _unitOfWork.CommentRepository.DeleteAsync(id);
                 await _unitOfWork.SaveChangesAsync();
-                return RedirectToAction("Details", "Post", new { id = comment.PostId });
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting comment with ID {CommentId}.", id);
-                return StatusCode(500, "Internal server error");
+                return Json(new { redirectUrl = "/Error/500" });
             }
         }
 

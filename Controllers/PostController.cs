@@ -342,6 +342,10 @@ namespace BlogHub.Controllers
         [AllowAnonymous]
         public IActionResult SearchAjax(string? query)
         {
+            if(Request.Headers["X-Requested-With"] != "XMLHttpRequest")
+            {
+                return NotFound();
+            }
             try
             {
                 TempData["SearchQuery"] = query;

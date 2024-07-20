@@ -13,13 +13,12 @@ function copyPostUrl() {
 }
 
  function editComment(commentId) {
-            document.getElementById(`comment-text-${commentId}`).classList.add('d-none');
-            document.getElementById(`edit-comment-${commentId}`).classList.remove('d-none');
-        }
+    document.getElementById(`comment-text-${commentId}`).classList.add('d-none');
+    document.getElementById(`edit-comment-${commentId}`).classList.remove('d-none');
+ }
 
-        function cancelEdit(commentId) {
-            document.getElementById(`comment-text-${commentId}`).classList.remove('d-none');
-            document.getElementById(`edit-comment-${commentId}`).classList.add('d-none');
-        }
+ function cancelEdit(commentId) {
+     document.getElementById(`comment-text-${commentId}`).classList.remove('d-none');
+     document.getElementById(`edit-comment-${commentId}`).classList.add('d-none');
+ }
    
-       
