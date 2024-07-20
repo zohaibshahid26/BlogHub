@@ -1,11 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
-    var likeButton = document.getElementById('likeButton');
-    likeButton.addEventListener('click', function (event) {
-        event.preventDefault();
-        document.getElementById('likeForm').submit();
-    });
-});
-
+﻿
 function copyPostUrl() {
     const postUrl = window.location.href;
     navigator.clipboard.writeText(postUrl).then(() => {
@@ -18,3 +11,15 @@ function copyPostUrl() {
         console.error('Failed to copy: ', err);
     });
 }
+
+ function editComment(commentId) {
+            document.getElementById(`comment-text-${commentId}`).classList.add('d-none');
+            document.getElementById(`edit-comment-${commentId}`).classList.remove('d-none');
+        }
+
+        function cancelEdit(commentId) {
+            document.getElementById(`comment-text-${commentId}`).classList.remove('d-none');
+            document.getElementById(`edit-comment-${commentId}`).classList.add('d-none');
+        }
+   
+       

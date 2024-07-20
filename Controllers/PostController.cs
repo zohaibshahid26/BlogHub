@@ -303,27 +303,32 @@ namespace BlogHub.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleLike(string postId, string userId)
         {
-            if (User.Identity?.IsAuthenticated != true)
+            if (!User.Identity?.IsAuthenticated ?? true)
             {
-                return Redirect("/Identity/Account/Login" + "?ReturnUrl=%2FPost%2FDetails%2F" + postId);
+                return Json(new { success = false, isAuthenticated = false, redirectUrl = "/Identity/Account/Login?ReturnUrl=%2FPost%2FDetails%2F" + postId });
             }
 
-            if (postId == null)
+            if (string.IsNullOrEmpty(postId) || string.IsNullOrEmpty(userId))
             {
-                _logger.LogWarning("Toggle like called with null post ID.");
-                return NotFound();
+                _logger.LogWarning("Toggle like called with null or empty post ID.");
+                return Json(new { success = false, message = "Invalid request." });
             }
 
             try
             {
                 await _unitOfWork.PostRepository.ToggleLikeAsync(postId, userId);
                 await _unitOfWork.SaveChangesAsync();
-                return RedirectToAction("Details","Post", new { id = postId });
+
+                var postLikes = _unitOfWork.PostRepository.Get(filter: p => p.PostId == postId, includeProperties: "Likes").FirstOrDefault()?.Likes;
+                bool isLiked = postLikes?.Any(l => l.UserId == userId) ?? false;
+                int likeCount = postLikes?.Count ?? 0;
+
+                return Json(new { success = true, isLiked, likeCount });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while toggling like for post with ID {PostId}.", postId);
-                return StatusCode(500, "Internal server error");
+                return Json(new { success = false, message = "An error occurred." });
             }
         }
 

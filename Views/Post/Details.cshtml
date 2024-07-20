@@ -63,7 +63,48 @@
             document.getElementById(`comment-text-${commentId}`).classList.remove('d-none');
             document.getElementById(`edit-comment-${commentId}`).classList.add('d-none');
         }
+   
+        $(document).ready(() => {
+            $('#likeButton').click((e) => {
+                e.preventDefault();
+                var postId = $('#PostId').val();
+                var userId = $('#UserId').val();
+
+                $.ajax({
+                    url: '@Url.Action("ToggleLike", "Post")',
+                    type: 'POST',
+                    data: { postId: postId, userId: userId },
+                    success: (response)=> {
+                        if (response.success) {
+                            if (response.isLiked) {
+                                $('#likeIcon').removeClass('fa-regular');
+                                $('#likeIcon').addClass('fa-solid');
+                            }
+                            else
+                            {
+                                $('#likeIcon').removeClass('fa-solid');
+                                $('#likeIcon').addClass('fa-regular');
+
+                            }
+                            $('#like-count').text(response.likeCount);
+                        }
+                        else if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        }
+                        else 
+                        {
+                            alert("An error occurred while processing your request.");
+                        }
+                       
+                    },
+                    error:  () => {
+                        alert("An error occurred while processing your request.");
+                    }
+                });
+            });
+        });
     </script>
+
 }
 <div class="container-fluid my-5">
     <div class="row">
@@ -71,13 +112,11 @@
             <div class="d-flex align-items-center justify-content-between">
                 <h1>@Model.Title</h1>
                 <div class="mx-2 d-flex">
-                    <form id="likeForm" method="post" action="@Url.Action("ToggleLike", "Post")">
-                        <input type="hidden" name="PostId" value="@Model.PostId" />
-                        <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
-                        <a id="likeButton" class="text-decoration-none">
-                            <i class="@((Model.Likes!.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) ? "fa-solid" : "fa-regular")) fa-thumbs-up fa-2xl mx-2" id="likeIcon" style="color: #805ce9; cursor: pointer;"></i>
-                        </a>
-                    </form>
+                    <input type="hidden" name="PostId" value="@Model.PostId" id="PostId" />
+                    <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" id="UserId" />
+                    <a id="likeButton" class="text-decoration-none">
+                        <i class="@((Model.Likes!.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) ? "fa-solid" : "fa-regular")) fa-thumbs-up fa-2xl mx-2" id="likeIcon" style="color: #805ce9; cursor: pointer;"></i>
+                    </a>
                     <span class="mx-0" id="like-count">
                         @(Model?.Likes?.Count ?? 0)
                     </span>
@@ -115,7 +154,6 @@
                     <i class="fa-solid fa-share"></i> Share Post
                 </a>
             </div>
-            
         </div>
                
     </div>
