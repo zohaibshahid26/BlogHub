@@ -6,6 +6,8 @@
 }
 @section Scripts {
     <script src="~/js/AddPost.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
     <script type="module">
         import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
         document.addEventListener('DOMContentLoaded', function () {
@@ -23,11 +25,74 @@
             }
         });
     </script>
-    <partial name="_ValidationScriptsPartial" />
+    <script>
+
+        $(document).ready(() => {
+            $('#publish').click((e) => {
+                e.preventDefault();
+
+                // Trigger client-side validation
+                if ($('#addForm').valid()) {
+                    submitForm();
+                }
+            });
+
+            function submitForm() {
+                var formData = new FormData();
+                formData.append('Title', $('#title').val());
+                formData.append('Content', $('#markdownInput').val());
+                formData.append('Category.CategoryName', $('#categorySelect').val());
+                formData.append('Tags', $('#hiddenTags').val());
+                formData.append('Image', $('#img')[0].files[0]);
+
+                $.ajax({
+                    url: '@Url.Action("Add", "Post")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: (response) => {
+                        if (response.success) {
+
+                            document.getElementById('preview').innerHTML = '';
+                            $('#addForm').trigger('reset');
+                            alert("Post added successfully");
+
+                        }
+                        else if( response.message)
+                        {
+                            alert(response.message);
+                        }
+                        else {
+                            handleValidationErrors(response.errors);
+                        }
+                    },
+                    error: () => {
+                        alert("An error occurred while processing your request.");
+                    }
+                });
+            }
+
+            function handleValidationErrors(errors) {
+                $('span.text-danger').text('');
+                errors.forEach(error => {
+                    let errorSpan = $(`span[data-valmsg-for="${getErrorField(error)}"]`);
+                    errorSpan.text(error);
+                });
+            }
+
+            function getErrorField(errorMessage) {
+                if (errorMessage.includes("Title")) return "Title";
+                if (errorMessage.includes("Content")) return "Content";
+                if (errorMessage.includes("Category")) return "Category";
+                return "";
+            }
+        });
+    </script>   
 }
 <div class="container-fluid mx-3  mt-3 min-vh-100">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <form method="post" action="/Post/Add" enctype="multipart/form-data" id="addForm">
+    <form enctype="multipart/form-data" id="addForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="step" id="step1">
             <div class="row mt-3 mx-1">
                 <div class="col">
@@ -97,16 +162,15 @@
                                 </h3>
                             </div>
                             <div class="input-group">
-                                <select id="categorySelect" class="form-select-md rounded-3 p-1"
-                                     asp-for="Category" aria-label="Default select example"> 
-                                    <option selected disabled hidden>Choose...</option>
-                                        @if (Model.Categories != null)
+                                <select id="categorySelect" class="form-select-md rounded-3 p-1" asp-for="Category" aria-label="Default select example"> 
+                                    <option value="@null" selected disabled hidden>Choose...</option>
+                                    @if (Model.Categories != null)
+                                    {
+                                        @foreach (var category in Model.Categories)
                                         {
-                                            @foreach (var category in Model.Categories)
-                                            {
-                                                <option value="@category.CategoryName">@category.CategoryName</option>
-                                            }
+                                            <option value="@category.CategoryName">@category.CategoryName</option>
                                         }
+                                    }
                                 </select>
                             </div>
                             <span asp-validation-for="Category" class="text-danger"></span>
@@ -130,7 +194,7 @@
                                 </button>
                                 <div class="image-upload-wrap">
                                     <input class="file-upload-input" type='file' onchange="readURL(this);"
-                                           accept="image/*" asp-for="Image" />
+                                           accept="image/*" asp-for="Image" id="img" />
                                     <div class="drag-text">
                                         <h3>Drag and drop a file or select add Image</h3>
                                     </div>
@@ -161,7 +225,7 @@
                                 Speard the word!
                             </h2>
                             <div class="input-group justify-content-center">
-                                <button type="submit" class="btn btn-primary btn-lg mt-3">Publish</button>
+                                <button type="submit" class="btn btn-primary btn-lg mt-3" id="publish">Publish</button>
                             </div>
                         </div>
                     </div>

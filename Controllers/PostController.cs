@@ -110,6 +110,12 @@ namespace BlogHub.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(PostViewModel post)
         {
+            if(post.Category?.CategoryName == "null")
+            {
+                post.Category = null;
+                ModelState.AddModelError("Category", "Category is required");
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -137,16 +143,18 @@ namespace BlogHub.Controllers
 
                     await _unitOfWork.PostRepository.AddAsync(Post);
                     await _unitOfWork.SaveChangesAsync();
-                    return RedirectToAction("Index", "Post");
+                    return Json(new { success = true });
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error occurred while adding a new post.");
-                    return StatusCode(500, "Internal server error");
+                    return Json(new { success = false, message = "An error occurred." });
                 }
             }
-            var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
-            return View( new PostViewModel { Categories = categories });
+
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            return Json(new { success = false, errors });
+            
         }
 
         public async Task<IActionResult> Edit(string? id)

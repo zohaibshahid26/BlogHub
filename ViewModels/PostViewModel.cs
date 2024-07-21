@@ -14,8 +14,7 @@ namespace BlogHub.ViewModels
         public IFormFile? Image { get; set; }
         public string? ImageUrl { get; set; }
         [Required(ErrorMessage = "Category is required")]
-        [Display(Name = "Category")]
-        public Category Category { get; set; }
+        public Category ? Category { get; set; }
         public IEnumerable<Category>? Categories { get; set; }
 
         [Display(Name = "Tags (separate with commas)")]
