@@ -15,7 +15,7 @@ BlogHub is a full-stack blogging application developed using ASP.NET Core MVC, d
 
 ## Technologies Used:
 
-- **Frontend**: HTML, CSS, JavaScript
+- **Frontend**: HTML, CSS, JavaScript, Jquery (AJAX)
 - **Backend**: ASP.NET Core MVC
 - **Authentication**: ASP.NET Core Identity
 - **Database**: Entity Framework Core with SQL Server
