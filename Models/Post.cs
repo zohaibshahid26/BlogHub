@@ -12,7 +12,7 @@ namespace BlogHub.Models
         public required string Title { get; set; }
 
 
-        [Required(ErrorMessage = "Content is required and cannot be empty")]
+        [Required(ErrorMessage = "Post Content is required and cannot be empty")]
         public required string Content { get; set; }
 
         public DateOnly DatePosted { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);

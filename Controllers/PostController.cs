@@ -84,7 +84,7 @@ namespace BlogHub.Controllers
                 _unitOfWork.PostRepository.Update(post);
                 await _unitOfWork.SaveChangesAsync();
 
-                return View(post);
+                return View( new PostDetailsViewModel { Post = post });
             }
             catch (Exception ex)
             {
@@ -145,8 +145,8 @@ namespace BlogHub.Controllers
                     return StatusCode(500, "Internal server error");
                 }
             }
-
-            return View(post);
+            var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
+            return View( new PostViewModel { Categories = categories });
         }
 
         public async Task<IActionResult> Edit(string? id)
