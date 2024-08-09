@@ -34,6 +34,7 @@
                             <div class="d-flex justify-content-end align-items-center mt-3">
                                 <a asp-controller="Post" asp-action="Edit" asp-route-id="@post.PostId" class="btn btn-edit" style="">Edit</a>
                                 <form method="post" asp-action="Delete" asp-route-id="@post.PostId" class="m-0">
+                                    @Html.AntiForgeryToken()
                                     <input type="submit" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this post?')" value="Delete" />
                                 </form>
                             </div>

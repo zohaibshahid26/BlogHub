@@ -1,6 +1,5 @@
 ﻿@using System.Security.Claims
 @model Comment;
-
 @functions {
     public static string TimeAgo(DateTime date)
     {
@@ -67,6 +66,7 @@
             {
                 <div id="edit-comment-@Model.CommentId" class="d-none">
                     <form asp-action="Edit" asp-controller="Comment" asp-route-id="@Model.CommentId" method="post">
+                        @Html.AntiForgeryToken()
                         <input type="hidden" name="CommentId" value="@Model.CommentId" />
                         <input type="text" name="Content" class="form-control" value="@Model.Content" required />
                         <div class="d-flex justify-content-end mt-2">

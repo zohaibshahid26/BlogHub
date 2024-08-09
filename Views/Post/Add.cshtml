@@ -92,6 +92,7 @@
 }
 <div class="container-fluid mx-3  mt-3 min-vh-100">
     <form enctype="multipart/form-data" id="addForm">
+        @Html.AntiForgeryToken();
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="step" id="step1">
             <div class="row mt-3 mx-1">

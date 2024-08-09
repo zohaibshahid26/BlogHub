@@ -107,6 +107,7 @@ namespace BlogHub.Controllers
             }
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Add(PostViewModel post)
         {
@@ -203,6 +204,7 @@ namespace BlogHub.Controllers
             }
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Edit(PostViewModel post)
         {

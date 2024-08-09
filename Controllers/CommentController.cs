@@ -19,6 +19,7 @@ namespace BlogHub.Controllers
             _logger = logger;
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Add(Comment comment)
@@ -76,6 +77,7 @@ namespace BlogHub.Controllers
             }
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Edit(Comment comment)
         {
