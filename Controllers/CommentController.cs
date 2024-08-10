@@ -47,6 +47,8 @@ namespace BlogHub.Controllers
             }
         }
 
+
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {

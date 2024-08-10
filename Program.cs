@@ -6,6 +6,7 @@ using BlogHub.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Ganss.Xss;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddSingleton<IAuthorizationHandler, PostAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, CommentAuthorizationHandler>();
 builder.Services.AddSingleton(builder.Environment);
-
+builder.Services.AddSingleton<HtmlSanitizer>();
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Email, "admin@bloghub.com"));

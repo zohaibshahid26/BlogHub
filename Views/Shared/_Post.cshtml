@@ -10,7 +10,9 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between gap-2 flex-column flex-sm-row">
                     <div>
-                        <h5 class="mt-0 fs-3 fw-medium">@post.Title</h5>
+                        <h5 class="mt-0 fs-3 fw-medium">
+                            @post.Title
+                        </h5>
                         <p class="mb-0 text-muted">@post.DatePosted · @post.TimeToRead min read · @post.Category.CategoryName</p>
                         @{
                             var plainText = Markdig.Markdown.ToPlainText(post.Content);
@@ -22,7 +24,9 @@
                                 previewText += " ...";
                             }
                         }
-                        <p>@previewText</p>
+                        <p>
+                            @previewText
+                        </p>
                     </div>
                     <img src="~/@post.Image?.ImageURL" class="rounded-1" width="150" height="120" />
                     

@@ -1,6 +1,8 @@
 ﻿@using System.Security.Claims;
 @using BlogHub.ViewModels;
-@model PostDetailsViewModel;
+@using Ganss.Xss;
+@inject HtmlSanitizer _htmlSanitizer
+@model PostDetailsViewModel
 @{
     if (User.Identity?.IsAuthenticated ?? false)
     {
@@ -12,6 +14,7 @@
     }
     string markdownContent = Model.Post.Content;
     string htmlContent = Markdig.Markdown.ToHtml(markdownContent);
+    string sanitizedHtmlContent = _htmlSanitizer.Sanitize(htmlContent);
 }
 
 @section Styles {
@@ -30,11 +33,12 @@
                 e.preventDefault();
                 var postId = $('#PostId').val();
                 var userId = $('#UserId').val();
+                var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
                     url: '@Url.Action("ToggleLike", "Post")',
                     type: 'POST',
-                    data: { postId: postId, userId: userId },
+                    data: { postId: postId, userId: userId , __RequestVerificationToken: token },
                     success: (response) => {
                         if (response.success) {
                             if (response.isLiked) {
@@ -70,7 +74,7 @@
             $.ajax({
                 url: '/Comment/Delete',
                 type: 'POST',
-                data: { id: commentId },
+                data: { id: commentId, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
                 success: function (response) {
                     if (response.success) 
                     {
@@ -108,6 +112,7 @@
                 var postId = $('#postId').val();
                 var userId = $('#userId').val();
                 var content = $('#commentContent').val();
+                var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
                     url: '@Url.Action("Add", "Comment")',
@@ -115,7 +120,8 @@
                     data: {
                         Content: content,
                         PostId: postId,
-                        UserId: userId
+                        UserId: userId,
+                        __RequestVerificationToken: token
                     },
                     success: function (response) {
                         if (response.redirectUrl) {
@@ -171,12 +177,14 @@
                     @foreach(var tag in Model.Post.Tags)
                     {
                         <a href="#"
-                           class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3" style="background:#e1e1e1!important;">@tag.TagName</a>
+                           class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3" style="background:#e1e1e1!important;">
+                           @tag.TagName
+                        </a>
                     }
                 }
             </div>
             <div class="text-body text-black fs-5 my-3">
-                    @Html.Raw(htmlContent)
+                @Html.Raw(sanitizedHtmlContent)
             </div>
             <div class="d-flex justify-content-end">
                 <a id="shareButton" class="btn btn-secondary mx-2 align-self-end" onclick="copyPostUrl()">
@@ -193,7 +201,7 @@
                     <h6>Comments</h6>
                 </div>
                 <form id="addCommentForm">
-                    @Html.AntiForgeryToken();
+                    @Html.AntiForgeryToken()
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="mt-2 d-flex flex-row align-items-center p-3 form-color">
                         <img src="~/@ViewData["CurrentUserImageUrl"]" width="40" class="rounded-circle mx-2">

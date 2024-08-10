@@ -27,11 +27,10 @@
     </script>
     <script>
 
-        $(document).ready(() => {
+        $(document).ready( () => {
             $('#publish').click((e) => {
                 e.preventDefault();
 
-                // Trigger client-side validation
                 if ($('#addForm').valid()) {
                     submitForm();
                 }
@@ -44,6 +43,8 @@
                 formData.append('Category.CategoryName', $('#categorySelect').val());
                 formData.append('Tags', $('#hiddenTags').val());
                 formData.append('Image', $('#img')[0].files[0]);
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                formData.append('__RequestVerificationToken', token);
 
                 $.ajax({
                     url: '@Url.Action("Add", "Post")',
@@ -67,9 +68,10 @@
                             handleValidationErrors(response.errors);
                         }
                     },
-                    error: () => {
-                        alert("An error occurred while processing your request.");
-                    }
+                    error:  function (xhr, status, error) {
+                            alert("An error occurred while adding the post.");
+                        }
+                    
                 });
             }
 
@@ -92,7 +94,7 @@
 }
 <div class="container-fluid mx-3  mt-3 min-vh-100">
     <form enctype="multipart/form-data" id="addForm">
-        @Html.AntiForgeryToken();
+        @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="step" id="step1">
             <div class="row mt-3 mx-1">

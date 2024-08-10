@@ -268,6 +268,8 @@ namespace BlogHub.Controllers
             }
         }
 
+
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> Delete(string? id)
         {
@@ -309,6 +311,8 @@ namespace BlogHub.Controllers
             }
         }
 
+
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> ToggleLike(string postId, string userId)

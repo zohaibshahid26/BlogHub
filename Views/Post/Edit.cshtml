@@ -1,4 +1,6 @@
 ﻿@using BlogHub.ViewModels
+@using Ganss.Xss;
+@inject HtmlSanitizer _htmlSanitizer
 @model PostViewModel
 @section Styles {
     <link rel="stylesheet" href="~/css/addpost.css" asp-append-version="true" />
@@ -40,7 +42,7 @@
                         <p class="fs-5 h-auto custom-color">PREVIEW</p>
                         <hr>
                         <div id="preview" class="preview">
-                            @Html.Raw(Markdig.Markdown.ToHtml(Model.Content))
+                            @Html.Raw(_htmlSanitizer.Sanitize(Markdig.Markdown.ToHtml(Model.Content)))
                         </div>
                     </div>
                 </div>

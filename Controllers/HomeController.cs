@@ -3,8 +3,6 @@ using BlogHub.ViewModels;
 using BlogHub.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Microsoft.Extensions.Logging;
-
 namespace BlogHub.Controllers
 {
     public class HomeController : Controller
