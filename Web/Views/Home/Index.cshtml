@@ -1,0 +1,91 @@
+﻿@using Web.ViewModels
+@{
+    if (User.Identity?.IsAuthenticated ?? false)
+    {
+        Layout = "_Layout";
+    }
+    else
+    {
+        Layout = "_Landing";
+    }
+}
+@model HomeViewModel
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+}
+<section class="bg-main bg-color bg-transparent p-2 p-md-3 p-lg-5 m-auto m-lg-5 ">
+        <div class="container mt-5">
+            <div class="row gap-4 gap-lg-0">
+                <div class="col-12 col-md-12 col-lg-6 d-flex">
+                    <h1 class="pt-auto pt-lg-5 fw-bolder">
+                        Start your blogging journey at <span class="gradient-text">BlogHub</span>, a place where
+                        millions
+                        gather
+                        to share
+                        ideas, insights,
+                        and
+                        stories.
+                    </h1>
+                </div>
+                <div class="col-12 col-md-12 col-lg-6">
+                    <img src="~/assests/hero-section.svg" class=" rounded img-fluid img-thumbnail">
+                </div>
+            </div>
+            <div class="row">
+                <div
+                    class="col-12 col-md-12 col-lg-6 d-flex align-items-center justify-content-center justify-content-lg-start my-4 my-lg-0">
+                    <a class="btn btn-primary" href="#latestpost">Start Reading</a> 
+                </div>
+            </div>
+        </div>
+</section>
+
+<section class="p-4 my-2 trending" id="trending">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 my-4">
+                <h2 class="text-center text-white">
+                    <img src="~/assests/trend.png" class=" rounded  ratio-16x9">
+                    Trending Posts
+                </h2>
+            </div>
+        </div>
+        <partial name="_TrendingPosts" model="Model.TrendingPosts" />
+    </div>
+</section>
+
+<section class="p-4 my-2">
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12 col-lg-3 order-1 order-lg-2">
+                <h2 class="my-3 gradient-text">Categories</h2>
+                    <partial name="_Categories" model="Model.Categories" />
+            </div>
+           @if (Model.RecentlyViewedPosts != null && Model.RecentlyViewedPosts.Any())
+           {
+                <div class="col-12 col-lg-9 order-2 order-lg-3">
+                    <h4 class="my-4 gradient-text">Recently Viewed Posts</h4>
+                    <partial name="_Post" model="Model.RecentlyViewedPosts" />
+                </div>
+           }
+
+            @if (Model.LatestPosts != null && Model.LatestPosts.Any())
+            {
+                <div class="col-12 col-lg-9 order-3 order-lg-1" id="latestpost">
+                    <h4 class="my-4 gradient-text">Latest on BlogHub</h4>
+                    <partial name="_Post" model="Model.LatestPosts" />
+                </div>
+            }
+            else
+            {
+                <div class="col-12 col-lg-9 order-2 order-lg-1">
+                    <div class="text-center">
+                        <h4 class="text-dark">No posts found.</h4>
+                        <a asp-controller="Post" asp-action="Add">Create a new post</a>
+                    </div>
+                </div>
+            }
+        </div>
+     </div>
+</section>

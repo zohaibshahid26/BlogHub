@@ -1,0 +1,82 @@
+﻿@using System.Security.Claims;
+@using Domain.Entities;
+@model Comment
+@functions {
+    public static string TimeAgo(DateTime date)
+    {
+        TimeSpan timeSince = DateTime.UtcNow.Subtract(date);
+        if (timeSince.TotalMinutes < 1)
+        {
+            return "just now";
+        }
+        else if (timeSince.TotalMinutes < 60)
+        {
+            return string.Format("{0} minutes ago", (int)timeSince.TotalMinutes);
+        }
+        else if (timeSince.TotalHours < 24)
+        {
+            return string.Format("{0} hours ago", (int)timeSince.TotalHours);
+        }
+        else if (timeSince.TotalDays < 7)
+        {
+            return string.Format("{0} days ago", (int)timeSince.TotalDays);
+        }
+        else if (timeSince.TotalDays < 30)
+        {
+            return string.Format("{0} weeks ago", (int)(timeSince.TotalDays / 7));
+        }
+        else if (timeSince.TotalDays < 365)
+        {
+            return string.Format("{0} months ago", (int)(timeSince.TotalDays / 30));
+        }
+        else
+        {
+            return string.Format("{0} years ago", (int)(timeSince.TotalDays / 365));
+        }
+    }
+}
+<div class="my-2" id="comment-@Model.CommentId">
+    <div class="d-flex flex-row p-1">
+        <img src="~/@Model.User?.Image?.ImageURL" width="40" height="40" class="rounded-circle mx-3">
+        <div class="w-100">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-row align-items-center">
+                    <a class="mx-1 text-decoration-none" asp-action="Profile" asp-controller="User" asp-route-id="@Model?.UserId">@string.Concat(Model?.User?.FirstName, " ", Model?.User?.LastName)</a>
+                    <small class="mx-2">
+                        @TimeAgo(Model!.DatePosted)
+                    </small>
+                </div>
+                <div class="d-flex gap-3 align-items-center">
+
+                    @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == Model!.UserId || User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.UserId)
+                    {
+                        @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.UserId)
+                        {
+                            <button type="button" class="link-primary border-0 bg-transparent" onclick="editComment(@Model.CommentId)">Edit</button>
+                        }
+                        <input type="submit" class="link-danger border-0 bg-transparent" value="Delete" onclick="deleteComment(@Model.CommentId)" />
+                    }
+                </div>
+            </div>
+            <div id="comment-text-@Model.CommentId" class="comment-text">
+                <p class="text-justify">@Model.Content</p>
+
+            </div>
+
+            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.UserId)
+            {
+                <div id="edit-comment-@Model.CommentId" class="d-none">
+                    <form asp-action="Edit" asp-controller="Comment" asp-route-id="@Model.CommentId" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="CommentId" value="@Model.CommentId" />
+                        <input type="text" name="Content" class="form-control" value="@Model.Content" required />
+                        <div class="d-flex justify-content-end mt-2">
+                            <button type="submit" class="btn btn-primary me-2">Update</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit(@Model.CommentId)">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>

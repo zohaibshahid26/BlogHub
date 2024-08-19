@@ -1,0 +1,236 @@
+﻿@using System.Security.Claims;
+@using Web.ViewModels;
+@using Ganss.Xss;
+@inject HtmlSanitizer _htmlSanitizer
+@model PostDetailsViewModel
+@{
+    if (User.Identity?.IsAuthenticated ?? false)
+    {
+        Layout = "_Layout";
+    }
+    else
+    {
+        Layout = "_Landing";
+    }
+    string markdownContent = Model.Post.Content;
+    string htmlContent = Markdig.Markdown.ToHtml(markdownContent);
+    string sanitizedHtmlContent = _htmlSanitizer.Sanitize(htmlContent);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/post.css" asp-append-version="true" />
+}
+@section Scripts {
+    <script src="~/js/Post.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        $(document).ready(() => {
+            $('#likeButton').click((e) => {
+                e.preventDefault();
+                var postId = $('#PostId').val();
+                var userId = $('#UserId').val();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    url: '@Url.Action("ToggleLike", "Post")',
+                    type: 'POST',
+                    data: { postId: postId, userId: userId , __RequestVerificationToken: token },
+                    success: (response) => {
+                        if (response.success) {
+                            if (response.isLiked) {
+                                $('#likeIcon').removeClass('fa-regular');
+                                $('#likeIcon').addClass('fa-solid');
+                            }
+                            else {
+                                $('#likeIcon').removeClass('fa-solid');
+                                $('#likeIcon').addClass('fa-regular');
+
+                            }
+                            $('#like-count').text(response.likeCount);
+                        }
+                        else if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        }
+                        else {
+                            alert("An error occurred while processing your request.");
+                        }
+
+                    },
+                    error: () => {
+                        alert("An error occurred while processing your request.");
+                    }
+                });
+            });
+        });
+
+        function deleteComment(commentId) {
+            if (!confirm("Are you sure you want to delete this comment?")) {
+                return;
+            }
+            $.ajax({
+                url: '/Comment/Delete',
+                type: 'POST',
+                data: { id: commentId, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
+                success: function (response) {
+                    if (response.success) 
+                    {
+                        $(`#comment-${commentId}`).remove();
+                    }
+                    else {
+                        window.location.href = response.redirectUrl;
+
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while attempting to delete the comment.");
+                }
+            });
+        }
+
+        $(document).ready(() => {
+            $('#addCommentbtn').click(() => {
+                var content = $('#commentContent').val().trim();
+
+                if ($('#addCommentForm').valid() && content !== '') {
+                    $('#addCommentForm').submit();
+                } 
+                else 
+                {
+                    if (content === '') {
+                        $('#commentContent').val('');
+                    }
+                    return false;
+                }
+            });
+
+            $('#addCommentForm').on("submit", (e) => {
+                e.preventDefault();
+                var postId = $('#postId').val();
+                var userId = $('#userId').val();
+                var content = $('#commentContent').val();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    url: '@Url.Action("Add", "Comment")',
+                    type: 'POST',
+                    data: {
+                        Content: content,
+                        PostId: postId,
+                        UserId: userId,
+                        __RequestVerificationToken: token
+                    },
+                    success: function (response) {
+                        if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            $('#noCommentsMessage').remove();
+                            $('#commentSection').append(response);
+                            $('#commentContent').val('');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error: in adding comment");
+                    }
+                });
+            });
+        });
+
+    </script>
+}
+<div class="container-fluid my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="d-flex align-items-center justify-content-between">
+                <h1>@Model.Post.Title</h1>
+                <div class="mx-2 d-flex">
+                    <input type="hidden" name="PostId" value="@Model.Post.PostId" id="PostId" />
+                    <input type="hidden" name="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" id="UserId" />
+                    <a id="likeButton" class="text-decoration-none">
+                        <i class="@((Model.Post.Likes!.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) ? "fa-solid" : "fa-regular")) fa-thumbs-up fa-2xl mx-2" id="likeIcon" style="color: #805ce9; cursor: pointer;"></i>
+                    </a>
+                    <span class="mx-0" id="like-count">
+                        @(Model?.Post.Likes?.Count ?? 0)
+                    </span>
+                    <span class="mx-2 d-flex align-items-center">
+                        <i class="fa-regular fa-eye fa-2xl mx-2" style="color: #805ce9;"></i>
+                        @(Model?.Post.ViewCount ?? 0)
+                    </span>
+                </div>
+            </div>
+            <div class="mb-2">
+                <img class="mx-2 rounded-circle" src="~/@Model?.Post.User.Image?.ImageURL" alt="Author's avatar" style="width:35px;">
+                <a class=" d-inline overflow-hidden text-decoration-none" asp-action="Profile" asp-controller="User" asp-route-id="@Model.Post.UserId">@string.Concat(Model!.Post.User.FirstName," ",Model.Post.User.LastName)</a>  <strong>  |  </strong><a class="text-decoration-none" asp-action="Posts" asp-controller="Category" asp-route-id="@Model.Post.Category.CategoryName">@Model.Post.Category.CategoryName</a>
+                <p class="mx-5 text-muted">@Model?.Post.DatePosted.ToString("dd MMMM, yyyy")</p>
+            </div>
+
+            <div class=" justify-content-center mx-2">
+                <img src="~/@(Model?.Post.Image?.ImageURL)" alt="Featured Image" class="img-thumbnail rounded-3 my-1" width="850px">
+            </div>
+            <div class="d-flex mt-3 flex-wrap">
+                <h4 class="m-3 mx-2 ">Tags</h4>
+                @if(Model?.Post.Tags?.Count > 0)
+                {
+                    @foreach(var tag in Model.Post.Tags)
+                    {
+                        <a href="#"
+                           class="p-3 m-1 text-decoration-none d-block text-black bg-body-tertiary rounded-4 p-3" style="background:#e1e1e1!important;">
+                           @tag.TagName
+                        </a>
+                    }
+                }
+            </div>
+            <div class="text-body text-black fs-5 my-3">
+                @Html.Raw(sanitizedHtmlContent)
+            </div>
+            <div class="d-flex justify-content-end">
+                <a id="shareButton" class="btn btn-secondary mx-2 align-self-end" onclick="copyPostUrl()">
+                    <i class="fa-solid fa-share"></i> Share Post
+                </a>
+            </div>
+        </div>
+               
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow p-3">
+                <div class="p-3">
+                    <h6>Comments</h6>
+                </div>
+                <form id="addCommentForm">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mt-2 d-flex flex-row align-items-center p-3 form-color">
+                        <img src="~/@ViewData["CurrentUserImageUrl"]" width="40" class="rounded-circle mx-2">
+                        <input asp-for="Comment.Content" id="commentContent" type="text" class="form-control" placeholder="Enter your comment..." required />
+                        <input type="hidden" id="postId" value="@Model?.Post.PostId" />
+                        <input type="hidden" id="userId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+                        <button type="button" class="btn btn-primary mx-2" id="addCommentbtn">Add</button>
+                    </div>
+                    <div class="text-center">
+                        <span asp-validation-for="Comment.Content" class="text-danger"></span>
+                    </div>
+                </form>
+
+                <div id="commentSection">
+                    @if (Model?.Post.Comments?.Any() ?? false)
+                    {
+                        foreach (var comment in Model!.Post.Comments)
+                        {
+                            <partial name="_CommentsPartial" model="comment" />
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center" id="noCommentsMessage">
+                            <p>No comments yet!</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

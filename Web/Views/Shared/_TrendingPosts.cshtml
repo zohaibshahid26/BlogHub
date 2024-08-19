@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Domain.Entities.Post>
+
+@if (Model?.Any() ?? false)
+{
+    <div class="row mt-3 mb-5">
+        @foreach (var trendingPost in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4 p-2">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary fw-medium"> @trendingPost.Title</h4>
+                        <div class="card-text mt-2">
+                            <img src="~/@trendingPost.User.Image?.ImageURL" width="40px" class="rounded-5">
+                            <h6 class="card-subtitle mx-2 text-muted d-inline align-items-center">
+                                <a asp-action="Profile" asp-controller="User" asp-route-id="@trendingPost.UserId" class="text-decoration-none"> @string.Concat(trendingPost.User.FirstName, " ", trendingPost.User.LastName)</a> in <a class="text-decoration-none" asp-action="Posts" asp-controller="Category" asp-route-id="@trendingPost.Category.CategoryName">@trendingPost.Category.CategoryName</a>
+                            </h6>
+                            <p class="mt-2">
+                                @{
+                                    var plainText = Markdig.Markdown.ToPlainText(trendingPost.Content);
+                                    var previewText = new string(plainText.Take(180).ToArray());
+
+                                    if (plainText.Length > 180)
+                                    {
+                                        previewText += " ...";
+                                    }
+                                }
+                                @previewText
+                            </p>
+                        </div>
+                        <div class="text-muted d-flex gap-2">
+                            <p class="d-inline p-2">@trendingPost.TimeToRead min read</p>
+                            <a asp-controller="Post" asp-action="Details" asp-route-id="@trendingPost.PostId" class="card-link d-inline p-2" style="color:#7950f2; text-decoration:none;">Read more</a>
+                            <div class="d-inline-block p-1">
+                                <img src="~/assests/heart.png" style="width: 30px;" class="img-fluid rounded">
+                                <p class="d-inline text-dark mx-1 text-center">@(trendingPost.Likes?.Count ?? 0) </p>
+                            </div>
+                            <div class="d-inline-block p-1">
+                                <img src="~/assests/comment.svg" style="width: 25px;" class="img-fluid rounded">
+                                <p class="d-inline text-dark mx-1 text-center">@(trendingPost.Comments?.Count ?? 0) </p>
+                            </div>
+                            <div class="d-inline-block p-1">
+                                <i class="fa-regular fa-eye fa-xl" style="color: #805ce9; margin-top:13px;"></i>
+                                <p class="d-inline text-dark mx-1 text-center">@(trendingPost.ViewCount) </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+   </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">No trending posts found.</h2>
+        </div>
+    </div>
+}
