@@ -1,6 +1,8 @@
 ﻿using Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Data
 {
@@ -8,6 +10,27 @@ namespace Infrastructure.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+            try
+            {
+                var databaseCreator = Database.GetService<IRelationalDatabaseCreator>() as RelationalDatabaseCreator;
+                if (databaseCreator != null)
+                {
+                    if (!databaseCreator.CanConnect())
+                    {
+                        databaseCreator.Create();
+                    }
+                    if (!databaseCreator.HasTables())
+                    {
+                        databaseCreator.CreateTables();
+                    }
+
+                }
+
+            }
+            catch ( Exception ex)
+            {
+                throw new Exception("Error in creating database", ex);
+            }
         }
 
         public DbSet<Post> Posts { get; set; }

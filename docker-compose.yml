@@ -1,0 +1,28 @@
+networks:
+  blogHub:
+    driver: bridge
+
+services:
+  blogHubDb:
+    container_name: blogHubDb
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Zoh@ib26
+    networks:
+      - blogHub
+
+  web:
+    container_name: web
+    ports:
+      - 5000:8080
+    image: ${DOCKER_REGISTRY-}web
+    build:
+      context: .
+      dockerfile: Web/Dockerfile
+    depends_on:
+      - blogHubDb
+    networks:
+      - blogHub

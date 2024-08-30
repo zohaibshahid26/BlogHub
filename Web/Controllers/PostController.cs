@@ -33,7 +33,6 @@ namespace Web.Controllers
         {
             try
             {
-                User.Identity.Name
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Anonymous";
                 var posts = _postService.GetPostsByUser(userId);
                 return View(posts);
