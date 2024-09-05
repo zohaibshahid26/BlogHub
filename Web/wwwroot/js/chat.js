@@ -22,13 +22,11 @@ connection.on("ReceiveMessage", (postTitle, categoryName, imageUrl,postUrl) => {
         duration: 15000,
         gravity: "bottom",
         position: "right",
-        backgroundColor: "transparent", // Ensure background is transparent
+        backgroundColor: "transparent",
         stopOnFocus: true,
-        escapeMarkup: false, // Allow HTML formatting
+        escapeMarkup: false, 
     }).showToast();
 });
-
-
 connection.start()
     .then(() => console.log("SignalR Connected"))
     .catch(err => console.error("SignalR Connection Error: ", err));
