@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Web.Authorization
+namespace Application.Authorization
 {
     public class PostAuthorizationHandler : AuthorizationHandler<PostAuthorizationRequirement, Post>
     {

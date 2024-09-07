@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Web.Authorization
+namespace Application.Authorization
 {
     public class PostAuthorizationRequirement : IAuthorizationRequirement
     {

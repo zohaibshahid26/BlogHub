@@ -1,8 +1,7 @@
 ﻿using Domain.Entities;
-using Web.Models;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Web.Authorization
+namespace Application.Authorization
 {
     public class CommentAuthorizationHandler : AuthorizationHandler<CommentAuthorizationRequirement, Comment>
     {

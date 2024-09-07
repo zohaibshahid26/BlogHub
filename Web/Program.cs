@@ -1,12 +1,8 @@
-using Web.Authorization;
-using Domain.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using Application.Authorization;
 using Ganss.Xss;
 using Infrastructure;
-using Application.Services;
-using Infrastructure.UnitOfWork;
 using Web.Hubs;
+using Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,23 +13,15 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddInfrastructure(builder.Configuration,builder.Environment);
-builder.Services.AddScoped<IPostService, PostService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+builder.Services
+       .AddInfrastructure(builder.Configuration, builder.Environment)
+       .AddApplication();
 
-builder.Services.AddSingleton<IAuthorizationHandler, PostAuthorizationHandler>();
-builder.Services.AddSingleton<IAuthorizationHandler, CommentAuthorizationHandler>();
+
 builder.Services.AddSingleton<HtmlSanitizer>();
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Email, "admin@bloghub.com"));
-    options.AddPolicy("EditPostPolicy", policy => policy.Requirements.Add(new PostAuthorizationRequirement("Edit")));
-    options.AddPolicy("DeletePostPolicy", policy => policy.Requirements.Add(new PostAuthorizationRequirement("Delete")));
-    options.AddPolicy("EditCommentPolicy", policy => policy.Requirements.Add(new CommentAuthorizationRequirement("Edit")));
-    options.AddPolicy("DeleteCommentPolicy", policy => policy.Requirements.Add(new CommentAuthorizationRequirement("Delete")));
+   options.AddCustomAuthorizationPolicies();
 });
 
 builder.Services.AddControllersWithViews();
@@ -50,7 +38,6 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
 }
-
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 app.UseStaticFiles();
 app.UseRouting();

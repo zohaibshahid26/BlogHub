@@ -15,7 +15,7 @@ namespace Application.Services
 
         public IEnumerable<Post> GetPostsByUser(string userId)
         {
-            return _unitOfWork.PostRepository.Get(filter: p => p.UserId == userId, includeProperties: "Category,Tags,Image,Likes,Comments,User");
+            return _unitOfWork.PostRepository.Get(filter: p => p.UserId == userId, includeProperties: "Category,Tags,Image,Likes,Comments,User,User.Image");
         }
 
         public Post? GetPostDetails(string id, string includeProperties)
