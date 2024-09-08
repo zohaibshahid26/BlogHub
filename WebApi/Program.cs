@@ -36,8 +36,7 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddInfrastructureApi(builder.Configuration, builder.Environment)
-    .AddApplication();
+builder.Services.AddInfrastructureApi(builder.Configuration, builder.Environment).AddApplication();
 builder.Services.AddAuthorization(
     options => options.AddCustomAuthorizationPolicies()
 );
@@ -51,7 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseStaticFiles();
+//app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

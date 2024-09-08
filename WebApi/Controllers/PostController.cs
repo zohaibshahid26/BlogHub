@@ -4,9 +4,6 @@ using WebApi.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Linq;
-
 namespace WebApi.Controllers
 {
     [ApiController]
@@ -50,8 +47,9 @@ namespace WebApi.Controllers
                     {
                         CommentId = comment.CommentId,
                         Content = comment.Content,
-                        UserName = comment.User?.FirstName + " " + comment.User?.LastName,
-                        DatePosted = comment.DatePosted
+                        DatePosted = comment.DatePosted,
+                        PostId = comment.PostId ?? "Anonymous",
+                        UserId = comment.UserId ?? "Anonymous"
                     }).ToList(),
                     Likes = post.Likes?.Select(like => new LikeDTO { LikeId = like.LikeId, UserId = like.UserId, UserName = like.User?.FirstName + " " + like.User?.LastName }).ToList(),
                     TimeToRead = post.TimeToRead,
@@ -95,8 +93,9 @@ namespace WebApi.Controllers
                     {
                         CommentId = c.CommentId,
                         Content = c.Content,
-                        UserName = c.User?.FirstName + " " + c.User?.LastName,
-                        DatePosted = c.DatePosted
+                        DatePosted = c.DatePosted,
+                        PostId = c.PostId ?? "Anonymous",
+                        UserId = c.UserId ?? "Anonymous"
                     }).ToList(),
                     Likes = post.Likes?.Select(l => new LikeDTO { LikeId = l.LikeId, UserId = l.UserId, UserName = l.User?.FirstName + " " + l.User?.LastName }).ToList(),
                     TimeToRead = post.TimeToRead,
@@ -337,8 +336,10 @@ namespace WebApi.Controllers
                     {
                         CommentId = comment.CommentId,
                         Content = comment.Content,
-                        UserName = comment.User?.FirstName + " " + comment.User?.LastName,
-                        DatePosted = comment.DatePosted
+                        DatePosted = comment.DatePosted,
+                        PostId = comment?.PostId ?? "Anonymous",
+                        UserId = comment?.UserId ?? "Anonymous"
+
                     }).ToList(),
                     Likes = post.Likes?.Select(like => new LikeDTO
                     {

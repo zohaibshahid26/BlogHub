@@ -9,7 +9,6 @@ namespace Application.Services
         {
             _unitOfWork = unitOfWork;
         }
-
         public MyUser? GetUserById(string id)
         {
             return _unitOfWork.UserRepository.Get(filter: u => u.Id == id, includeProperties: "Image").FirstOrDefault();

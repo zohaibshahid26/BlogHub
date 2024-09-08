@@ -23,7 +23,7 @@ namespace Web.Controllers
             try
             {
                 var trendingPosts = _postService.GetTrendingPosts(6);
-                var latestPosts = _postService.GetLatestPosts(5);
+                var latestPosts = _postService.GetLatestPosts(10);
                 var categories = await _categoryService.GetAllCategoriesAsync();
                 var recentlyViewedPosts = Request.Cookies["RecentlyViewedPosts"];
                 var recentlyViewedPostIds = recentlyViewedPosts != null ? recentlyViewedPosts.Split(',').ToList() : new List<string>();

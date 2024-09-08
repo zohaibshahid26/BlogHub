@@ -69,7 +69,8 @@ namespace WebApi.Controllers
                         CommentId = comment.CommentId,
                         Content = comment.Content,
                         DatePosted = comment.DatePosted,
-                        UserName = comment.User?.UserName ?? "Unknown",
+                        UserId = comment?.UserId ?? "Unknown",
+                        PostId = comment?.PostId ?? "Unknown"
                     }).ToList(),
                     Likes = post.Likes?.Select(like => new LikeDTO
                     {

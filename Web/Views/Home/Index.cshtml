@@ -64,7 +64,7 @@
             </div>
            @if (Model.RecentlyViewedPosts != null && Model.RecentlyViewedPosts.Any())
            {
-                <div class="col-12 col-lg-9 order-2 order-lg-3">
+                <div class="col-12 col-lg-9 order-2 order-lg-1">
                     <h4 class="my-4 gradient-text">Recently Viewed Posts</h4>
                     <partial name="_Post" model="Model.RecentlyViewedPosts" />
                 </div>
@@ -72,7 +72,7 @@
 
             @if (Model.LatestPosts != null && Model.LatestPosts.Any())
             {
-                <div class="col-12 col-lg-9 order-3 order-lg-1" id="latestpost">
+                <div class="col-12 col-lg-9 order-3 order-lg-3" id="latestpost">
                     <h4 class="my-4 gradient-text">Latest on BlogHub</h4>
                     <partial name="_Post" model="Model.LatestPosts" />
                 </div>
