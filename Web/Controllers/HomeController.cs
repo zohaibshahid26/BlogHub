@@ -2,7 +2,9 @@ using Web.Models;
 using Web.ViewModels;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
+
 namespace Web.Controllers
 {
     public class HomeController : Controller
@@ -10,26 +12,51 @@ namespace Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;
+        private readonly IMemoryCache _cache;
 
-        public HomeController(ILogger<HomeController> logger, IPostService postService, ICategoryService categoryService)
+        public HomeController(ILogger<HomeController> logger, IPostService postService, ICategoryService categoryService, IMemoryCache cache)
         {
             _logger = logger;
             _postService = postService;
             _categoryService = categoryService;
+            _cache = cache;
         }
 
-        public async Task<IActionResult> Index(int pageNumber = 1,int pageSize = 5)
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client, VaryByQueryKeys = new[] { "pageNumber", "pageSize" })]
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 5)
         {
             try
             {
-                var trendingPosts = _postService.GetTrendingPosts(6);
-                var latestPosts = _postService.GetLatestPosts(pageNumber,pageSize);
-                var categories = await _categoryService.GetAllCategoriesAsync();
+                var trendingPosts = _cache.GetOrCreate("TrendingPosts", entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                    return _postService.GetTrendingPosts(6);
+                });
+
+                var latestPosts = _cache.GetOrCreate($"LatestPosts_{pageNumber}_{pageSize}", entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                    return _postService.GetLatestPosts(pageNumber, pageSize);
+                });
+
+                var categories = await _cache.GetOrCreateAsync("Categories", async entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                    return await _categoryService.GetAllCategoriesAsync();
+                });
+
                 var recentlyViewedPosts = Request.Cookies["RecentlyViewedPosts"];
                 var recentlyViewedPostIds = recentlyViewedPosts != null ? recentlyViewedPosts.Split(',').ToList() : new List<string>();
                 var recentlyViewedPostDetails = _postService.GetPostsByIds(recentlyViewedPostIds);
-                var totalPostsCount = _postService.GetTotalPostsCount();
+
+                var totalPostsCount = _cache.GetOrCreate("TotalPostsCount", entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                    return _postService.GetTotalPostsCount();
+                });
+
                 var totalPageCount = (int)Math.Ceiling((double)totalPostsCount / pageSize);
+
                 var homeViewModel = new HomeViewModel
                 {
                     TrendingPosts = trendingPosts,
@@ -40,6 +67,7 @@ namespace Web.Controllers
                     TotalPages = totalPageCount,
                     PageSize = pageSize
                 };
+
                 _logger.LogInformation("Home page visited");
                 return View(homeViewModel);
             }

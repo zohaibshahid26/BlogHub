@@ -19,6 +19,8 @@ builder.Services
 
 
 builder.Services.AddSingleton<HtmlSanitizer>();
+builder.Services.AddMemoryCache();
+builder.Services.AddResponseCaching();
 builder.Services.AddAuthorization(options =>
 {
    options.AddCustomAuthorizationPolicies();
@@ -43,6 +45,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseResponseCaching();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
