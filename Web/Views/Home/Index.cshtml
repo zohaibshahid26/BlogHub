@@ -70,11 +70,26 @@
                 </div>
            }
 
-            @if (Model.LatestPosts != null && Model.LatestPosts.Any())
-            {
+             @if (Model.LatestPosts != null && Model.LatestPosts.Any()) {
                 <div class="col-12 col-lg-9 order-3 order-lg-3" id="latestpost">
                     <h4 class="my-4 gradient-text">Latest on BlogHub</h4>
                     <partial name="_Post" model="Model.LatestPosts" />
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = 1, pageSize = Model.PageSize })">First</a>
+                            </li>
+                            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
+                            </li>
+                            <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+                            </li>
+                            <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.TotalPages, pageSize = Model.PageSize })">Last</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             }
             else

@@ -17,7 +17,10 @@ namespace Domain.Interfaces
         Task ToggleLikeAsync(string postId, string userId);
         IEnumerable<Post> SearchPosts(string query);
         IEnumerable<Post> GetTrendingPosts(int count);
-        IEnumerable<Post> GetLatestPosts(int count);
+        IEnumerable<Post> GetLatestPosts(int pageNumber, int pageSize);
+
+        int GetTotalPostsCount();
+
         IEnumerable<Post> GetPostsByIds(IEnumerable<string> postIds);
 
         void RemovePostImage(string url);

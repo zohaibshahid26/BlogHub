@@ -84,12 +84,12 @@ namespace Application.Services
             ).Take(count);
         }
 
-        public IEnumerable<Post> GetLatestPosts(int count)
+        public IEnumerable<Post> GetLatestPosts(int pageNumber, int pageSize)
         {
             return _unitOfWork.PostRepository.Get(
                 orderBy: q => q.OrderByDescending(p => p.DatePosted),
                 includeProperties: "Category,Tags,Image,Comments,User,Likes,User.Image"
-            ).Take(count);
+            ).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         }
 
         public IEnumerable<Post> GetPostsByIds(IEnumerable<string> postIds)
@@ -111,6 +111,11 @@ namespace Application.Services
         public async Task SaveChangesAsync()
         {
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public int GetTotalPostsCount()
+        {
+            return _unitOfWork.PostRepository.Get(includeProperties: "").Count();
         }
 
         public async Task<string> SavePostImageAsync(IFormFile image, string folder)

@@ -18,23 +18,27 @@ namespace Web.Controllers
             _categoryService = categoryService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1,int pageSize = 5)
         {
             try
             {
                 var trendingPosts = _postService.GetTrendingPosts(6);
-                var latestPosts = _postService.GetLatestPosts(10);
+                var latestPosts = _postService.GetLatestPosts(pageNumber,pageSize);
                 var categories = await _categoryService.GetAllCategoriesAsync();
                 var recentlyViewedPosts = Request.Cookies["RecentlyViewedPosts"];
                 var recentlyViewedPostIds = recentlyViewedPosts != null ? recentlyViewedPosts.Split(',').ToList() : new List<string>();
                 var recentlyViewedPostDetails = _postService.GetPostsByIds(recentlyViewedPostIds);
-
+                var totalPostsCount = _postService.GetTotalPostsCount();
+                var totalPageCount = (int)Math.Ceiling((double)totalPostsCount / pageSize);
                 var homeViewModel = new HomeViewModel
                 {
                     TrendingPosts = trendingPosts,
                     LatestPosts = latestPosts,
                     Categories = categories,
-                    RecentlyViewedPosts = recentlyViewedPostDetails
+                    RecentlyViewedPosts = recentlyViewedPostDetails,
+                    PageNumber = pageNumber,
+                    TotalPages = totalPageCount,
+                    PageSize = pageSize
                 };
                 _logger.LogInformation("Home page visited");
                 return View(homeViewModel);
