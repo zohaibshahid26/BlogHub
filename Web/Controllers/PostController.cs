@@ -137,7 +137,6 @@ namespace Web.Controllers
                             tags.Add(tag);
                         }
                     }
-                    var imageUrl = await _postService.SavePostImageAsync(post.Image, "featureImages");
                     var Post = new Post
                     {
                         Title = post.Title,
